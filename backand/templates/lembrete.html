@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lembrete de Vencimento - Financial Manager</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .reminder-info {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .reminder-info h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0e68c;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #ff8c00;
+        }
+        .payment-options {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .option-icon {
+            width: 40px;
+            height: 40px;
+            background: #007bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: background 0.3s;
+        }
+        .cta-button:hover {
+            background: #218838;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .calendar-reminder {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+            .info-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Lembrete</h1>
+            <p>PROTEQ</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Olá, <strong>{{nomeCliente}}</strong>!
+            </div>
+
+            <p>Esperamos que esteja tudo bem com você e sua empresa <strong>{{nomeEmpresa}}</strong>.</p>
+
+            <p>Este é um lembrete sobre uma parcela que vencerá em breve. Queremos ajudá-lo a manter sua conta sempre em dia!</p>
+
+            <div class="reminder-info">
+                <h3>Detalhes do Vencimento</h3>
+                <div class="info-row">
+                    <span>Empresa:</span>
+                    <span><strong>{{nomeEmpresa}}</strong></span>
+                </div>
+                <div class="info-row">
+                    <span>Valor da Parcela:</span>
+                    <span><strong>{{valorPendente}}</strong></span>
+                </div>
+                <div class="info-row">
+                    <span>Data de Vencimento:</span>
+                    <span><strong>{{proximoVencimento}}</strong></span>
+                </div>
+                <div class="info-row">
+                    <span>Status:</span>
+                    <span style="color: #ffc107;"><strong>A VENCER</strong></span>
+                </div>
+            </div>
+
+            <div class="calendar-reminder">
+                📅 <strong>Marque em sua agenda!</strong><br>
+                Não esqueça: próximo vencimento em <strong>{{proximoVencimento}}</strong>
+            </div>
+
+            <div class="payment-options">
+                <h3 style="color: #333; margin-top: 0;">Formas de Pagamento:</h3>
+                
+                <div class="option-item">
+                    <div class="option-icon">💳</div>
+                    <div>
+                        <strong>PIX ou Transferência Bancária</strong><br>
+                        Pagamento instantâneo e sem taxas
+                    </div>
+                </div>
+                
+                <div class="option-item">
+                    <div class="option-icon">💰</div>
+                    <div>
+                        <strong>Cartão de Crédito ou Débito</strong><br>
+                        Parcelamento disponível no crédito
+                    </div>
+                </div>
+                
+                <div class="option-item">
+                    <div class="option-icon">📄</div>
+                    <div>
+                        <strong>Boleto Bancário</strong><br>
+                        Pagamento em qualquer banco ou lotérica
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="#" class="cta-button">Pagar Agora</a>
+            </div>
+
+            <p>Manter sua conta em dia garante:</p>
+            <ul>
+                
+            </ul>
+
+            <p><strong>Precisa de mais tempo?</strong> Sem problemas! Entre em contato conosco e vamos encontrar a melhor solução para você.</p>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+            <p style="color: #666;">
+                <strong>Estamos aqui para ajudar:</strong><br>
+                📧 Email: suporte@financialmanager.com<br>
+                📱 WhatsApp: (11) 99999-9999<br>
+                🕒 Segunda a Sexta, 8h às 18h
+            </p>
+
+            <p style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; border-radius: 4px; text-align: center;">
+                <strong>Obrigado por escolher o Financial Manager!</strong><br>
+                Sua confiança é o que nos motiva a melhorar sempre.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>Este é um lembrete automático do sistema Financial Manager.</p>
+            <p>© {{currentYear}} Financial Manager. Todos os direitos reservados.</p>
+            <p style="font-size: 12px; color: #999;">
+                Este email foi enviado para manter você informado sobre seus pagamentos.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

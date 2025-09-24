@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oferta Especial - Financial Manager</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .offer-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .offer-banner h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .discount {
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .benefits {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background: #28a745;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .cta-section {
+            text-align: center;
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border: 2px solid #ffc107;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            margin: 15px 0;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        .cta-button:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        .urgency {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .testimonial {
+            background: #e9ecef;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+            .discount {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>OFERTA EXCLUSIVA!</h1>
+            <p>Especial para {{nomeEmpresa}}</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Olá, <strong>{{nomeCliente}}</strong>!
+            </div>
+
+            <p>Temos uma <strong>oferta imperdível</strong> especialmente para você e sua empresa <strong>{{nomeEmpresa}}</strong>!</p>
+
+            <div class="offer-banner">
+                <h2>DESCONTO ESPECIAL</h2>
+                <div class="discount">50% OFF</div>
+                <p>Em todos os nossos serviços premium!</p>
+            </div>
+
+            <p>Como cliente valorizado, você tem acesso exclusivo a esta promoção que vai revolucionar a gestão financeira da sua empresa.</p>
+
+            <div class="benefits">
+                <h3 style="color: #333; text-align: center; margin-bottom: 20px;">O que você ganha:</h3>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <div>
+                        <strong>Gestão Completa de Clientes</strong><br>
+                        Controle total de pagamentos e parcelas
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <div>
+                        <strong>Relatórios Avançados</strong><br>
+                        Análises detalhadas e exportação de dados
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <div>
+                        <strong>Email Marketing Automático</strong><br>
+                        Lembretes e cobranças automatizadas
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <div>
+                        <strong>Suporte Premium</strong><br>
+                        Atendimento prioritário e personalizado
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial">
+                "Desde que começamos a usar o Financial Manager, nossa produtividade aumentou 300% e conseguimos reduzir a inadimplência em mais de 80%!" 
+                <br><strong>- Maria Santos, CEO da Santos & Cia</strong>
+            </div>
+
+            <div class="cta-section">
+                <h3 style="color: #333; margin-top: 0;">🔥 OFERTA POR TEMPO LIMITADO!</h3>
+                <p><strong>De R$ 297/mês por apenas R$ 148,50/mês</strong></p>
+                <a href="#" class="cta-button">🚀 Quero Aproveitar Agora!</a>
+                <p style="margin-bottom: 0; font-size: 14px; color: #666;">
+                    Garantia de 30 dias ou seu dinheiro de volta
+                </p>
+            </div>
+
+            <div class="urgency">
+                ⏰ ATENÇÃO: Esta oferta expira em 48 horas!<br>
+                Restam apenas 15 vagas com este desconto especial.
+            </div>
+
+            <p>Esta é uma oportunidade única para você levar sua empresa ao próximo nível com a melhor ferramenta de gestão financeira do mercado.</p>
+
+            <p><strong>Por que escolher o Financial Manager?</strong></p>
+            <ul>
+                <li>✅ Mais de 10.000 empresas já confiam em nossa solução</li>
+                <li>✅ Interface intuitiva e fácil de usar</li>
+                <li>✅ Dados seguros com backup automático</li>
+                <li>✅ Atualizações gratuitas para sempre</li>
+                <li>✅ Integração com principais bancos do Brasil</li>
+            </ul>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+            <p style="color: #666; text-align: center;">
+                <strong>Dúvidas? Fale conosco!</strong><br>
+                📧 vendas@financialmanager.com<br>
+                📱 WhatsApp: (11) 99999-9999<br>
+                🕒 Segunda a Sexta, 8h às 18h
+            </p>
+        </div>
+
+        <div class="footer">
+            <p><strong>Financial Manager - Transformando a gestão da sua empresa</strong></p>
+            <p>© {{currentYear}} Financial Manager. Todos os direitos reservados.</p>
+            <p style="font-size: 12px; margin-top: 15px;">
+                Você recebeu este email por ser um cliente/prospect do Financial Manager.<br>
+                <a href="#" style="color: #ccc;">Descadastrar</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lembrete de Pagamento - Financial Manager</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .payment-info {
+            background: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .payment-info h3 {
+            color: #dc3545;
+            margin-top: 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: background 0.3s;
+        }
+        .cta-button:hover {
+            background: #218838;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .urgent {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .header, .content, .footer {
+                padding: 20px 15px;
+            }
+            .info-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 Lembrete de Pagamento</h1>
+            <p>Financial Manager</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Olá, <strong>{{nomeCliente}}</strong>!
+            </div>
+
+            <p>Esperamos que esteja tudo bem com você e sua empresa <strong>{{nomeEmpresa}}</strong>.</p>
+
+            <div class="urgent">
+                <strong>⚠️ Atenção:</strong> Identificamos que há um pagamento pendente em sua conta. Para manter nossos serviços em dia e evitar interrupções, solicitamos sua atenção para esta pendência.
+            </div>
+
+            <div class="payment-info">
+                <h3>📋 Detalhes do Pagamento</h3>
+                <div class="info-row">
+                    <span>Empresa:</span>
+                    <span><strong>{{nomeEmpresa}}</strong></span>
+                </div>
+                <div class="info-row">
+                    <span>Valor Pendente:</span>
+                    <span><strong>{{valorPendente}}</strong></span>
+                </div>
+                <div class="info-row">
+                    <span>Vencimento:</span>
+                    <span><strong>{{proximoVencimento}}</strong></span>
+                </div>
+                <div class="info-row">
+                    <span>Status:</span>
+                    <span><strong style="color: #dc3545;">EM ATRASO</strong></span>
+                </div>
+            </div>
+
+            <p>Para regularizar sua situação e continuar aproveitando nossos serviços sem interrupções, você pode:</p>
+
+            <ul>
+                <li>💰 Efetuar o pagamento via PIX, transferência bancária ou cartão</li>
+                <li>📞 Entrar em contato conosco para renegociar condições</li>
+                <li>📅 Agendar um novo prazo de pagamento</li>
+            </ul>
+
+            <div style="text-align: center;">
+                <a href="#" class="cta-button">💳 Quero Pagar Agora</a>
+            </div>
+
+            <p><strong>Importante:</strong> O não pagamento pode resultar na suspensão dos serviços contratados. Estamos sempre dispostos a encontrar a melhor solução para você.</p>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+            <p style="color: #666;">
+                <strong>Precisa de ajuda?</strong><br>
+                Nossa equipe está pronta para atendê-lo:<br>
+                📧 Email: financeiro@suaempresa.com<br>
+                📱 WhatsApp: (11) 99999-9999<br>
+                🕒 Horário: Segunda a Sexta, 8h às 18h
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>Este é um email automático do sistema Financial Manager.</p>
+            <p>© {{currentYear}} Financial Manager. Todos os direitos reservados.</p>
+            <p style="font-size: 12px; color: #999;">
+                Se você não reconhece este email, pode ignorá-lo com segurança.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
