@@ -12,11 +12,11 @@ const emailSchema = Joi.string()
 const singleEmailSchema = Joi.object({
   to: emailSchema,
   subject: Joi.string().min(1).max(200).required(),
-  template: Joi.string().valid('cobranca', 'promocao', 'confirmacao', 'lembrete').required(),
+  template: Joi.string().valid('cobranca-7dias', 'primeira-cobranca', 'cobranca-15dias', 'cobranca-30dias', 'solicitacao-contato').required(),
   variables: Joi.object().optional()
 });
 
-// Schema de validação para envio em massa
+/// Schema de validação para envio em massa
 const bulkEmailSchema = Joi.object({
   recipients: Joi.array().items(
     Joi.alternatives().try(
@@ -25,13 +25,17 @@ const bulkEmailSchema = Joi.object({
         email: emailSchema,
         nomeResponsavel: Joi.string().optional(),
         nomeEmpresa: Joi.string().optional(),
+        cnpj: Joi.string().optional(), // ← ADICIONAR
         valorPendente: Joi.alternatives().try(Joi.string(), Joi.number()).optional(),
-        proximoVencimento: Joi.string().optional()
+        parcelasAtraso: Joi.string().optional(), // ← ADICIONAR
+        proximoVencimento: Joi.string().optional(),
+        dataVencimento: Joi.string().optional(), // ← ADICIONAR
+        linkPagamento: Joi.string().allow('', '#', null).optional()
       })
     )
   ).min(1).max(50).required(), // máximo 50 emails por vez
   subject: Joi.string().min(1).max(200).required(),
-  template: Joi.string().valid('cobranca', 'promocao', 'confirmacao', 'lembrete').required(),
+  template: Joi.string().valid('cobranca-7dias', 'primeira-cobranca', 'cobranca-15dias', 'cobranca-30dias', 'solicitacao-contato').required(),
   variables: Joi.object().optional()
 });
 
@@ -148,7 +152,7 @@ const validateBulkEmailData = (data) => {
 // Validar template de preview
 const validatePreviewData = (data) => {
   const schema = Joi.object({
-    template: Joi.string().valid('cobranca', 'promocao', 'confirmacao', 'lembrete').required(),
+    template: Joi.string().valid('cobranca-7dias', 'primeira-cobranca', 'cobranca-15dias', 'cobranca-30dias', 'solicitacao-contato').required(),
     variables: Joi.object().optional()
   });
 

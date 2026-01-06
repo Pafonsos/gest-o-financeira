@@ -9,49 +9,98 @@ const EmailManager = ({ clientes }) => {
   const [loading, setLoading] = useState(false);
 
   const templates = [
-    { value: 'cobranca', label: 'Cobrança (Clientes em Atraso)', subject: 'Lembrete Importante - Pagamento em Atraso' },
-    { value: 'lembrete', label: 'Lembrete (Vencimento Próximo)', subject: 'Lembrete Amigável - Vencimento Próximo' },
-    { value: 'promocao', label: 'Promoção (Ofertas Especiais)', subject: 'Oferta Especial - Desconto Exclusivo!' },
-    { value: 'confirmacao', label: 'Confirmação (Pagamento Recebido)', subject: 'Pagamento Confirmado - Obrigado!' }
-  ];
-
+    { value: 'primeira-cobranca', label: 'Primeira Cobrança (Notificação Inicial)', subject: 'Notificação de Pendência Financeira - PROTEQ' },
+    { value: 'cobranca-7dias', label: 'Cobrança Leve (≥ 7 dias de atraso)', subject: 'Lembrete Amigável: Pagamento em Atraso - PROTEQ' },
+    { value: 'cobranca-15dias', label: 'Cobrança Moderada (≥ 15 dias de atraso)', subject: '⚠️ Importante: Regularização Necessária - PROTEQ' },
+    { value: 'cobranca-30dias', label: 'Cobrança Pesada (≥ 30 dias de atraso)', subject: '🚨 URGENTE: Notificação Final - PROTEQ' },
+    { value: 'solicitacao-contato', label: 'Cliente entrar em contato', subject: 'Entrar em contato conosco - PROTEQ' },
+];
   const sendEmails = async () => {
-    if (!selectedTemplate || !subject || selectedClients.length === 0) {
-      alert('Por favor, preencha todos os campos e selecione pelo menos um cliente.');
-      return;
-    }
+  if (!selectedTemplate || !subject || selectedClients.length === 0) {
+    alert('Por favor, preencha todos os campos e selecione pelo menos um cliente.');
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const recipients = selectedClients.map(id => {
-        const cliente = clientes.find(c => c.id === id);
-        return {
-          email: cliente.email || 'cliente@exemplo.com',
-          nomeResponsavel: cliente.nomeResponsavel,
-          nomeEmpresa: cliente.nomeEmpresa,
-          valorPendente: `R$ ${(cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ',')}`,
-          proximoVencimento: cliente.proximoVencimento || 'Não informado'
-        };
-      });
-
-      const response = await emailService.sendBulkEmails({
-        recipients,
-        subject,
-        template: selectedTemplate
-      });
-
-      if (response.success) {
-        alert(`Emails enviados com sucesso!\n${response.statistics.successful} enviados\n${response.statistics.failed} falhas\nTaxa de sucesso: ${response.statistics.successRate}`);
-        setSelectedClients([]);
-        setSubject('');
-        setSelectedTemplate('');
-      }
-    } catch (error) {
-      alert('Erro ao enviar emails: ' + (error.response?.data?.message || error.message));
-    } finally {
-      setLoading(false);
-    }
+  // FUNÇÕES AUXILIARES DENTRO DO sendEmails
+  const calcularStatus = (cliente) => {
+    if (cliente.valorPago >= cliente.valorTotal) return 'pago';
+    if (cliente.proximoVencimento && new Date(cliente.proximoVencimento) < new Date()) return 'em_atraso';
+    return 'pendente';
   };
+
+  const calcularDiasAtraso = (dataVencimento) => {
+    if (!dataVencimento) return 0;
+    const hoje = new Date();
+    const vencimento = new Date(dataVencimento);
+    const diferenca = hoje - vencimento;
+    return Math.max(0, Math.ceil(diferenca / (1000 * 60 * 60 * 24)));
+  };
+
+  const calcularParcelasEmAtraso = (cliente) => {
+    const status = calcularStatus(cliente);
+    if (status !== 'em_atraso') return 0;
+    
+    const parcelasRestantes = cliente.parcelas - cliente.parcelasPagas;
+    const diasAtraso = calcularDiasAtraso(cliente.proximoVencimento);
+    
+    const parcelasAtrasadasEstimadas = Math.min(
+      Math.ceil(diasAtraso / 30),
+      parcelasRestantes
+    );
+    
+    return parcelasAtrasadasEstimadas || 1;
+  };
+
+  setLoading(true);
+  try {
+    const recipients = selectedClients.map(id => {
+      const cliente = clientes.find(c => c.id === id);
+      const parcelasAtraso = calcularParcelasEmAtraso(cliente);
+      
+      const recipient = {
+        email: cliente.email || 'cliente@exemplo.com',
+        nomeResponsavel: cliente.nomeResponsavel,
+        nomeEmpresa: cliente.nomeEmpresa,
+        cnpj: cliente.cnpj || 'Não informado',
+        valorPendente: `R$ ${(cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ',')}`,
+        parcelasAtraso: parcelasAtraso > 1 ? `${parcelasAtraso} parcelas` : '1 parcela',
+        proximoVencimento: cliente.proximoVencimento || 'Não informado',
+        linkPagamento: cliente.linkPagamento || '#' // ← USA O LINK DO CLIENTE
+      };
+
+      // DEBUG
+      console.log('===== FRONTEND =====');
+      console.log('Cliente:', cliente.nomeEmpresa);
+      console.log('CNPJ:', cliente.cnpj);
+      console.log('Parcelas atraso:', parcelasAtraso);
+      console.log('Recipient:', recipient);
+      console.log('====================');
+
+      return recipient;
+    });
+console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
+  recipients,
+  subject,
+  template: selectedTemplate
+}, null, 2));
+    const response = await emailService.sendBulkEmails({
+      recipients,
+      subject,
+      template: selectedTemplate
+    });
+
+    if (response.success) {
+      alert(`Emails enviados com sucesso!\n${response.statistics.successful} enviados\n${response.statistics.failed} falhas\nTaxa de sucesso: ${response.statistics.successRate}`);
+      setSelectedClients([]);
+      setSubject('');
+      setSelectedTemplate('');
+    }
+  } catch (error) {
+    alert('Erro ao enviar emails: ' + (error.response?.data?.message || error.message));
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleTemplateChange = (template) => {
     setSelectedTemplate(template);
@@ -241,19 +290,62 @@ const FinancialManager = () => {
     data: new Date().toISOString().split('T')[0],
     descricao: ''
   });
+  // Funções de formatação
+const formatarCNPJ = (valor) => {
+  // Remove tudo que não é número
+  const numeros = valor.replace(/\D/g, '');
   
-  const [novoCliente, setNovoCliente] = useState({
-    nomeResponsavel: '',
-    nomeEmpresa: '',
-    email: '',
-    telefone: '',
-    valorTotal: '',
-    parcelas: 1,
-    dataVenda: '',
-    proximoVencimento: '',
-    servico: '',
-    observacoes: ''
+  // Aplica a máscara XX.XXX.XXX/XXXX-XX
+  if (numeros.length <= 2) return numeros;
+  if (numeros.length <= 5) return numeros.replace(/(\d{2})(\d{0,3})/, '$1.$2');
+  if (numeros.length <= 8) return numeros.replace(/(\d{2})(\d{3})(\d{0,3})/, '$1.$2.$3');
+  if (numeros.length <= 12) return numeros.replace(/(\d{2})(\d{3})(\d{3})(\d{0,4})/, '$1.$2.$3/$4');
+  return numeros.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/, '$1.$2.$3/$4-$5');
+};
+
+const formatarMoedaInput = (valor) => {
+  // Remove tudo que não é número
+  const numeros = valor.replace(/\D/g, '');
+  
+  // Converte para número e divide por 100
+  const numero = parseFloat(numeros) / 100;
+  
+  // Formata como moeda brasileira
+  return numero.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
   });
+};
+const formatarValorParaEmail = (valor) => {
+  return valor.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+};
+const parseMoedaParaNumero = (valor) => {
+  // Se já for número, retorna direto
+  if (typeof valor === 'number') return valor;
+  
+  // Se for string vazia ou undefined, retorna 0
+  if (!valor) return 0;
+  
+  // Remove pontos e substitui vírgula por ponto
+  return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.')) || 0;
+};
+  const [novoCliente, setNovoCliente] = useState({
+  nomeResponsavel: '',
+  nomeEmpresa: '',
+  email: '',
+  telefone: '',
+  valorTotal: '',
+  parcelas: 1,
+  dataVenda: '',
+  proximoVencimento: '',
+  cnpj: '',
+  codigoContrato: '',
+  linkPagamento: '', // ← ADICIONAR
+  observacoes: ''
+});
 
   // NOVO: Carregar dados salvos quando o componente inicia
   useEffect(() => {
@@ -266,55 +358,11 @@ const FinancialManager = () => {
       } catch (error) {
         console.error('Erro ao carregar dados salvos:', error);
         // Se der erro, usar dados exemplo
-        setClientes([
-          {
-            id: 1,
-            nomeResponsavel: "João Silva",
-            nomeEmpresa: "Silva & Associados",
-            email: "joao@silva.com.br",
-            telefone: "(11) 99999-9999",
-            valorTotal: 5000,
-            valorPago: 2000,
-            parcelas: 5,
-            parcelasPagas: 2,
-            valorParcela: 1000,
-            dataVenda: "2024-08-15",
-            proximoVencimento: "2024-09-15",
-            servico: "Consultoria Empresarial",
-            observacoes: "Cliente pontual até agora",
-            historicosPagamentos: [
-              { data: "2024-08-15", valor: 1000, descricao: "1ª parcela" },
-              { data: "2024-08-30", valor: 1000, descricao: "2ª parcela" }
-            ]
-          }
-        ]);
+        
       }
     } else {
-      // Primeira vez usando - criar cliente exemplo
-      const clienteExemplo = [
-        {
-          id: 1,
-          nomeResponsavel: "João Silva",
-          nomeEmpresa: "Silva & Associados",
-          email: "joao@silva.com.br",
-          telefone: "(11) 99999-9999",
-          valorTotal: 5000,
-          valorPago: 2000,
-          parcelas: 5,
-          parcelasPagas: 2,
-          valorParcela: 1000,
-          dataVenda: "2024-08-15",
-          proximoVencimento: "2024-09-15",
-          servico: "Consultoria Empresarial",
-          observacoes: "Cliente pontual até agora",
-          historicosPagamentos: [
-            { data: "2024-08-15", valor: 1000, descricao: "1ª parcela" },
-            { data: "2024-08-30", valor: 1000, descricao: "2ª parcela" }
-          ]
-        }
-      ];
-      setClientes(clienteExemplo);
-      console.log('Primeira vez usando - cliente exemplo criado');
+      
+    
     }
   }, []);
 
@@ -350,6 +398,21 @@ const FinancialManager = () => {
     const diferenca = hoje - vencimento;
     return Math.max(0, Math.ceil(diferenca / (1000 * 60 * 60 * 24)));
   };
+  const calcularParcelasEmAtraso = (cliente) => {
+  const status = calcularStatus(cliente);
+  if (status !== 'em_atraso') return 0;
+  
+  const parcelasRestantes = cliente.parcelas - cliente.parcelasPagas;
+  const diasAtraso = calcularDiasAtraso(cliente.proximoVencimento);
+  
+  // Calcula quantas parcelas atrasadas baseado em 30 dias por parcela
+  const parcelasAtrasadasEstimadas = Math.min(
+    Math.ceil(diasAtraso / 30),
+    parcelasRestantes
+  );
+  
+  return parcelasAtrasadasEstimadas || 1;
+};
 
   const clientesFiltrados = clientes.filter(cliente => {
     const status = calcularStatus(cliente);
@@ -368,52 +431,58 @@ const FinancialManager = () => {
   };
 
   const adicionarCliente = () => {
-    if (!novoCliente.nomeResponsavel || !novoCliente.nomeEmpresa || !novoCliente.valorTotal) {
-      alert('Por favor, preencha os campos obrigatórios');
-      return;
-    }
+  if (!novoCliente.nomeResponsavel || !novoCliente.nomeEmpresa || !novoCliente.valorTotal) {
+    alert('Por favor, preencha os campos obrigatórios');
+    return;
+  }
 
-    const valorParcela = parseFloat(novoCliente.valorTotal) / parseInt(novoCliente.parcelas);
-    const novoId = Math.max(...clientes.map(c => c.id), 0) + 1;
-    
-    const cliente = {
-      ...novoCliente,
-      id: novoId,
-      valorTotal: parseFloat(novoCliente.valorTotal),
-      valorPago: 0,
-      parcelasPagas: 0,
-      valorParcela: valorParcela,
-      parcelas: parseInt(novoCliente.parcelas),
-      historicosPagamentos: []
-    };
-    
-    setClientes([...clientes, cliente]);
-    fecharModal();
-    alert('Cliente adicionado e salvo com sucesso!');
+  const valorNumerico = parseMoedaParaNumero(novoCliente.valorTotal); // ← ADICIONAR
+  const valorParcela = valorNumerico / parseInt(novoCliente.parcelas); // ← MUDAR
+  const novoId = Math.max(...clientes.map(c => c.id), 0) + 1;
+  
+  const cliente = {
+    ...novoCliente,
+    id: novoId,
+    valorTotal: valorNumerico, // ← MUDAR
+    valorPago: 0,
+    parcelasPagas: 0,
+    valorParcela: valorParcela,
+    parcelas: parseInt(novoCliente.parcelas),
+    historicosPagamentos: []
   };
+  
+  setClientes([...clientes, cliente]);
+  fecharModal();
+  alert('Cliente adicionado e salvo com sucesso!');
+};
 
   const editarCliente = () => {
-    if (!clienteEditando.nomeResponsavel || !clienteEditando.nomeEmpresa || !clienteEditando.valorTotal) {
-      alert('Por favor, preencha os campos obrigatórios');
-      return;
-    }
+  if (!clienteEditando.nomeResponsavel || !clienteEditando.nomeEmpresa || !clienteEditando.valorTotal) {
+    alert('Por favor, preencha os campos obrigatórios');
+    return;
+  }
 
-    const valorParcela = parseFloat(clienteEditando.valorTotal) / parseInt(clienteEditando.parcelas);
+  // Se valorTotal já for número, usa direto. Senão, converte
+  const valorNumerico = typeof clienteEditando.valorTotal === 'number' 
+    ? clienteEditando.valorTotal 
+    : parseMoedaParaNumero(clienteEditando.valorTotal);
     
-    setClientes(clientes.map(cliente => {
-      if (cliente.id === clienteEditando.id) {
-        return {
-          ...clienteEditando,
-          valorTotal: parseFloat(clienteEditando.valorTotal),
-          valorParcela: valorParcela,
-          parcelas: parseInt(clienteEditando.parcelas)
-        };
-      }
-      return cliente;
-    }));
-    fecharModal();
-    alert('Cliente editado e salvo com sucesso!');
-  };
+  const valorParcela = valorNumerico / parseInt(clienteEditando.parcelas);
+  
+  setClientes(clientes.map(cliente => {
+    if (cliente.id === clienteEditando.id) {
+      return {
+        ...clienteEditando,
+        valorTotal: valorNumerico,
+        valorParcela: valorParcela,
+        parcelas: parseInt(clienteEditando.parcelas)
+      };
+    }
+    return cliente;
+  }));
+  fecharModal();
+  alert('Cliente editado e salvo com sucesso!');
+};
 
   const excluirCliente = () => {
     setClientes(clientes.filter(cliente => cliente.id !== clienteSelecionado.id));
@@ -423,41 +492,52 @@ const FinancialManager = () => {
   };
 
   const registrarPagamento = () => {
-    const valorPago = parseFloat(pagamentoForm.valor);
-    if (!valorPago || valorPago <= 0) {
-      alert('Por favor, insira um valor válido');
-      return;
-    }
+  const valorPago = parseFloat(pagamentoForm.valor);
+  if (!valorPago || valorPago <= 0) {
+    alert('Por favor, insira um valor válido');
+    return;
+  }
 
-    setClientes(clientes.map(cliente => {
-      if (cliente.id === clienteSelecionado.id) {
-        const novoValorPago = cliente.valorPago + valorPago;
-        const novasParcelasPagas = Math.floor(novoValorPago / cliente.valorParcela);
-        const novoHistorico = [...(cliente.historicosPagamentos || []), {
-          data: pagamentoForm.data,
-          valor: valorPago,
-          descricao: pagamentoForm.descricao || `Pagamento - ${formatarData(pagamentoForm.data)}`
-        }];
+  setClientes(clientes.map(cliente => {
+    if (cliente.id === clienteSelecionado.id) {
+      const novoValorPago = cliente.valorPago + valorPago;
+      const novasParcelasPagas = Math.floor(novoValorPago / cliente.valorParcela);
+      const novoHistorico = [...(cliente.historicosPagamentos || []), {
+        data: pagamentoForm.data,
+        valor: valorPago,
+        descricao: pagamentoForm.descricao || `Pagamento - ${formatarData(pagamentoForm.data)}`
+      }];
 
-        return {
-          ...cliente,
-          valorPago: novoValorPago,
-          parcelasPagas: novasParcelasPagas,
-          historicosPagamentos: novoHistorico
-        };
+      // CORREÇÃO: Atualizar próximo vencimento
+      let novoProximoVencimento = cliente.proximoVencimento;
+      
+      if (novasParcelasPagas > cliente.parcelasPagas && cliente.proximoVencimento) {
+        const dataAtual = new Date(cliente.proximoVencimento);
+        const parcelasPagasAMais = novasParcelasPagas - cliente.parcelasPagas;
+        dataAtual.setDate(dataAtual.getDate() + (30 * parcelasPagasAMais));
+        novoProximoVencimento = dataAtual.toISOString().split('T')[0];
       }
-      return cliente;
-    }));
 
-    setModalPagamento(false);
-    setPagamentoForm({
-      valor: '',
-      data: new Date().toISOString().split('T')[0],
-      descricao: ''
-    });
-    setClienteSelecionado(null);
-    alert('Pagamento registrado e salvo com sucesso!');
-  };
+      return {
+        ...cliente,
+        valorPago: novoValorPago,
+        parcelasPagas: novasParcelasPagas,
+        proximoVencimento: novoProximoVencimento, // ← LINHA ADICIONADA
+        historicosPagamentos: novoHistorico
+      };
+    }
+    return cliente;
+  }));
+
+  setModalPagamento(false);
+  setPagamentoForm({
+    valor: '',
+    data: new Date().toISOString().split('T')[0],
+    descricao: ''
+  });
+  setClienteSelecionado(null);
+  alert('Pagamento registrado e salvo com sucesso!');
+};
 
   const exportarRelatorio = () => {
     // Preparar dados organizados
@@ -467,7 +547,8 @@ const FinancialManager = () => {
       'Nome da Empresa': cliente.nomeEmpresa,
       'Email': cliente.email || 'Não informado',
       'Telefone': cliente.telefone || 'Não informado',
-      'Serviço Prestado': cliente.servico,
+      'Código do Contrato': cliente.codigoContrato,
+      'CNPJ': cliente.cnpj || 'Não informado',
       'Valor Total (R$)': cliente.valorTotal.toFixed(2).replace('.', ','),
       'Valor Pago (R$)': cliente.valorPago.toFixed(2).replace('.', ','),
       'Valor Restante (R$)': (cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ','),
@@ -522,7 +603,8 @@ const FinancialManager = () => {
       'Nome da Empresa': cliente.nomeEmpresa,
       'Email': cliente.email || 'Não informado',
       'Telefone': cliente.telefone || 'Não informado',
-      'Serviço Prestado': cliente.servico,
+      'CNPJ': cliente.cnpj || 'Não informado',
+      'Código do Contrato': cliente.codigoContrato,
       'Valor Total': `R$ ${cliente.valorTotal.toFixed(2).replace('.', ',')}`,
       'Valor Pago': `R$ ${cliente.valorPago.toFixed(2).replace('.', ',')}`,
       'Valor Restante': `R$ ${(cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ',')}`,
@@ -584,21 +666,23 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
   };
 
   const fecharModal = () => {
-    setModalAberto(false);
-    setClienteEditando(null);
-    setNovoCliente({
-      nomeResponsavel: '',
-      nomeEmpresa: '',
-      email: '',
-      telefone: '',
-      valorTotal: '',
-      parcelas: 1,
-      dataVenda: '',
-      proximoVencimento: '',
-      servico: '',
-      observacoes: ''
-    });
-  };
+  setModalAberto(false);
+  setClienteEditando(null);
+  setNovoCliente({
+    nomeResponsavel: '',
+    nomeEmpresa: '',
+    email: '',
+    cnpj: '',
+    telefone: '',
+    valorTotal: '',
+    parcelas: 1,
+    dataVenda: '',
+    proximoVencimento: '',
+    codigoContrato: '',
+    linkPagamento: '', // ← ADICIONAR
+    observacoes: ''
+  });
+};
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -748,6 +832,12 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contato</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código Contrato</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valores</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parcelas</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Próximo Venc.</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                 </tr>
@@ -772,7 +862,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {cliente.servico}
+                        {cliente.codigoContrato}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
@@ -919,9 +1009,26 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                     }}
                   />
                 </div>
-                
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">CNPJ</label>
+                  <input
+                    type="text"
+                    placeholder="00.000.000/0000-00"
+                    maxLength="18"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    value={clienteEditando ? (clienteEditando.cnpj || '') : (novoCliente.cnpj || '')}
+                    onChange={(e) => {
+                      const cnpjFormatado = formatarCNPJ(e.target.value);
+                      if (clienteEditando) {
+                        setClienteEditando({...clienteEditando, cnpj: cnpjFormatado});
+                      } else {
+                        setNovoCliente({...novoCliente, cnpj: cnpjFormatado});
+                      }
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                   <input
                     type="email"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -938,7 +1045,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Telefone *</label>
                   <input
                     type="tel"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -955,38 +1062,62 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Serviço Prestado *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Código do Contrato *</label>
                   <input
                     type="text"
+                    placeholder="Ex: CS 10.2025"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    value={clienteEditando ? clienteEditando.servico : novoCliente.servico}
+                    value={clienteEditando ? clienteEditando.codigoContrato : novoCliente.codigoContrato}
                     onChange={(e) => {
                       const valor = e.target.value;
                       if (clienteEditando) {
-                        setClienteEditando({...clienteEditando, servico: valor});
+                        setClienteEditando({...clienteEditando, codigoContrato: valor});
                       } else {
-                        setNovoCliente({...novoCliente, servico: valor});
+                        setNovoCliente({...novoCliente, codigoContrato: valor});
                       }
                     }}
                   />
                 </div>
-                
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Valor Total *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Link de Pagamento (Asaas)</label>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="url"
+                    placeholder="https://www.asaas.com/c/..."
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    value={clienteEditando ? clienteEditando.valorTotal : novoCliente.valorTotal}
+                    value={clienteEditando ? (clienteEditando.linkPagamento || '') : (novoCliente.linkPagamento || '')}
                     onChange={(e) => {
                       const valor = e.target.value;
                       if (clienteEditando) {
-                        setClienteEditando({...clienteEditando, valorTotal: valor});
+                        setClienteEditando({...clienteEditando, linkPagamento: valor});
                       } else {
-                        setNovoCliente({...novoCliente, valorTotal: valor});
+                        setNovoCliente({...novoCliente, linkPagamento: valor});
                       }
                     }}
                   />
+                  <p className="text-xs text-gray-500 mt-1">Cole o link de cobrança do Asaas</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Valor Total *</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-2.5 text-gray-500">R$</span>
+                    <input
+                      type="text"
+                      className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      placeholder="0,00"
+                      value={clienteEditando 
+                        ? (clienteEditando.valorTotal ? formatarMoedaInput(clienteEditando.valorTotal.toString().replace(/\D/g, '')) : '')
+                        : (novoCliente.valorTotal || '')}
+                      onChange={(e) => {
+                        const valorFormatado = formatarMoedaInput(e.target.value);
+                        if (clienteEditando) {
+                          setClienteEditando({...clienteEditando, valorTotal: valorFormatado});
+                        } else {
+                          setNovoCliente({...novoCliente, valorTotal: valorFormatado});
+                        }
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Digite apenas números</p>
                 </div>
                 
                 <div>
@@ -1165,7 +1296,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                       <p><span className="font-medium">Empresa:</span> {clienteSelecionado.nomeEmpresa}</p>
                       <p><span className="font-medium">Email:</span> {clienteSelecionado.email}</p>
                       <p><span className="font-medium">Telefone:</span> {clienteSelecionado.telefone}</p>
-                      <p><span className="font-medium">Serviço:</span> {clienteSelecionado.servico}</p>
+                      <p><span className="font-medium">Código do Contrato:</span> {clienteSelecionado.codigoContrato}</p>
                     </div>
                   </div>
                 </div>

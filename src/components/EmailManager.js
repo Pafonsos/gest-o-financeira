@@ -2,14 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Send, Users, Eye } from 'lucide-react';
 import emailService from '../services/emailService';
 
-const EmailManager = ({ clientes }) => {
-  const [templates, setTemplates] = useState([]);
+  const EmailManager = ({ clientes }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [subject, setSubject] = useState('');
   const [selectedClients, setSelectedClients] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [statistics, setStatistics] = useState(null);
 
+  // ← ADICIONAR A FUNÇÃO AQUI DENTRO
+  const calcularParcelasEmAtraso = (cliente) => {
+    const calcularStatus = (cliente) => {
+      if (cliente.valorPago >= cliente.valorTotal) return 'pago';
+      if (cliente.proximoVencimento && new Date(cliente.proximoVencimento) < new Date()) return 'em_atraso';
+      return 'pendente';
+    };
+
+    const calcularDiasAtraso = (dataVencimento) => {
+      if (!dataVencimento) return 0;
+      const hoje = new Date();
+      const vencimento = new Date(dataVencimento);
+      const diferenca = hoje - vencimento;
+      return Math.max(0, Math.ceil(diferenca / (1000 * 60 * 60 * 24)));
+    };
+
+    const status = calcularStatus(cliente);
+    if (status !== 'em_atraso') return 0;
+    
+    const parcelasRestantes = cliente.parcelas - cliente.parcelasPagas;
+    const diasAtraso = calcularDiasAtraso(cliente.proximoVencimento);
+    
+    const parcelasAtrasadasEstimadas = Math.min(
+      Math.ceil(diasAtraso / 30),
+      parcelasRestantes
+    );
+    
+    return parcelasAtrasadasEstimadas || 1;
+  };
+const formatarValorParaEmail = (valor) => {
+  return valor.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+};
+  const templates = [
+    // ... resto do código
+  ];
   useEffect(() => {
     loadTemplates();
     loadStatistics();
@@ -38,43 +74,47 @@ const EmailManager = ({ clientes }) => {
   };
 
   const sendEmails = async () => {
-    if (!selectedTemplate || !subject || selectedClients.length === 0) {
-      alert('Por favor, preencha todos os campos e selecione pelo menos um cliente.');
-      return;
+  if (!selectedTemplate || !subject || selectedClients.length === 0) {
+    alert('Por favor, preencha todos os campos e selecione pelo menos um cliente.');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const recipients = selectedClients.map(id => {
+      const cliente = clientes.find(c => c.id === id);
+      const parcelasAtraso = calcularParcelasEmAtraso(cliente); // ← ADICIONAR
+      
+      return {
+        email: cliente.email || 'cliente@exemplo.com',
+        nomeResponsavel: cliente.nomeResponsavel,
+        nomeEmpresa: cliente.nomeEmpresa,
+        cnpj: cliente.cnpj || 'Não informado', // ← ADICIONAR
+        valorPendente: formatarValorParaEmail(cliente.valorTotal - cliente.valorPago),
+        parcelasAtraso: parcelasAtraso > 1 ? `${parcelasAtraso} parcelas` : '1 parcela', // ← ADICIONAR
+        proximoVencimento: cliente.proximoVencimento || 'Não informado',
+        linkPagamento: cliente.linkPagamento || '#'
+      };
+    });
+
+    const response = await emailService.sendBulkEmails({
+      recipients,
+      subject,
+      template: selectedTemplate
+    });
+
+    if (response.success) {
+      alert(`Emails enviados com sucesso!\n${response.statistics.successful} enviados\n${response.statistics.failed} falhas\nTaxa de sucesso: ${response.statistics.successRate}`);
+      setSelectedClients([]);
+      setSubject('');
+      setSelectedTemplate('');
     }
-
-    setLoading(true);
-    try {
-      const recipients = selectedClients.map(id => {
-        const cliente = clientes.find(c => c.id === id);
-        return {
-          email: cliente.email,
-          nomeResponsavel: cliente.nomeResponsavel,
-          nomeEmpresa: cliente.nomeEmpresa,
-          valorPendente: `R$ ${(cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ',')}`,
-          proximoVencimento: cliente.proximoVencimento
-        };
-      });
-
-      const response = await emailService.sendBulkEmails({
-        recipients,
-        subject,
-        template: selectedTemplate
-      });
-
-      if (response.success) {
-        alert(`Emails enviados! ${response.statistics.successful} sucessos, ${response.statistics.failed} falhas`);
-        setSelectedClients([]);
-        setSubject('');
-        setSelectedTemplate('');
-        loadStatistics(); // Atualizar estatísticas
-      }
-    } catch (error) {
-      alert('Erro ao enviar emails: ' + (error.response?.data?.message || error.message));
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    alert('Erro ao enviar emails: ' + (error.response?.data?.message || error.message));
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleClientToggle = (clientId) => {
     if (selectedClients.includes(clientId)) {
@@ -104,10 +144,11 @@ const EmailManager = ({ clientes }) => {
               onChange={(e) => setSelectedTemplate(e.target.value)}
             >
               <option value="">Selecione um template</option>
-              <option value="cobranca">Cobrança (Clientes em Atraso)</option>
-              <option value="lembrete">Lembrete (Vencimento Próximo)</option>
-              <option value="promocao">Promoção (Ofertas Especiais)</option>
-              <option value="confirmacao">Confirmação (Pagamento Recebido)</option>
+              <option value="primeira-cobranca">Primeira Cobrança (Notificação Inicial)</option>
+              <option value="cobranca-7dias">Cobrança Leve (≥ 7 dias de atraso)</option>
+              <option value="cobranca-15dias">Cobrança Moderada (≥ 15 dias de atraso)</option>
+              <option value="cobranca-30dias">Cobrança Pesada (≥ 30 dias de atraso)</option>
+              <option value="solicitacao-contato">Cliente entrar em contato</option>
             </select>
           </div>
 
