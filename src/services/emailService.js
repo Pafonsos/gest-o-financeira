@@ -7,16 +7,12 @@ const emailService = {
     const response = await axios.post(`${API_BASE_URL}/email/send-bulk`, emailData);
     return response.data;
   },
-
-  getTemplates: async () => {
-    const response = await axios.get(`${API_BASE_URL}/email/templates`);
-    return response.data;
-  },
-
+  // ... outras funções
   getStatistics: async () => {
     const response = await axios.get(`${API_BASE_URL}/email/statistics`);
     return response.data;
   }
 };
 
+// ESTA LINHA É OBRIGATÓRIA:
 export default emailService;

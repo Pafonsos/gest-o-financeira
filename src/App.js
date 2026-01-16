@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send } from 'lucide-react';
 import emailService from './services/emailService';
+import { Settings } from 'lucide-react';
+import { EmailSettingsModal } from './components/EmailSettingsModal';
+import ClientEmailSettings from './components/ClientEmailSettings';
 
 const EmailManager = ({ clientes }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
@@ -270,6 +273,7 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
 };
 
 const FinancialManager = () => {
+  const [showEmailSettings, setShowEmailSettings] = useState(false);
   // Estado inicial vazio - será carregado do localStorage
   const [clientes, setClientes] = useState([]);
 
@@ -737,6 +741,18 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
               <Download className="w-5 h-5" />
               Exportar CSV
             </button>
+            {/* Modal de Configurações de Email */}
+<EmailSettingsModal 
+  isOpen={showEmailSettings} 
+  onClose={() => setShowEmailSettings(false)} 
+/>
+            <button
+  onClick={() => setShowEmailSettings(true)}
+  className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+>
+  <Settings className="w-5 h-5" />
+  Config. Emails
+</button>
           </div>
         </div>
         
@@ -1300,7 +1316,10 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                     </div>
                   </div>
                 </div>
-                
+              {/* Configurações de Email do Cliente */}
+                <div className="mt-6">
+               <ClientEmailSettings cliente={clienteSelecionado} />
+                </div>  
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-700">Informações Financeiras</h3>
