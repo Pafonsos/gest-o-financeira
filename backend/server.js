@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const http = require('http');
 
 const emailRoutes = require('./routes/emailRoutes');
 const { logger } = require('./utils/logger');
@@ -9,38 +10,140 @@ const { logger } = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(helmet());
+// ============================================
+// SOLUÇÃO PARA ERRO 431
+// ============================================
+
+// CORS com configurações adequadas
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400 // Cache preflight por 24h
 }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Helmet simplificado para não adicionar headers desnecessários
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: false,
+  crossOriginResourcePolicy: false
+}));
+
+// Body parser com limites MUITO MAIORES
+app.use(express.json({ 
+  limit: '100mb',
+  parameterLimit: 1000000
+}));
+
+app.use(express.urlencoded({ 
+  extended: true, 
+  limit: '100mb',
+  parameterLimit: 1000000
+}));
+
+// ============================================
+// ROTAS
+// ============================================
 
 app.use('/api/email', emailRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'Servidor de email funcionando',
+    message: 'Servidor funcionando',
     timestamp: new Date().toISOString()
   });
 });
 
+// ============================================
+// TRATAMENTO DE ERROS
+// ============================================
+
 app.use((error, req, res, next) => {
-  console.error('Erro não tratado:', error);
-  res.status(500).json({ error: 'Erro interno do servidor' });
+  console.error('❌ Erro não tratado:', error);
+  
+  if (error.type === 'entity.too.large' || error.status === 413) {
+    return res.status(413).json({ 
+      success: false,
+      error: 'Payload muito grande',
+      message: 'Reduza a quantidade de dados enviados'
+    });
+  }
+  
+  res.status(500).json({ 
+    success: false,
+    error: 'Erro interno do servidor',
+    message: process.env.NODE_ENV === 'development' ? error.message : 'Erro no servidor'
+  });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
+// ============================================
+// CRIAR SERVIDOR HTTP COM CONFIGURAÇÕES CUSTOMIZADAS
+// ============================================
+
+const server = http.createServer(app);
+
+// CONFIGURAÇÕES CRÍTICAS PARA RESOLVER 431
+server.maxHeadersCount = 0; // SEM LIMITE de headers
+server.headersTimeout = 0; // SEM TIMEOUT de headers
+server.requestTimeout = 0; // SEM TIMEOUT de request
+server.timeout = 0; // SEM TIMEOUT geral
+
+// Iniciar servidor
+server.listen(PORT, () => {
+  console.log('\n' + '='.repeat(60));
+  console.log('✅ SERVIDOR INICIADO COM SUCESSO');
+  console.log('='.repeat(60));
+  console.log(`🌐 Porta: ${PORT}`);
+  console.log(`📍 API: http://localhost:${PORT}/api`);
+  console.log(`🔗 Frontend: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+  console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+  console.log('='.repeat(60));
+  console.log('\n💡 Configurações aplicadas:');
+  console.log('   ✓ Headers: SEM LIMITE');
+  console.log('   ✓ Payload: 100MB');
+  console.log('   ✓ Timeout: DESATIVADO');
+  console.log('   ✓ CORS: CONFIGURADO\n');
 });
 
 server.on('error', (error) => {
-  console.error('Erro do servidor:', error);
+  console.error('\n❌ ERRO DO SERVIDOR:', error);
+  
+  if (error.code === 'EADDRINUSE') {
+    console.error(`\n⚠️  Porta ${PORT} já está em uso!`);
+    console.error('💡 Soluções:');
+    console.error('   1. Mude a porta no .env');
+    console.error('   2. Ou feche o processo usando a porta\n');
+    process.exit(1);
+  }
 });
 
+// Tratamento graceful de erros
 process.on('uncaughtException', (error) => {
-  console.error('Exceção não capturada:', error);
+  console.error('❌ Exceção não capturada:', error);
+  logger.error('Uncaught Exception:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Promise rejeitada:', reason);
+  logger.error('Unhandled Rejection:', reason);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('\n⏹️  SIGTERM recebido. Encerrando...');
+  server.close(() => {
+    console.log('✅ Servidor encerrado com sucesso\n');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('\n⏹️  SIGINT recebido. Encerrando...');
+  server.close(() => {
+    console.log('✅ Servidor encerrado\n');
+    process.exit(0);
+  });
 });

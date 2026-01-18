@@ -93,18 +93,17 @@ const sendSingleEmail = async (to, subject, template, variables = {}) => {
     const logoPath = path.join(__dirname, '..', 'assets', 'logo-proteq.png');
 
     // Configurar email com logo anexada
-    // Dentro da função que envia o e-mail individualmente (loop)
-const mailOptions = {
-  from: emailDefaults.from,
-  to: recipient.email,
-  subject: subject,
-  html: processedHtml,
-  attachments: [{
-    filename: 'logo-proteq.png',
-    path: path.join(__dirname, '../assets/logo-proteq.png'), // Certifique-se que o arquivo existe
-    cid: 'logo-proteq' 
-  }]
-};
+    const mailOptions = {
+      from: emailDefaults.from,
+      to: to,  // CORRIGIDO: era recipient.email
+      subject: subject,
+      html: processedHtml,
+      attachments: [{
+        filename: 'logo-proteq.png',
+        path: logoPath,
+        cid: 'logo-proteq' 
+      }]
+    };
 
     // Enviar email
     const result = await transporter.sendMail(mailOptions);

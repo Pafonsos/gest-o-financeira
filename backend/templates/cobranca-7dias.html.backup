@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lembrete Amigável - PROTEQ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fa;
+        }
+        .container {
+            max-width: 650px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: #4facfe;
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .logo-img {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+        .header-subtitle {
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+        }
+        .content {
+            padding: 40px 35px;
+            color: #333;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        .intro-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        .info-box {
+            background: #f0f8ff;
+            border-left: 4px solid #4facfe;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .payment-card {
+            background: #f8f9fc;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .payment-card-header {
+            color: #4facfe;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #e8eef3;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .detail-value {
+            color: #2c3e50;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: right;
+        }
+        .status-overdue {
+            display: inline-block;
+            background: #fff9e6;
+            color: #cc8800;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .highlight-box {
+            background: #fff9e6;
+            border: 2px solid #ffd966;
+            border-radius: 8px;
+            padding: 18px;
+            margin: 25px 0;
+            text-align: center;
+            color: #cc8800;
+        }
+        .highlight-box strong {
+            font-size: 16px;
+        }
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .method-card {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .method-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .method-name {
+            color: #4facfe;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 16px 40px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+            text-align: center;
+        }
+        .button-container {
+            text-align: center;
+            margin: 35px 0;
+        }
+        .contact-section {
+            background: #f8f9fc;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 35px 0;
+            border: 1px solid #e1e8ed;
+        }
+        .contact-title {
+            color: #4facfe;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .contact-info {
+            color: #555;
+            font-size: 14px;
+            line-height: 2;
+        }
+        .contact-info strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .divider {
+            border: none;
+            border-top: 1px solid #e1e8ed;
+            margin: 35px 0;
+        }
+        .footer {
+            background: #4facfe;
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .footer-logo {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 15px auto;
+            display: block;
+        }
+        .footer-text {
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        .footer-note {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 20px;
+            font-style: italic;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .content {
+                padding: 25px 20px;
+            }
+            .header {
+                padding: 30px 20px;
+            }
+            .logo-img {
+                max-width: 280px;
+            }
+            .footer-logo {
+                max-width: 150px;
+            }
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .detail-value {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="cid:logo-proteq" alt="PROTEQ" class="logo-img">
+            <div class="header-subtitle">Departamento Financeiro</div>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Olá, <strong>{{nomeCliente}}</strong>!
+            </div>
+
+            <div class="intro-text">
+                Esperamos que você e sua empresa <strong>{{nomeEmpresa}}</strong> estejam bem.
+            </div>
+
+            <div class="intro-text">
+                Notamos que o pagamento de uma parcela passou do vencimento há poucos dias. Sabemos que imprevistos acontecem, por isso estamos enviando este lembrete amigável.
+            </div>
+
+            <div class="payment-card">
+                <div class="payment-card-header">
+                    📋 Informações do Pagamento
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Empresa</span>
+                    <span class="detail-value">{{nomeEmpresa}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">CNPJ</span>
+                    <span class="detail-value">{{cnpj}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Valor</span>
+                    <span class="detail-value">{{valorPendente}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Vencimento</span>
+                    <span class="detail-value">{{dataVencimento}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Dias de atraso</span>
+                    <span class="detail-value">
+                        <span class="status-overdue">~7 dias</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>💡 Regularize hoje e evite juros adicionais!</strong>
+            </div>
+
+            <div class="info-box">
+                <strong>💳 Formas de Pagamento Disponíveis:</strong>
+            </div>
+
+            <div class="payment-methods">
+                <div class="method-card">
+                    <div class="method-icon">💳</div>
+                    <div class="method-name">PIX</div>
+                </div>
+                <div class="method-card">
+                    <div class="method-icon">🏦</div>
+                    <div class="method-name">Transferência</div>
+                </div>
+                <div class="method-card">
+                    <div class="method-icon">💰</div>
+                    <div class="method-name">Cartão</div>
+                </div>
+                <div class="method-card">
+                    <div class="method-icon">📄</div>
+                    <div class="method-name">Boleto</div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <a href="{{linkPagamento}}" class="action-button">Realizar Pagamento</a>
+            </div>
+
+            <div class="intro-text" style="color: #666; font-size: 14px;">
+                Se você já efetuou o pagamento, por favor, desconsidere este email. O processamento pode levar alguns dias úteis.
+            </div>
+
+            <hr class="divider">
+
+            <div class="contact-section">
+                <div class="contact-title">📞 Precisa de Ajuda ou tem Dúvidas?</div>
+                <div class="contact-info">
+                    Nossa equipe está à disposição para ajudá-lo:<br><br>
+                    <strong>📧 E-mail:</strong> financeiro@proteq.com.br<br>
+                    <strong>📱 WhatsApp:</strong> (82) 99999-9999<br>
+                    <strong>☎️ Telefone:</strong> (82) 3333-3333<br>
+                    <strong>🕒 Horário:</strong> Segunda a Sexta, 8h às 18h
+                </div>
+            </div>
+
+            <div style="text-align: center; color: #4facfe; font-size: 15px; margin-top: 30px;">
+                Agradecemos sua atenção e confiança! 💙
+            </div>
+        </div>
+
+        <div class="footer">
+            <img src="cid:logo-proteq" alt="PROTEQ" class="footer-logo">
+            <div class="footer-text">
+                © {{currentYear}} PROTEQ. Todos os direitos reservados.
+            </div>
+            <div class="footer-text">
+                Engenharia Química - Ambiental e Sanitária
+            </div>
+            <div class="footer-note">
+                Este é um e-mail automático do sistema de gestão financeira.<br>
+                Por favor, não responda diretamente a este e-mail. Utilize os canais de contato informados acima.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

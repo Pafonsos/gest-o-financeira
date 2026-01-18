@@ -1,23 +1,49 @@
 const Joi = require('joi');
 
+// Schema de email simples
 const emailSchema = Joi.string().email().required();
 
+// Schema para envio único (ADICIONADO - ESTAVA FALTANDO)
+const singleEmailSchema = Joi.object({
+  to: emailSchema,
+  subject: Joi.string().required(),
+  template: Joi.string().valid(
+    'primeira-cobranca',
+    'cobranca-7dias',
+    'cobranca-15dias',
+    'cobranca-30dias',
+    'solicitacao-contato'
+  ).required(),
+  variables: Joi.object().optional()
+});
+
+// Schema para envio em massa
 const bulkEmailSchema = Joi.object({
   recipients: Joi.array().items(
-    Joi.object({
-      email: emailSchema,
-      nomeResponsavel: Joi.string().allow('', null).optional(),
-      nomeEmpresa: Joi.string().allow('', null).optional(),
-      cnpj: Joi.string().allow('', null).optional(),
-      // Aceita tanto string quanto número para evitar erro 400
-      valorPendente: Joi.alternatives().try(Joi.string(), Joi.number()).optional(),
-      parcelasAtraso: Joi.alternatives().try(Joi.string(), Joi.number()).optional(),
-    })
+    Joi.alternatives().try(
+      emailSchema,  // String simples
+      Joi.object({
+        email: emailSchema,
+        nomeResponsavel: Joi.string().allow('', null).optional(),
+        nomeEmpresa: Joi.string().allow('', null).optional(),
+        cnpj: Joi.string().allow('', null).optional(),
+        valorPendente: Joi.alternatives().try(Joi.string(), Joi.number()).optional(),
+        parcelasAtraso: Joi.alternatives().try(Joi.string(), Joi.number()).optional(),
+        proximoVencimento: Joi.string().allow('', null).optional(),
+        linkPagamento: Joi.string().uri().allow('', null).optional()
+      })
+    )
   ).min(1).required(),
-  template: Joi.string().required(),
-  subject: Joi.string().required()
+  subject: Joi.string().required(),
+  template: Joi.string().valid(
+    'primeira-cobranca',
+    'cobranca-7dias',
+    'cobranca-15dias',
+    'cobranca-30dias',
+    'solicitacao-contato'
+  ).required(),
+  variables: Joi.object().optional()
 });
-// ... resto das funções de sanitização mantidas
 
 // Lista de domínios comuns suspeitos/descartáveis
 const suspiciousDomains = [
@@ -132,7 +158,13 @@ const validateBulkEmailData = (data) => {
 // Validar template de preview
 const validatePreviewData = (data) => {
   const schema = Joi.object({
-    template: Joi.string().valid('cobranca-7dias', 'primeira-cobranca', 'cobranca-15dias', 'cobranca-30dias', 'solicitacao-contato').required(),
+    template: Joi.string().valid(
+      'cobranca-7dias',
+      'primeira-cobranca',
+      'cobranca-15dias',
+      'cobranca-30dias',
+      'solicitacao-contato'
+    ).required(),
     variables: Joi.object().optional()
   });
 

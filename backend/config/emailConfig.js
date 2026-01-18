@@ -4,35 +4,27 @@ const { logger } = require('../utils/logger');
 // Configuração do transporter do Gmail
 const createEmailTransporter = () => {
   try {
-    const nodemailer = require('nodemailer');
+    const transporter = nodemailer.createTransport({
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS 
+      },
+      tls: { 
+        rejectUnauthorized: false 
+      }
+    });
 
-const createEmailTransporter = () => {
-  return nodemailer.createTransport({
-    pool: true, // PONTO CRÍTICO: Mantém a conexão aberta
-    maxConnections: 5,
-    maxMessages: 100,
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS 
-    },
-    tls: { rejectUnauthorized: false }
-  });
-};
-
-const emailDefaults = {
-  from: {
-    name: process.env.EMAIL_FROM_NAME || 'PROTEQ - Financeiro',
-    address: process.env.EMAIL_USER
-  }
-};
-
-module.exports = { createEmailTransporter, emailDefaults };
-
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS && !process.env.EMAIL_USER.includes('teste')) {
+    // Verificar configuração apenas se as credenciais existirem
+    if (process.env.EMAIL_USER && 
+        process.env.EMAIL_PASS && 
+        !process.env.EMAIL_USER.includes('teste')) {
       transporter.verify((error, success) => {
         if (error) {
           logger.error('Erro na configuração do email:', error);
@@ -51,7 +43,7 @@ module.exports = { createEmailTransporter, emailDefaults };
 
 const emailDefaults = {
   from: {
-    name: process.env.EMAIL_FROM_NAME || 'Financial Manager',
+    name: process.env.EMAIL_FROM_NAME || 'PROTEQ - Financeiro',
     address: process.env.EMAIL_USER
   }
 };
@@ -59,7 +51,7 @@ const emailDefaults = {
 const rateLimits = {
   maxEmailsPerHour: parseInt(process.env.MAX_EMAILS_PER_HOUR) || 50,
   maxEmailsPerDay: parseInt(process.env.MAX_EMAILS_PER_DAY) || 200,
-  delayBetweenEmails: 1500 // Aumentado ligeiramente para evitar SPAM
+  delayBetweenEmails: 1500
 };
 
 const templatePaths = {
