@@ -11,19 +11,22 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ============================================
-// SOLUÇÃO PARA ERRO 431
+// CORREÇÃO DO CORS - LINHA CRÍTICA MUDADA
 // ============================================
 
-// CORS com configurações adequadas
+// ANTES estava assim (ERRADO):
+// origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+
+// AGORA está assim (CORRETO):
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: 'http://localhost:3000', // ← MUDOU AQUI!
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  maxAge: 86400 // Cache preflight por 24h
+  maxAge: 86400
 }));
 
-// Helmet simplificado para não adicionar headers desnecessários
+// Helmet simplificado
 app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
@@ -86,10 +89,10 @@ app.use((error, req, res, next) => {
 const server = http.createServer(app);
 
 // CONFIGURAÇÕES CRÍTICAS PARA RESOLVER 431
-server.maxHeadersCount = 0; // SEM LIMITE de headers
-server.headersTimeout = 0; // SEM TIMEOUT de headers
-server.requestTimeout = 0; // SEM TIMEOUT de request
-server.timeout = 0; // SEM TIMEOUT geral
+server.maxHeadersCount = 0;
+server.headersTimeout = 0;
+server.requestTimeout = 0;
+server.timeout = 0;
 
 // Iniciar servidor
 server.listen(PORT, () => {
@@ -98,14 +101,14 @@ server.listen(PORT, () => {
   console.log('='.repeat(60));
   console.log(`🌐 Porta: ${PORT}`);
   console.log(`📍 API: http://localhost:${PORT}/api`);
-  console.log(`🔗 Frontend: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+  console.log(`🔗 Frontend aceito: http://localhost:3000`); // ← MUDOU AQUI!
   console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log('='.repeat(60));
   console.log('\n💡 Configurações aplicadas:');
+  console.log('   ✓ CORS: http://localhost:3000');
   console.log('   ✓ Headers: SEM LIMITE');
   console.log('   ✓ Payload: 100MB');
-  console.log('   ✓ Timeout: DESATIVADO');
-  console.log('   ✓ CORS: CONFIGURADO\n');
+  console.log('   ✓ Timeout: DESATIVADO\n');
 });
 
 server.on('error', (error) => {

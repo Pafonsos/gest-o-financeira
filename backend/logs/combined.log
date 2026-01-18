@@ -1,0 +1,72 @@
+{
+  "timestamp": "2026-01-17 22:21:23",
+  "level": "warn",
+  "message": "Dados de entrada inválidos:",
+  "service": "email-system",
+  "error": "\"recipients[0].linkPagamento\" must be a valid uri",
+  "field": "recipients.0.linkPagamento",
+  "ip": "::1"
+}
+{
+  "timestamp": "2026-01-17 22:21:23",
+  "level": "info",
+  "message": "HTTP POST /send-bulk",
+  "service": "email-system",
+  "method": "POST",
+  "path": "/send-bulk",
+  "statusCode": 400,
+  "duration": "55ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+}
+{
+  "timestamp": "2026-01-17 22:25:25",
+  "level": "info",
+  "message": "Tentativa de envio em massa:",
+  "service": "email-system",
+  "recipientCount": 1,
+  "duplicatesRemoved": 0,
+  "subject": "Notificação de Pendência Financeira - PROTEQ",
+  "template": "primeira-cobranca",
+  "ip": "::1"
+}
+{
+  "timestamp": "2026-01-17 22:25:25",
+  "level": "info",
+  "message": "Iniciando envio em massa para 1 destinatários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-01-17 22:25:27",
+  "level": "info",
+  "message": "Servidor de email configurado com sucesso",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-01-17 22:25:31",
+  "level": "info",
+  "message": "Email enviado com sucesso para afonsoaq38@gmail.com",
+  "service": "email-system",
+  "messageId": "<1df2c938-7b94-3e15-4b0f-9a4d194ac0b7@proteqjr.com.br>",
+  "to": "afonsoaq38@gmail.com",
+  "subject": "Notificação de Pendência Financeira - PROTEQ",
+  "template": "primeira-cobranca"
+}
+{
+  "timestamp": "2026-01-17 22:25:31",
+  "level": "info",
+  "message": "Envio em massa concluído: 1 sucessos, 0 falhas",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-01-17 22:25:31",
+  "level": "info",
+  "message": "HTTP POST /send-bulk",
+  "service": "email-system",
+  "method": "POST",
+  "path": "/send-bulk",
+  "statusCode": 200,
+  "duration": "6078ms",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+}

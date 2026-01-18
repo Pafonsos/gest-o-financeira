@@ -3,7 +3,7 @@ const Joi = require('joi');
 // Schema de email simples
 const emailSchema = Joi.string().email().required();
 
-// Schema para envio único (ADICIONADO - ESTAVA FALTANDO)
+// Schema para envio único
 const singleEmailSchema = Joi.object({
   to: emailSchema,
   subject: Joi.string().required(),
@@ -17,23 +17,31 @@ const singleEmailSchema = Joi.object({
   variables: Joi.object().optional()
 });
 
-// Schema para envio em massa
+// ============================================
+// SCHEMA PARA ENVIO EM MASSA - CORRIGIDO
+// ============================================
 const bulkEmailSchema = Joi.object({
   recipients: Joi.array().items(
     Joi.alternatives().try(
       emailSchema,  // String simples
       Joi.object({
+        // ========== OBRIGATÓRIOS ==========
         email: emailSchema,
-        nomeResponsavel: Joi.string().allow('', null).optional(),
-        nomeEmpresa: Joi.string().allow('', null).optional(),
+        nomeResponsavel: Joi.string().required(),
+        nomeEmpresa: Joi.string().required(),
+        valorPendente: Joi.string().required(),
+        parcelasAtraso: Joi.string().required(),
+        
+        // ========== OPCIONAIS SEM VALIDAÇÃO RÍGIDA ==========
         cnpj: Joi.string().allow('', null).optional(),
-        valorPendente: Joi.alternatives().try(Joi.string(), Joi.number()).optional(),
-        parcelasAtraso: Joi.alternatives().try(Joi.string(), Joi.number()).optional(),
         proximoVencimento: Joi.string().allow('', null).optional(),
-        linkPagamento: Joi.string().uri().allow('', null).optional()
+        
+        // linkPagamento aceita qualquer string, inclusive '#' e vazias
+        linkPagamento: Joi.string().allow('', null).optional()
+        // Removemos a validação .uri() para aceitar '#'
       })
     )
-  ).min(1).required(),
+  ).min(1).max(100).required(),
   subject: Joi.string().required(),
   template: Joi.string().valid(
     'primeira-cobranca',
@@ -45,7 +53,7 @@ const bulkEmailSchema = Joi.object({
   variables: Joi.object().optional()
 });
 
-// Lista de domínios comuns suspeitos/descartáveis
+// Lista de domínios suspeitos
 const suspiciousDomains = [
   '10minutemail.com',
   'tempmail.org',
@@ -89,7 +97,6 @@ const validateSingleEmailData = (data) => {
     };
   }
 
-  // Verificar se é email descartável
   if (isDisposableEmail(value.to)) {
     return {
       isValid: false,
@@ -106,17 +113,31 @@ const validateSingleEmailData = (data) => {
 
 // Validar dados para envio em massa
 const validateBulkEmailData = (data) => {
-  const { error, value } = bulkEmailSchema.validate(data);
+  console.log('\n🔍 VALIDANDO DADOS DE EMAIL EM MASSA');
+  console.log('Recipients recebidos:', data.recipients?.length || 0);
+  
+  const { error, value } = bulkEmailSchema.validate(data, {
+    abortEarly: false,
+    stripUnknown: false
+  });
   
   if (error) {
+    console.error('❌ ERRO DE VALIDAÇÃO:');
+    error.details.forEach((detail, index) => {
+      console.error(`  ${index + 1}. ${detail.message}`);
+      console.error(`     Path: ${detail.path.join('.')}`);
+      console.error(`     Type: ${detail.type}`);
+    });
+    
     return {
       isValid: false,
       error: error.details[0].message,
-      field: error.details[0].path.join('.')
+      field: error.details[0].path.join('.'),
+      allErrors: error.details.map(d => d.message)
     };
   }
 
-  // Verificar emails descartáveis na lista
+  // Verificar emails descartáveis
   const disposableEmails = [];
   value.recipients.forEach((recipient, index) => {
     const email = typeof recipient === 'string' ? recipient : recipient.email;
@@ -126,6 +147,7 @@ const validateBulkEmailData = (data) => {
   });
 
   if (disposableEmails.length > 0) {
+    console.warn('⚠️ Emails descartáveis encontrados:', disposableEmails);
     return {
       isValid: false,
       error: `Emails temporários encontrados: ${disposableEmails.join(', ')}`,
@@ -133,17 +155,28 @@ const validateBulkEmailData = (data) => {
     };
   }
 
-  // Remover emails duplicados
+  // Remover duplicatas
   const uniqueRecipients = [];
   const emailSet = new Set();
   
   value.recipients.forEach(recipient => {
     const email = typeof recipient === 'string' ? recipient : recipient.email;
-    if (!emailSet.has(email.toLowerCase())) {
-      emailSet.add(email.toLowerCase());
+    const emailLower = email.toLowerCase();
+    
+    if (!emailSet.has(emailLower)) {
+      emailSet.add(emailLower);
       uniqueRecipients.push(recipient);
     }
   });
+
+  const duplicatesRemoved = value.recipients.length - uniqueRecipients.length;
+  
+  if (duplicatesRemoved > 0) {
+    console.log(`📋 ${duplicatesRemoved} email(s) duplicado(s) removido(s)`);
+  }
+
+  console.log('✅ Validação concluída com sucesso');
+  console.log(`   Total: ${uniqueRecipients.length} recipients`);
 
   return {
     isValid: true,
@@ -151,7 +184,7 @@ const validateBulkEmailData = (data) => {
       ...value,
       recipients: uniqueRecipients
     },
-    duplicatesRemoved: value.recipients.length - uniqueRecipients.length
+    duplicatesRemoved
   };
 };
 
@@ -186,19 +219,20 @@ const validatePreviewData = (data) => {
 
 // Sanitizar dados de entrada
 const sanitizeEmailData = (data) => {
-  if (typeof data !== 'object') return data;
+  if (typeof data !== 'object' || data === null) return data;
 
   const sanitized = {};
   
   Object.keys(data).forEach(key => {
     if (typeof data[key] === 'string') {
-      // Remover caracteres perigosos e espaços extras
       sanitized[key] = data[key]
-        .replace(/[<>]/g, '') // Remove < e >
-        .replace(/javascript:/gi, '') // Remove javascript:
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
         .trim();
     } else if (Array.isArray(data[key])) {
       sanitized[key] = data[key].map(item => sanitizeEmailData(item));
+    } else if (typeof data[key] === 'object' && data[key] !== null) {
+      sanitized[key] = sanitizeEmailData(data[key]);
     } else {
       sanitized[key] = data[key];
     }
