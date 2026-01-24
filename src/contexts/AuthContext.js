@@ -45,6 +45,8 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, userData) => {
     try {
+      console.log('📝 Iniciando cadastro para:', email);
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -53,41 +55,64 @@ export const AuthProvider = ({ children }) => {
         }
       });
 
-      if (error) throw error;
-
-      // Criar perfil do usuário
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: email,
-              nome: userData.nome,
-              empresa: userData.empresa,
-              created_at: new Date().toISOString()
-            }
-          ]);
-
-        if (profileError) throw profileError;
+      if (error) {
+        console.error('❌ Erro ao cadastrar:', error.message);
+        throw error;
       }
+
+      console.log('✅ Usuário criado com sucesso');
+
+      // ⚠️ TEMPORARIAMENTE DESABILITADO: Criação de perfil na tabela profiles
+      // Está causando erro de RLS. Para reabilitar, configure as políticas no Supabase
+      /*
+      if (data.user) {
+        try {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert([
+              {
+                id: data.user.id,
+                email: email,
+                nome: userData.nome,
+                created_at: new Date().toISOString()
+              }
+            ]);
+
+          if (profileError) {
+            console.warn('⚠️ Aviso ao criar perfil:', profileError.message);
+          }
+        } catch (err) {
+          console.warn('⚠️ Erro ao criar perfil (ignorado):', err.message);
+        }
+      }
+      */
 
       return { data, error: null };
     } catch (error) {
+      console.error('❌ Erro completo:', error);
       return { data: null, error: error.message };
     }
   };
 
   const signIn = async (email, password) => {
     try {
+      console.log('🔐 Iniciando login para:', email);
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Erro ao fazer login:', error.message);
+        console.error('Código do erro:', error.status);
+        throw error;
+      }
+
+      console.log('✅ Login realizado com sucesso');
       return { data, error: null };
     } catch (error) {
+      console.error('❌ Erro completo no login:', error);
       return { data: null, error: error.message };
     }
   };

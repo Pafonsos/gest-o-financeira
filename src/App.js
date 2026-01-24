@@ -303,6 +303,7 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
 };
 
 const FinancialManager = () => {
+  const { user, loading, signOut } = useAuth();
   const [showEmailSettings, setShowEmailSettings] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState('dashboard');
   // Estado inicial vazio - será carregado do localStorage
@@ -746,6 +747,23 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
     }
   };
 
+  // Se ainda está carregando, mostra loading
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Se não está autenticado, mostra página de login
+  if (!user) {
+    return <AuthPage />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="w-full p-6">
@@ -792,6 +810,13 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
   <Settings className="w-5 h-5" />
   Config. Emails
 </button>
+            <button
+              onClick={signOut}
+              className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              Sair
+            </button>
           </div>
         </div>
         
@@ -1076,7 +1101,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Responsável *</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? clienteEditando.nomeResponsavel : novoCliente.nomeResponsavel}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1093,7 +1118,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nome da Empresa *</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? clienteEditando.nomeEmpresa : novoCliente.nomeEmpresa}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1111,7 +1136,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                     type="text"
                     placeholder="00.000.000/0000-00"
                     maxLength="18"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? (clienteEditando.cnpj || '') : (novoCliente.cnpj || '')}
                     onChange={(e) => {
                       const cnpjFormatado = formatarCNPJ(e.target.value);
@@ -1127,7 +1152,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                   <input
                     type="email"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? clienteEditando.email : novoCliente.email}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1144,7 +1169,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Telefone *</label>
                   <input
                     type="tel"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? clienteEditando.telefone : novoCliente.telefone}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1162,7 +1187,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <input
                     type="text"
                     placeholder="Ex: CS 10.2025"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? clienteEditando.codigoContrato : novoCliente.codigoContrato}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1179,7 +1204,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <input
                     type="url"
                     placeholder="https://www.asaas.com/c/..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? (clienteEditando.linkPagamento || '') : (novoCliente.linkPagamento || '')}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1198,7 +1223,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                     <span className="absolute left-3 top-2.5 text-gray-500">R$</span>
                     <input
                       type="text"
-                      className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="0,00"
                       value={clienteEditando 
                         ? (clienteEditando.valorTotal ? formatarMoedaInput(clienteEditando.valorTotal.toString().replace(/\D/g, '')) : '')
@@ -1221,7 +1246,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <input
                     type="number"
                     min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? clienteEditando.parcelas : novoCliente.parcelas}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1238,7 +1263,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Data da Venda *</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? clienteEditando.dataVenda : novoCliente.dataVenda}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1255,7 +1280,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Próximo Vencimento</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={clienteEditando ? (clienteEditando.proximoVencimento || '') : novoCliente.proximoVencimento}
                     onChange={(e) => {
                       const valor = e.target.value;
@@ -1271,7 +1296,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Observações</label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     rows="3"
                     value={clienteEditando ? clienteEditando.observacoes : novoCliente.observacoes}
                     onChange={(e) => {
@@ -1319,7 +1344,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <input
                     type="number"
                     step="0.01"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={pagamentoForm.valor}
                     onChange={(e) => setPagamentoForm({...pagamentoForm, valor: e.target.value})}
                     placeholder="0,00"
@@ -1333,7 +1358,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Data do Pagamento *</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={pagamentoForm.data}
                     onChange={(e) => setPagamentoForm({...pagamentoForm, data: e.target.value})}
                   />
@@ -1343,7 +1368,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     value={pagamentoForm.descricao}
                     onChange={(e) => setPagamentoForm({...pagamentoForm, descricao: e.target.value})}
                     placeholder="Ex: 3ª parcela"

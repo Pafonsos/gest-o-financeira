@@ -122,7 +122,7 @@ export const LoginForm = ({ onToggleForm }) => {
               onClick={() => onToggleForm('register')}
               className="text-blue-600 hover:text-blue-700 font-semibold transition-colors hover:underline"
             >
-              Cadastre-se grátis
+              Cadastre-se
             </button>
           </p>
         </div>
