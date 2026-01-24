@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send } from 'lucide-react';
+import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3 } from 'lucide-react';
 import emailService from './services/emailService';
 import { Settings } from 'lucide-react';
 import { EmailSettingsModal } from './components/EmailSettingsModal';
@@ -129,19 +129,26 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-      <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-        <Mail className="w-5 h-5 text-purple-600" />
-        Email Marketing
-      </h3>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Formulário */}
-        <div className="space-y-4">
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-blue-600 rounded-lg">
+            <Mail className="w-6 h-6 text-white" />
+          </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Template de Email:</label>
+            <h3 className="text-xl font-bold text-blue-900">Email Marketing</h3>
+            <p className="text-sm text-gray-600">Envie comunicações personalizadas</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Formulário */}
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-3">Template de Email:</label>
             <select 
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               value={selectedTemplate}
               onChange={(e) => handleTemplateChange(e.target.value)}
             >
@@ -155,10 +162,10 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Assunto do Email:</label>
+            <label className="block text-sm font-semibold text-slate-700 mb-3">Assunto do Email:</label>
             <input 
               type="text"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Digite o assunto do email"
@@ -166,44 +173,45 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Selecionar Destinatários:</label>
-            <div className="border border-gray-300 rounded-lg p-3 max-h-40 overflow-y-auto">
+            <label className="block text-sm font-semibold text-slate-700 mb-3">Selecionar Destinatários:</label>
+            <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto bg-white">
               {clientes.length > 0 ? clientes.map(cliente => {
                 const status = getClientStatus(cliente);
                 return (
-                  <label key={cliente.id} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                  <label key={cliente.id} className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={selectedClients.includes(cliente.id)}
                       onChange={() => handleClientToggle(cliente.id)}
+                      className="rounded border-slate-300 text-purple-600 focus:ring-purple-500"
                     />
-                    <span className="text-sm flex-1">
+                    <span className="text-sm flex-1 font-medium text-slate-800">
                       {cliente.nomeResponsavel} - {cliente.nomeEmpresa}
                     </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${status.color}`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${status.color} shadow-sm`}>
                       {status.text}
                     </span>
                   </label>
                 );
               }) : (
-                <p className="text-gray-500 text-center py-4">Nenhum cliente cadastrado</p>
+                <p className="text-slate-500 text-center py-6 font-medium">Nenhum cliente cadastrado</p>
               )}
             </div>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-slate-600 mt-3 font-medium">
               {selectedClients.length} clientes selecionados
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <button
               onClick={sendEmails}
               disabled={loading || !selectedTemplate || !subject || selectedClients.length === 0}
-              className="flex-1 bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md"
             >
               {loading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                <Send className="w-4 h-4" />
+                <Send className="w-5 h-5" />
               )}
               {loading ? 'Enviando...' : 'Enviar Emails'}
             </button>
@@ -214,7 +222,7 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
                 setSubject('');
                 setSelectedTemplate('');
               }}
-              className="px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-6 py-4 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-all duration-200 shadow-sm hover:shadow-md font-medium"
             >
               Limpar
             </button>
@@ -222,47 +230,68 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
         </div>
 
         {/* Estatísticas e Informações */}
-        <div className="space-y-4">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-medium text-gray-700 mb-3">Estatísticas:</h4>
+        <div className="space-y-6">
+          <div className="bg-gradient-to-br from-slate-50 to-gray-50 p-6 rounded-xl border border-slate-200/50 shadow-sm">
+            <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-slate-600" />
+              Estatísticas
+            </h4>
             <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-gray-600">Total de clientes:</span>
-                <span className="font-bold text-blue-600 ml-2">{clientes.length}</span>
+              <div className="bg-white/70 rounded-lg p-3 shadow-sm border border-slate-100">
+                <span className="text-slate-600 font-medium">Total de clientes:</span>
+                <span className="font-bold text-slate-800 ml-2 block text-lg">{clientes.length}</span>
               </div>
-              <div>
-                <span className="text-gray-600">Selecionados:</span>
-                <span className="font-bold text-purple-600 ml-2">{selectedClients.length}</span>
+              <div className="bg-white/70 rounded-lg p-3 shadow-sm border border-slate-100">
+                <span className="text-slate-600 font-medium">Selecionados:</span>
+                <span className="font-bold text-purple-600 ml-2 block text-lg">{selectedClients.length}</span>
               </div>
-              <div>
-                <span className="text-gray-600">Em atraso:</span>
-                <span className="font-bold text-red-600 ml-2">
+              <div className="bg-white/70 rounded-lg p-3 shadow-sm border border-slate-100">
+                <span className="text-slate-600 font-medium">Em atraso:</span>
+                <span className="font-bold text-red-600 ml-2 block text-lg">
                   {clientes.filter(c => c.proximoVencimento && new Date(c.proximoVencimento) < new Date()).length}
                 </span>
               </div>
-              <div>
-                <span className="text-gray-600">Pendentes:</span>
-                <span className="font-bold text-yellow-600 ml-2">
+              <div className="bg-white/70 rounded-lg p-3 shadow-sm border border-slate-100">
+                <span className="text-slate-600 font-medium">Pendentes:</span>
+                <span className="font-bold text-yellow-600 ml-2 block text-lg">
                   {clientes.filter(c => c.valorPago < c.valorTotal).length}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h4 className="font-medium text-blue-800 mb-2">Como usar:</h4>
-            <ul className="text-sm text-blue-700 space-y-1">
-              <li>• Escolha um template apropriado</li>
-              <li>• Personalize o assunto se necessário</li>
-              <li>• Selecione os clientes desejados</li>
-              <li>• Clique em "Enviar Emails"</li>
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200/50 shadow-sm">
+            <h4 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
+              <Info className="w-5 h-5 text-blue-600" />
+              Como usar
+            </h4>
+            <ul className="text-sm text-blue-700 space-y-2 font-medium">
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 mt-1">•</span>
+                <span>Escolha um template apropriado</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 mt-1">•</span>
+                <span>Personalize o assunto se necessário</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 mt-1">•</span>
+                <span>Selecione os clientes desejados</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-blue-500 mt-1">•</span>
+                <span>Clique em "Enviar Emails"</span>
+              </li>
             </ul>
           </div>
 
           {selectedTemplate && (
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h4 className="font-medium text-green-800 mb-2">Template Selecionado:</h4>
-              <p className="text-sm text-green-700">
+            <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-xl border border-emerald-200/50 shadow-sm">
+              <h4 className="font-bold text-emerald-800 mb-3 flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-emerald-600" />
+                Template Selecionado
+              </h4>
+              <p className="text-sm text-emerald-700 font-medium">
                 {templates.find(t => t.value === selectedTemplate)?.label}
               </p>
             </div>
@@ -718,18 +747,26 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Gerenciamento Financeiro</h1>
-            <p className="text-sm text-gray-600 mt-1">Dados salvos automaticamente no navegador</p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="w-full p-6">
+        {/* Header PROTEQ */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 mb-8 shadow-md text-white">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <img
+                  src="/logo-proteq.png"
+                  alt="PROTEQ Logo"
+                  className="w-24 h-24 object-contain mx-auto mb-2"
+                  onError={(e) => e.target.style.display = 'none'}
+                />
+                <h1 className="text-lg font-semibold text-white">Sistema de Gestão Financeira</h1>
+              </div>
+            </div>
           <div className="flex gap-3">
             <button
               onClick={exportarGoogleSheets}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19.5 2.25h-15v19.5h15V2.25zm-1.5 1.5v3h-12v-3h12zm0 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-12v-3h12z"/>
@@ -738,7 +775,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
             </button>
             <button
               onClick={exportarRelatorio}
-              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
             >
               <Download className="w-5 h-5" />
               Exportar CSV
@@ -750,7 +787,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
 />
             <button
   onClick={() => setShowEmailSettings(true)}
-  className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+  className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
 >
   <Settings className="w-5 h-5" />
   Config. Emails
@@ -759,12 +796,12 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
         </div>
         
         {/* NAVEGAÇÃO POR ABAS */}
-        <div className="flex gap-2 border-t pt-4 mb-6">
+        <div className="flex gap-2 bg-white rounded-lg p-2 mb-6 shadow-md">
           <button
             onClick={() => setAbaAtiva('dashboard')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 font-medium ${
               abaAtiva === 'dashboard'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -774,9 +811,9 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
           
           <button
             onClick={() => setAbaAtiva('clientes')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 font-medium ${
               abaAtiva === 'clientes'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -793,70 +830,74 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
         {abaAtiva === 'clientes' && (
           <>
             {/* Cards de Resumo */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total a Receber</p>
-                <p className="text-2xl font-bold text-blue-600">{formatarMoeda(totais.totalAReceber)}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-blue-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total a Receber</p>
+                    <p className="text-2xl font-bold text-blue-600">{formatarMoeda(totais.totalAReceber)}</p>
+                  </div>
+                  <DollarSign className="w-8 h-8 text-blue-600" />
+                </div>
               </div>
-              <DollarSign className="w-8 h-8 text-blue-600" />
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Recebido</p>
-                <p className="text-2xl font-bold text-green-600">{formatarMoeda(totais.totalRecebido)}</p>
+              
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-green-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total Recebido</p>
+                    <p className="text-2xl font-bold text-green-600">{formatarMoeda(totais.totalRecebido)}</p>
+                  </div>
+                  <CheckCircle className="w-8 h-8 text-green-600" />
+                </div>
               </div>
-              <CheckCircle className="w-8 h-8 text-green-600" />
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Clientes em Atraso</p>
-                <p className="text-2xl font-bold text-red-600">{totais.clientesEmAtraso}</p>
+              
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-red-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Clientes em Atraso</p>
+                    <p className="text-2xl font-bold text-red-600">{totais.clientesEmAtraso}</p>
+                  </div>
+                  <AlertCircle className="w-8 h-8 text-red-600" />
+                </div>
               </div>
-              <AlertCircle className="w-8 h-8 text-red-600" />
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total de Clientes</p>
-                <p className="text-2xl font-bold text-gray-700">{totais.totalClientes}</p>
+              
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-gray-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total de Clientes</p>
+                    <p className="text-2xl font-bold text-gray-700">{totais.totalClientes}</p>
+                  </div>
+                  <Users className="w-8 h-8 text-gray-700" />
+                </div>
               </div>
-              <Users className="w-8 h-8 text-gray-700" />
             </div>
-          </div>
-        </div>
 
-        {/* Email Marketing Section */}
-        <EmailManager clientes={clientes} />
+            {/* Email Marketing Section */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <EmailManager clientes={clientes} />
+        </div>
 
         {/* Filtros e Busca */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="flex flex-col md:flex-row gap-4 flex-1">
               <div className="relative flex-1 max-w-md">
-                <Search className="w-5 h-5 absolute left-3 top-3 text-gray-400" />
+                <Search className="w-5 h-5 absolute left-4 top-4 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Buscar por nome ou empresa..."
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   value={filtros.busca}
                   onChange={(e) => setFiltros({...filtros, busca: e.target.value})}
                 />
               </div>
               
-              <div className="flex items-center gap-2">
-                <Filter className="w-5 h-5 text-gray-600" />
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg shadow-sm">
+                  <Filter className="w-5 h-5 text-white" />
+                </div>
                 <select
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   value={filtros.status}
                   onChange={(e) => setFiltros({...filtros, status: e.target.value})}
                 >
@@ -870,7 +911,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
             
             <button
               onClick={() => setModalAberto(true)}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
             >
               <Plus className="w-5 h-5" />
               Adicionar Cliente
@@ -884,27 +925,27 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contato</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código Contrato</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valores</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parcelas</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Próximo Venc.</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Cliente</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Contato</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Código Contrato</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Valores</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Parcelas</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Próximo Venc.</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Ações</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white/70 divide-y divide-slate-200">
                 {clientesFiltrados.map((cliente) => {
                   const status = calcularStatus(cliente);
                   const diasAtraso = calcularDiasAtraso(cliente.proximoVencimento);
                   
                   return (
-                    <tr key={cliente.id} className="hover:bg-gray-50">
+                    <tr key={cliente.id} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{cliente.nomeResponsavel}</div>
-                          <div className="text-sm text-gray-500">{cliente.nomeEmpresa}</div>
+                          <div className="text-sm font-bold text-slate-900">{cliente.nomeResponsavel}</div>
+                          <div className="text-sm text-slate-600 font-medium">{cliente.nomeEmpresa}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -1030,7 +1071,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 {clienteEditando ? 'Editar Cliente' : 'Adicionar Novo Cliente'}
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Responsável *</label>
                   <input
@@ -1342,7 +1383,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
             <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
               <h2 className="text-xl font-bold mb-6">Detalhes do Cliente</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-700">Informações Básicas</h3>
@@ -1458,6 +1499,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
             </div>
           </div>
         )}
+  </div>
       </div>
     </div>
   );

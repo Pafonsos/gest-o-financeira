@@ -53,37 +53,42 @@ export const RegisterForm = ({ onToggleForm }) => {
 
   return (
     <div className="w-full max-w-md">
-      <div className="bg-white rounded-lg shadow-xl p-8">
+      <div className="bg-gradient-to-br from-white via-emerald-50/30 to-green-50/30 rounded-2xl shadow-2xl p-8 border border-emerald-100/50">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Criar Conta</h1>
-          <p className="text-gray-600 mt-2">Comece grátis agora</p>
+          <div className="flex justify-center mb-4">
+            <div className="p-4 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl shadow-lg">
+              <img src="/logo-proteq.png" alt="PROTEQ" className="w-12 h-12" />
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Criar Conta</h1>
+          <p className="text-slate-600 mt-2 font-medium">Comece grátis agora</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">
+          <div className="bg-gradient-to-r from-red-50 to-pink-50 text-red-700 p-4 rounded-xl mb-6 text-sm font-medium border border-red-200/50 shadow-sm">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-50 text-green-600 p-3 rounded-lg mb-4 text-sm">
+          <div className="bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 p-4 rounded-xl mb-6 text-sm font-medium border border-emerald-200/50 shadow-sm">
             Conta criada! Redirecionando para login...
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
               Nome Completo
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+              <User className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
               <input
                 type="text"
                 name="nome"
                 value={formData.nome}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
                 placeholder="João Silva"
                 required
               />
@@ -91,17 +96,17 @@ export const RegisterForm = ({ onToggleForm }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
               Nome da Empresa
             </label>
             <div className="relative">
-              <Building className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+              <Building className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
               <input
                 type="text"
                 name="empresa"
                 value={formData.empresa}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
                 placeholder="Minha Empresa Ltda"
                 required
               />
@@ -109,17 +114,17 @@ export const RegisterForm = ({ onToggleForm }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
               Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+              <Mail className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
                 placeholder="seu@email.com"
                 required
               />
@@ -127,24 +132,24 @@ export const RegisterForm = ({ onToggleForm }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
               Senha
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-12 pr-14 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
                 placeholder="••••••••"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -152,17 +157,17 @@ export const RegisterForm = ({ onToggleForm }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-slate-700 mb-3">
               Confirmar Senha
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
                 placeholder="••••••••"
                 required
               />
@@ -172,7 +177,7 @@ export const RegisterForm = ({ onToggleForm }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2 font-medium transition-colors"
+            className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white py-4 rounded-xl hover:from-emerald-700 hover:to-green-700 disabled:opacity-50 flex items-center justify-center gap-3 font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -185,12 +190,12 @@ export const RegisterForm = ({ onToggleForm }) => {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+        <div className="mt-8 text-center">
+          <p className="text-sm text-slate-600">
             Já tem uma conta?{' '}
             <button
               onClick={() => onToggleForm('login')}
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors hover:underline"
             >
               Entrar
             </button>
