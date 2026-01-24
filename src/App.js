@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3 } from 'lucide-react';
+import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, LogOut } from 'lucide-react';
 import emailService from './services/emailService';
 import { Settings } from 'lucide-react';
 import { EmailSettingsModal } from './components/EmailSettingsModal';
 import ClientEmailSettings from './components/ClientEmailSettings';
 import DashboardAprimorado from './components/dashboard/DashboardAprimorado';
+import { useAuth } from './contexts/AuthContext';
+import { useTheme } from './contexts/ThemeContext';
+import { AuthPage } from './pages/AuthPage';
+import { UserProfile } from './components/UserProfile';
 
 const EmailManager = ({ clientes }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
