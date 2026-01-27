@@ -674,9 +674,9 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                       {despesa.tipo === 'fixa' ? 'Fixa' : 'Variável'}
                     </span>
                   </div>
-                  <span className="text-sm font-bold text-slate-900">{formatMoney(despesa.valor)}</span>
+                  <span className="text-sm font-bold text-gray-900">{formatMoney(despesa.valor)}</span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden text-gray-900">
                   <div 
                     className={`h-3 rounded-full transition-all duration-500 shadow-sm ${
                       despesa.tipo === 'fixa' ? 'bg-gradient-to-r from-slate-500 to-slate-600' : 'bg-gradient-to-r from-blue-500 to-blue-600'
@@ -871,12 +871,12 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                   type="text"
                   value={novaDespesa.categoria}
                   onChange={(e) => setNovaDespesa({...novaDespesa, categoria: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   placeholder="Ex: Aluguel, Marketing..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1  ">
                   Valor (R$)
                 </label>
                 <input
@@ -903,7 +903,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                       setNovaDespesa({...novaDespesa, valor: ''});
                     }
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   placeholder="R$ 0,00"
                 />
               </div>
@@ -914,7 +914,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                 <select
                   value={novaDespesa.tipo}
                   onChange={(e) => setNovaDespesa({...novaDespesa, tipo: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                 >
                   <option value="fixa">Fixa</option>
                   <option value="variavel">Variável</option>
@@ -1019,11 +1019,11 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                       setMetaMensal(parseFloat(valor) / 100);
                     }
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   placeholder="R$ 0,00"
                 />
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 ">
                 <button
                   onClick={() => setModalMeta(false)}
                   className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"

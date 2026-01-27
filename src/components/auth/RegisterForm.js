@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Mail, Lock, User, Building, Eye, EyeOff, UserPlus } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, UserPlus } from 'lucide-react';
 
 export const RegisterForm = ({ onToggleForm }) => {
   const [formData, setFormData] = useState({
     nome: '',
-    empresa: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -33,8 +32,7 @@ export const RegisterForm = ({ onToggleForm }) => {
     setLoading(true);
 
     const { error } = await signUp(formData.email, formData.password, {
-      nome: formData.nome,
-      empresa: formData.empresa
+      nome: formData.nome
     });
 
     if (error) {
@@ -61,7 +59,7 @@ export const RegisterForm = ({ onToggleForm }) => {
             </div>
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">Criar Conta</h1>
-          <p className="text-slate-600 mt-2 font-medium">Comece grátis agora</p>
+          <p className="text-slate-600 mt-2 font-medium">Acesse o sistema PROTEQ</p>
         </div>
 
         {error && (
@@ -90,24 +88,6 @@ export const RegisterForm = ({ onToggleForm }) => {
                 onChange={handleChange}
                 className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
                 placeholder="João Silva"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
-              Nome da Empresa
-            </label>
-            <div className="relative">
-              <Building className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
-              <input
-                type="text"
-                name="empresa"
-                value={formData.empresa}
-                onChange={handleChange}
-                className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                placeholder="Minha Empresa Ltda"
                 required
               />
             </div>

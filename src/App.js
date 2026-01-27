@@ -6,9 +6,7 @@ import { EmailSettingsModal } from './components/EmailSettingsModal';
 import ClientEmailSettings from './components/ClientEmailSettings';
 import DashboardAprimorado from './components/dashboard/DashboardAprimorado';
 import { useAuth } from './contexts/AuthContext';
-import { useTheme } from './contexts/ThemeContext';
 import { AuthPage } from './pages/AuthPage';
-import { UserProfile } from './components/UserProfile';
 
 const EmailManager = ({ clientes }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('');

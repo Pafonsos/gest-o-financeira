@@ -9,17 +9,18 @@ export const LoginForm = ({ onToggleForm }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { signIn } = useAuth();
+  console.log('🔍 signIn no LoginForm:', signIn); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    const { error } = await signIn(email, password);
+    const result = await signIn(email, password); // ✅ CORRETO
 
-    if (error) {
+    if (result.error) {
       setError('Email ou senha incorretos');
-    }
+}
 
     setLoading(false);
   };
