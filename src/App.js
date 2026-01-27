@@ -777,10 +777,9 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 <img
                   src="/logo-proteq.png"
                   alt="PROTEQ Logo"
-                  className="w-24 h-24 object-contain mx-auto mb-2"
+                  className="w-35 h-24 object-contain mx-auto mb-2"
                   onError={(e) => e.target.style.display = 'none'}
                 />
-                <h1 className="text-lg font-semibold text-white">Sistema de Gestão Financeira</h1>
               </div>
             </div>
           <div className="flex gap-3">

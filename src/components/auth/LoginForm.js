@@ -31,7 +31,7 @@ export const LoginForm = ({ onToggleForm }) => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="p-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg">
-              <img src="/logo-proteq.png" alt="PROTEQ" className="w-12 h-12" />
+              <img src="/logo-proteq.png" alt="PROTEQ" className="w-15 h-12" />
             </div>
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Financial Manager</h1>
