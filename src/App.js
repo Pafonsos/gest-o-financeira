@@ -912,7 +912,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 <input
                   type="text"
                   placeholder="Buscar por nome ou empresa..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                   value={filtros.busca}
                   onChange={(e) => setFiltros({...filtros, busca: e.target.value})}
                 />
@@ -923,7 +923,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   <Filter className="w-5 h-5 text-white" />
                 </div>
                 <select
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                   value={filtros.status}
                   onChange={(e) => setFiltros({...filtros, status: e.target.value})}
                 >
@@ -1413,7 +1413,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-700">Informações Básicas</h3>
-                    <div className="mt-2 space-y-2 text-sm">
+                    <div className="mt-2 space-y-2 text-sm text-gray-900">
                       <p><span className="font-medium">Responsável:</span> {clienteSelecionado.nomeResponsavel}</p>
                       <p><span className="font-medium">Empresa:</span> {clienteSelecionado.nomeEmpresa}</p>
                       <p><span className="font-medium">Email:</span> {clienteSelecionado.email}</p>
@@ -1429,7 +1429,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-700">Informações Financeiras</h3>
-                    <div className="mt-2 space-y-2 text-sm">
+                    <div className="mt-2 space-y-2 text-sm text-gray-900">
                       <p><span className="font-medium">Valor Total:</span> {formatarMoeda(clienteSelecionado.valorTotal)}</p>
                       <p><span className="font-medium">Valor Pago:</span> <span className="text-green-600">{formatarMoeda(clienteSelecionado.valorPago)}</span></p>
                       <p><span className="font-medium">Valor Restante:</span> <span className="text-red-600">{formatarMoeda(clienteSelecionado.valorTotal - clienteSelecionado.valorPago)}</span></p>

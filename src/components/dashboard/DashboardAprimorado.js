@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, DollarSign, AlertCircle, Calendar, Clock, CheckCircle, BarChart3, Briefcase, CreditCard, ArrowUpRight, ArrowDownRight, Wallet, Edit2, Plus, Trash2, X, Save, Download, Activity } from 'lucide-react';
+import GraficoEvolucaoMensal from './GraficoEvolucaoMensal';
 
 const DashboardFinanceiro = ({ clientes = [] }) => {
   const [periodo, setPeriodo] = useState('mes');
@@ -370,7 +371,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <img 
-              src="/logo-proteq.png" 
+              src="/logo-proteq-2.png" 
               alt="PROTEQ Logo" 
               className="h-12 w-auto filter brightness-0 invert"
             />
@@ -639,7 +640,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
             </div>
           </div>
         </div>
-
+       
         {/* Distribuição de Despesas */}
         <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 p-6 rounded-xl border border-slate-200/50 shadow-lg">
           <div className="flex items-center justify-between mb-6">
@@ -801,7 +802,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
           </div>
         </div>
       </div>
-
+      <GraficoEvolucaoMensal metricas={metricas} />
       {/* Alertas e Recomendações */}
       <div className="space-y-4">
         {metricas.inadimplencia > 10 && (
