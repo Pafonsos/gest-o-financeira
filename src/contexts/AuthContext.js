@@ -152,6 +152,72 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getUserProfile = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+      return data;
+    } catch (error) {
+      console.error('Erro ao buscar perfil:', error);
+      return null;
+    }
+  };
+
+  const updateUserProfile = async (profileData) => {
+    try {
+      if (!user?.id) throw new Error('Usuário não autenticado');
+
+      // Primeiro tenta atualizar o auth email se mudou
+      if (profileData.email && profileData.email !== user.email) {
+        const { error: emailError } = await supabase.auth.updateUser({
+          email: profileData.email
+        });
+        if (emailError) throw emailError;
+      }
+
+      // Depois atualiza ou cria o perfil
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      let result;
+      if (existingProfile) {
+        result = await supabase
+          .from('profiles')
+          .update({
+            nome: profileData.nome,
+            email: profileData.email,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', user.id);
+      } else {
+        result = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: user.id,
+              nome: profileData.nome,
+              email: profileData.email,
+              created_at: new Date().toISOString()
+            }
+          ]);
+      }
+
+      if (result.error) throw result.error;
+      return { data: result.data, error: null };
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      return { data: null, error: error.message };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -159,7 +225,9 @@ export const AuthProvider = ({ children }) => {
     signIn,
     signOut,
     resetPassword,
-    updatePassword
+    updatePassword,
+    getUserProfile,
+    updateUserProfile
   };
 
   return (

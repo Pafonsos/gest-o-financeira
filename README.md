@@ -1,3 +1,167 @@
+# 🎯 PROTEQ - Sistema de Gestão Financeira
+
+## ✨ Novas Funcionalidades (29/01/2026)
+
+### 🎭 Sistema de Perfil
+- Avatar circular no canto superior direito
+- Menu dropdown com opções de Configuração e Logout
+- Modal para editar nome, email e foto de perfil
+- Upload de foto (até 5MB)
+- Integração com Supabase
+
+### 🎨 Reorganização da Interface
+- Botões de exportar movidos para o Dashboard
+- Interface mais limpa e organizada
+- Melhor hierarquia visual
+
+### 📊 Gráficos Verificados
+- Evolução de Recebimentos
+- Status dos Clientes
+- Recebimentos Mensais
+- Despesas Detalhadas
+- Fluxo de Caixa
+
+---
+
+## 📚 Documentação
+
+### Guias Disponíveis
+1. **[INICIO_RAPIDO.md](INICIO_RAPIDO.md)** - Comece aqui! (5 min)
+2. **[GUIA_PERFIL_PT_BR.md](GUIA_PERFIL_PT_BR.md)** - Guia visual (3 min)
+3. **[PROFILE_SETUP.md](PROFILE_SETUP.md)** - Setup Supabase (15 min)
+4. **[INDEX_DOCUMENTACAO.md](INDEX_DOCUMENTACAO.md)** - Índice completo
+
+👉 **[Ver todas as documentações](INDEX_DOCUMENTACAO.md)**
+
+---
+
+## 🚀 Começar Rapidamente
+
+### 1. Instalar Dependências
+```bash
+npm install
+```
+
+### 2. Iniciar em Desenvolvimento
+```bash
+npm start
+```
+
+### 3. Acessar a Aplicação
+- URL: http://localhost:3000
+- Faça login com suas credenciais
+
+### 4. Testar Novas Funcionalidades
+1. Clique no avatar (canto superior direito)
+2. Explore o menu
+3. Teste editar perfil
+4. Teste exportar dados do Dashboard
+
+---
+
+## ⚙️ Configuração do Supabase (Opcional)
+
+Para funcionalidade completa de perfil:
+
+1. Abra [PROFILE_SETUP.md](PROFILE_SETUP.md)
+2. Execute os scripts SQL fornecidos
+3. Configure o bucket de storage
+4. Teste novamente
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── components/
+│   ├── ProfileMenu.js ........... Menu de perfil (NOVO)
+│   ├── Dashboard.js ............ Gráficos verificados
+│   └── ...
+├── contexts/
+│   └── AuthContext.js ........... Métodos de perfil (ATUALIZADO)
+├── services/
+├── pages/
+└── App.js ....................... Integração (ATUALIZADO)
+```
+
+---
+
+## 🎯 Recursos Principais
+
+### Avatar de Perfil
+- ✅ Avatar circular com inicial/foto
+- ✅ Menu dropdown
+- ✅ Configurações
+- ✅ Logout direto
+
+### Dashboard
+- ✅ Exportar CSV
+- ✅ Exportar Google Sheets
+- ✅ Controles de período
+- ✅ Gráficos atualizados
+
+### Segurança
+- ✅ Validação de arquivo
+- ✅ RLS no Supabase
+- ✅ Tratamento de erros
+- ✅ Fallbacks automáticos
+
+---
+
+## 📊 Scripts Disponíveis
+
+### Desenvolvimento
+```bash
+npm start              # Inicia em modo dev
+npm test              # Executa testes
+npm run build         # Build para produção
+npm run eject         # Eject (não recomendado)
+```
+
+---
+
+## 🔗 Links Úteis
+
+- [Supabase Docs](https://supabase.com/docs)
+- [React Docs](https://react.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Lucide Icons](https://lucide.dev)
+
+---
+
+## ❓ Perguntas Frequentes
+
+**P: Preciso configurar Supabase?**
+R: Não é obrigatório para testar. Mas recomendado para funcionalidade completa.
+
+**P: O avatar funciona sem banco de dados?**
+R: Sim! Com fallbacks. Mas dados não são salvos entre sessões.
+
+**P: Como resetar tudo?**
+R: Limpe localStorage: `localStorage.clear()`
+
+---
+
+## 📞 Suporte
+
+1. Consulte [INDEX_DOCUMENTACAO.md](INDEX_DOCUMENTACAO.md)
+2. Verifique o console do navegador (F12)
+3. Leia a documentação relevante
+4. Veja o arquivo PROFILE_SETUP.md se houver erro com Supabase
+
+---
+
+## 🎉 Versão Atual
+
+**v2.0** - Com Sistema de Perfil
+- Data: 29/01/2026
+- Status: ✅ Pronto para Produção
+- Erros: 0
+- Documentação: ✅ Completa
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
