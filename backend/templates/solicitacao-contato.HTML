@@ -1,1 +1,176 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Solicitação de Contato - PROTEQ</title><style> body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f5f5f5; } .container { max-width: 650px; margin: 30px auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); } .header { background: #1e5ba8; color: white; padding: 40px 30px; text-align: center; } .logo-img { max-width: 400px; width: 100%; height: auto; display: block; margin: 0 auto 15px auto; } .header-subtitle { font-size: 15px; font-weight: 500; margin-top: 15px; letter-spacing: 0.5px; } .content { padding: 40px 35px; color: #333; } .greeting { font-size: 18px; color: #1e5ba8; margin-bottom: 25px; font-weight: 600; } .intro-text { font-size: 15px; line-height: 1.8; color: #555; margin-bottom: 30px; } .contact-card { background: #f8f9fc; border: 2px solid #e1e8ed; border-radius: 8px; padding: 25px; margin: 30px 0; } .contact-card-header { color: #1e5ba8; font-size: 18px; font-weight: 700; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e1e8ed; } .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #e8eef3; } .detail-row:last-child { border-bottom: none; } .detail-label { color: #666; font-size: 14px; font-weight: 500; } .detail-value { color: #1e5ba8; font-size: 15px; font-weight: 700; text-align: right; } .section-title { color: #1e5ba8; font-size: 17px; font-weight: 700; margin: 35px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e1e8ed; } .contact-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 25px 0; } .method-card { background: white; border: 2px solid #e1e8ed; border-radius: 8px; padding: 20px; text-align: center; transition: all 0.3s ease; } .method-card:hover { border-color: #1e5ba8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30, 91, 168, 0.2); } .method-icon { font-size: 32px; margin-bottom: 10px; } .method-name { color: #1e5ba8; font-weight: 600; font-size: 14px; } .method-link { color: #666; font-size: 12px; margin-top: 5px; display: block; text-decoration: none; } .action-button { display: inline-block; background: linear-gradient(135deg, #1e5ba8 0%, #1e3c72 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px; margin: 25px 0; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(30, 91, 168, 0.3); text-align: center; } .action-button:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 91, 168, 0.4); } .button-container { text-align: center; margin: 35px 0; } .info-box { background: #e8f4f8; border-left: 4px solid #1e5ba8; border-radius: 0 8px 8px 0; padding: 20px; margin: 30px 0; color: #1e3c72; } .info-box strong { font-size: 15px; } .topics-list { list-style: none; padding: 0; margin: 20px 0; } .topics-list li { padding: 12px 0; padding-left: 35px; position: relative; color: #555; font-size: 14px; line-height: 1.6; } .topics-list li:before { content: "•"; position: absolute; left: 0; color: #1e5ba8; font-weight: 700; font-size: 24px; line-height: 0.8; } .contact-section { background: #f8f9fc; border-radius: 8px; padding: 25px; margin: 35px 0; border: 1px solid #e1e8ed; } .contact-title { color: #1e5ba8; font-size: 16px; font-weight: 700; margin-bottom: 15px; } .contact-info { color: #555; font-size: 14px; line-height: 2; } .contact-info strong { color: #1e5ba8; font-weight: 600; } .divider { border: none; border-top: 1px solid #e1e8ed; margin: 35px 0; } .footer { background: #1e5ba8; color: #ffffff; padding: 30px; text-align: center; font-size: 13px; } .footer-logo { max-width: 200px; width: 100%; height: auto; margin: 0 auto 15px auto; display: block; } .footer-text { color: rgba(255, 255, 255, 0.9); line-height: 1.8; margin: 8px 0; } .footer-note { font-size: 11px; color: rgba(255, 255, 255, 0.7); margin-top: 20px; font-style: italic; } @media only screen and (max-width: 600px) { .container { margin: 10px; } .content { padding: 25px 20px; } .header { padding: 30px 20px; } .logo-img { max-width: 280px; } .footer-logo { max-width: 150px; } .contact-methods { grid-template-columns: 1fr; } .detail-row { flex-direction: column; align-items: flex-start; gap: 8px; } .detail-value { text-align: left; } } </style></head><body><div class="container"><div class="header"><img src="cid:logo-proteq" alt="PROTEQ" class="logo-img"></div><div class="content"><div class="greeting"> Olá, <strong>{{nomeCliente}}</strong>! </div><div class="intro-text"> Esperamos que esteja tudo bem com você! Entramos em contato pois identificamos <strong>algumas contas pendentes</strong> em seu nome. </div><div class="intro-text"> Gostaríamos de conversar com você para encontrar a melhor forma de regularizar esta situação. Nossa equipe está à disposição para auxiliá-lo e esclarecer qualquer dúvida. </div><div class="info-box"><strong>💡 Importante:</strong> Se já realizou o pagamento, por favor, desconsidere esta mensagem. Caso contrário, entre em contato conosco para que possamos ajudá-lo a regularizar sua situação de forma rápida e prática. </div><div class="button-container"><a href="{{linkPagamento}}" class="action-button">Entrar em Contato</a></div><hr class="divider"><div class="contact-section"><div class="contact-title">📞 Dúvidas ou Dificuldades?</div><div class="contact-info"> Estamos aqui para ajudar você a regularizar sua situação:<br><br><strong>📧 E-mail:</strong> pedromiguel@proteqjr.com.br<br><strong>📱 WhatsApp:</strong> (82) 99329-7024<br><strong>🕒 Horário:</strong> Segunda a Sexta, 8h às 18h </div></div><div style="background: #fff9e6; border: 1px solid #ffd966; padding: 18px; border-radius: 8px; color: #856404; text-align: center; font-size: 14px;"><strong>Estamos aqui para ajudar!</strong><br> Se houver qualquer dificuldade, entre em contato. Sempre há uma solução. </div><div class="intro-text" style="text-align: center; margin-top: 35px; color: #666;"> Obrigado por escolher a PROTEQ!<br> Estamos à disposição para atendê-lo.<br><strong style="color: #1e5ba8;">PROTEQ Empresa Júnior de Engenharia Ambiental e Sanitária</strong></div></div><div class="footer"><img src="cid:logo-proteq" alt="PROTEQ" class="footer-logo"><div class="footer-text"> © {{currentYear}} PROTEQ. Todos os direitos reservados. </div><div class="footer-note"> PROTEQ Empresa Júnior registrada na Universidade Federal de Alagoas (UFAL).<br> Comprometidos com excelência em soluções ambientais e sanitárias. </div><div class="footer-note"> Este é um e-mail automático de confirmação de contato.<br> Por favor, não responda diretamente a este e-mail. Aguarde nosso retorno oficial. </div></div></div></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROTEQ Jr - Notificação</title>
+    <style>
+    * { margin: 0; padding: 0; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
+      line-height: 1.6; 
+      color: #333;
+      background-color: #f9f9f9;
+    }
+    .container { 
+      max-width: 600px; 
+      margin: 20px auto; 
+      background: #ffffff; 
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e8e8e8;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .header { 
+      background: linear-gradient(135deg, #1e5ba8 0%, #2a7cbd 100%);
+      padding: 40px 30px;
+      text-align: center;
+      border-bottom: none;
+    }
+    .logo { 
+      max-width: 200px; 
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+    .content { 
+      padding: 40px;
+    }
+    .greeting { 
+      font-size: 16px;
+      color: #2c3e50;
+      margin-bottom: 24px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .body-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 24px;
+      text-align: justify;
+    }
+    .body-text strong {
+      color: #1e5ba8;
+      font-weight: 600;
+    }
+    .button-container {
+      text-align: center;
+      margin: 32px 0;
+    }
+    .button {
+      display: inline-block;
+      background: #1e5ba8;
+      color: white;
+      padding: 14px 36px;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+    .button:hover {
+      background: #164380;
+    }
+    .contact-section {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e8e8e8;
+    }
+    .contact-label {
+      font-size: 13px;
+      color: #666;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .contact-info {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.8;
+    }
+    .contact-info p {
+      margin: 6px 0;
+    }
+    .signature {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #666;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e8e8e8;
+    }
+    .signature strong {
+      color: #1e5ba8;
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .footer {
+      background: #fafafa;
+      padding: 24px 30px;
+      text-align: center;
+      font-size: 11px;
+      color: #888;
+      border-top: 1px solid #e8e8e8;
+    }
+    .footer p {
+      margin: 4px 0;
+    }
+    @media only screen and (max-width: 600px) {
+      .container { margin: 0; border-radius: 0; }
+      .header, .content, .footer { padding: 20px; }
+      .logo { max-width: 160px; }
+      .body-text { text-align: left; }
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header com Logo PROTEQ -->
+        <div class="header">
+            <img src="cid:logo-proteq" alt="PROTEQ Jr" class="logo">
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="content">
+            <div class="body-text">
+Prezado {{cliente_nome}},
+
+Recebemos sua solicitação de contato enviada em <strong>{{data_contato}}</strong>. Agradecemos o interesse em nossos serviços e a oportunidade de conversar com você.
+
+Nossa equipe analisará sua mensagem com atenção e retornaremos em breve com mais informações. Fique atento à sua caixa de entrada e também à pasta de spam para não perder nossa resposta.
+
+Se a sua dúvida for urgente, você também pode entrar em contato direto conosco através dos dados disponibilizados abaixo.
+            </div>
+
+            <!-- Botão de Ação -->
+            <div class="button-container">
+                <a href="{link_pagamento}" class="button">Realizar Pagamento</a>
+            </div>
+
+            <!-- Seção de Contato -->
+            <div class="contact-section">
+                <div class="contact-label">Entre em Contato</div>
+                <div class="contact-info">
+                    <p><strong>Email:</strong> contato@proteqjr.com.br</p>
+                    <p><strong>Telefone:</strong> (82) 99329-7024</p>
+                </div>
+            </div>
+
+            <!-- Assinatura -->
+            <div class="signature">
+                Atenciosamente,
+                <strong>PROTEQ Jr - Tecnologia e Inovação</strong>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="footer">
+            <p>Esta é uma mensagem automática. Por favor, não responda este e-mail.</p>
+            <p>&copy; 2025-2026 PROTEQ Jr. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>
