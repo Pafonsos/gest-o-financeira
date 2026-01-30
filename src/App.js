@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, LogOut } from 'lucide-react';
+import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, LogOut, ChevronDown, Settings } from 'lucide-react';
 import emailService from './services/emailService';
-import { Settings } from 'lucide-react';
 import { EmailSettingsModal } from './components/EmailSettingsModal';
 import ClientEmailSettings from './components/ClientEmailSettings';
 import DashboardAprimorado from './components/dashboard/DashboardAprimorado';
 import ModalDespesa from './components/modals/ModalDespesa';
 import { useAuth } from './contexts/AuthContext';
+import ProfileMenu from './components/ProfileMenu';
 import { AuthPage } from './pages/AuthPage';
 
 const EmailManager = ({ clientes }) => {
@@ -783,55 +783,21 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="w-full p-6">
-        {/* Header PROTEQ */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 mb-8 shadow-md text-white">
+        {/* Header Simplificado */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 mb-8 shadow-md">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <div className="text-center">
-                <img
-                  src="/logo-proteq.png"
-                  alt="PROTEQ Logo"
-                  className="w-35 h-24 object-contain mx-auto mb-2"
-                  onError={(e) => e.target.style.display = 'none'}
-                />
-              </div>
+            {/* Logo */}
+            <div className="text-white">
+              <img
+                src="/logo-proteq.png"
+                alt="PROTEQ Logo"
+                className="w-32 h-20 object-contain"
+                onError={(e) => e.target.style.display = 'none'}
+              />
             </div>
-          <div className="flex gap-3">
-            <button
-              onClick={exportarGoogleSheets}
-              className="flex items-center gap-2 bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19.5 2.25h-15v19.5h15V2.25zm-1.5 1.5v3h-12v-3h12zm0 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-12v-3h12z"/>
-              </svg>
-              Google Sheets
-            </button>
-            <button
-              onClick={exportarRelatorio}
-              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
-            >
-              <Download className="w-5 h-5" />
-              Exportar CSV
-            </button>
-            {/* Modal de Configurações de Email */}
-<EmailSettingsModal 
-  isOpen={showEmailSettings} 
-  onClose={() => setShowEmailSettings(false)} 
-/>
-            <button
-  onClick={() => setShowEmailSettings(true)}
-  className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
->
-  <Settings className="w-5 h-5" />
-  Config. Emails
-</button>
-            <button
-              onClick={signOut}
-              className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              Sair
-            </button>
+            
+            {/* Perfil */}
+            <ProfileMenu />
           </div>
         </div>
         
@@ -877,6 +843,38 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
         {/* CONTEÚDO DAS ABAS */}
         {abaAtiva === 'dashboard' && (
           <DashboardAprimorado clientes={clientes} />
+        )}
+
+        {/* Botões de Ferramentas - Exportar */}
+        {abaAtiva === 'dashboard' && (
+          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Ferramentas</h3>
+            <div className="flex gap-4 flex-wrap">
+              <button
+                onClick={exportarGoogleSheets}
+                className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19.5 2.25h-15v19.5h15V2.25zm-1.5 1.5v3h-12v-3h12zm0 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-12v-3h12z"/>
+                </svg>
+                Google Sheets
+              </button>
+              <button
+                onClick={exportarRelatorio}
+                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Download className="w-5 h-5" />
+                Exportar CSV
+              </button>
+              <button
+                onClick={() => setShowEmailSettings(true)}
+                className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                Config. Emails
+              </button>
+            </div>
+          </div>
         )}
 
         {abaAtiva === 'clientes' && (
@@ -1514,99 +1512,6 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
           </div>
         )}
 
-        {/* ABA CONTAS A PAGAR */}
-        {abaAtiva === 'despesas' && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-red-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Total a Pagar</p>
-                    <p className="text-2xl font-bold text-red-600">{formatarMoeda(despesas.reduce((acc, d) => !d.pago ? acc + (d.valor || 0) : acc, 0))}</p>
-                  </div>
-                  <AlertCircle className="w-8 h-8 text-red-600" />
-                </div>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-green-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Total Pago</p>
-                    <p className="text-2xl font-bold text-green-600">{formatarMoeda(despesas.reduce((acc, d) => d.pago ? acc + (d.valor || 0) : acc, 0))}</p>
-                  </div>
-                  <CheckCircle className="w-8 h-8 text-green-600" />
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-orange-500">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Vencidas</p>
-                    <p className="text-2xl font-bold text-orange-600">{despesas.filter(d => !d.pago && new Date(d.vencimento) < new Date()).length}</p>
-                  </div>
-                  <Clock className="w-8 h-8 text-orange-600" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-red-100 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-red-600" />
-                  </div>
-                  <h3 className="font-bold text-slate-800">Gerenciar Despesas</h3>
-                </div>
-                <button
-                  onClick={() => setModalDespesa(true)}
-                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors shadow-md"
-                >
-                  <Plus className="w-5 h-5" />
-                  Adicionar Despesa
-                </button>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-gray-100 border-b-2 border-gray-300">
-                    <tr>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">Fornecedor</th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">Descrição</th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">Valor</th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">Vencimento</th>
-                      <th className="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {despesas.map((despesa, idx) => {
-                      const vencido = !despesa.pago && new Date(despesa.vencimento) < new Date();
-                      return (
-                        <tr key={idx} className={vencido ? 'bg-red-50' : 'hover:bg-gray-50'}>
-                          <td className="px-4 py-3 font-medium text-gray-900">{despesa.fornecedor}</td>
-                          <td className="px-4 py-3 text-gray-600">{despesa.descricao}</td>
-                          <td className="px-4 py-3 font-semibold text-gray-900">{formatarMoeda(despesa.valor)}</td>
-                          <td className="px-4 py-3 text-gray-600">{formatarData(despesa.vencimento)}</td>
-                          <td className="px-4 py-3">
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                              despesa.pago 
-                                ? 'bg-green-100 text-green-800' 
-                                : vencido
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-yellow-100 text-yellow-800'
-                            }`}>
-                              {despesa.pago ? 'Pago' : vencido ? 'Vencido' : 'Pendente'}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        )}
-
         {/* ModalDespesa - Adicionar nova despesa */}
         <ModalDespesa
           isOpen={modalDespesa}
@@ -1654,7 +1559,110 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
             </div>
           </div>
         )}
-  </div>
+        
+        {abaAtiva === 'despesas' && (
+          <>
+            {/* Cards de Resumo - Despesas */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-red-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total a Pagar</p>
+                    <p className="text-2xl font-bold text-red-600">{formatarMoeda(despesas.reduce((acc, d) => !d.pago ? acc + (d.valor || 0) : acc, 0))}</p>
+                  </div>
+                  <AlertCircle className="w-8 h-8 text-red-600" />
+                </div>
+              </div>
+              
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-green-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total Pago</p>
+                    <p className="text-2xl font-bold text-green-600">{formatarMoeda(despesas.reduce((acc, d) => d.pago ? acc + (d.valor || 0) : acc, 0))}</p>
+                  </div>
+                  <CheckCircle className="w-8 h-8 text-green-600" />
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-orange-500">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Vencidas</p>
+                    <p className="text-2xl font-bold text-orange-600">{despesas.filter(d => !d.pago && new Date(d.vencimento) < new Date()).length}</p>
+                  </div>
+                  <Clock className="w-8 h-8 text-orange-600" />
+                </div>
+              </div>
+            </div>
+
+            {/* Tabela de Despesas */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-100 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-red-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Gerenciar Despesas</h3>
+                </div>
+                <button
+                  onClick={() => setModalDespesa(true)}
+                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors shadow-md"
+                >
+                  <Plus className="w-5 h-5" />
+                  Adicionar Despesa
+                </button>
+              </div>
+
+              {despesas.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-100 border-b-2 border-gray-300">
+                      <tr>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-700">Fornecedor</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-700">Descrição</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-700">Valor</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-700">Vencimento</th>
+                        <th className="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {despesas.map((despesa, idx) => {
+                        const vencido = !despesa.pago && new Date(despesa.vencimento) < new Date();
+                        return (
+                          <tr key={idx} className={vencido ? 'bg-red-50' : 'hover:bg-gray-50'}>
+                            <td className="px-4 py-3 font-medium text-gray-900">{despesa.fornecedor}</td>
+                            <td className="px-4 py-3 text-gray-600">{despesa.descricao}</td>
+                            <td className="px-4 py-3 font-semibold text-gray-900">{formatarMoeda(despesa.valor)}</td>
+                            <td className="px-4 py-3 text-gray-600">{formatarData(despesa.vencimento)}</td>
+                            <td className="px-4 py-3">
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                despesa.pago 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : vencido
+                                  ? 'bg-red-100 text-red-800'
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {despesa.pago ? 'Pago' : vencido ? 'Vencido' : 'Pendente'}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-8">Nenhuma despesa cadastrada</p>
+              )}
+            </div>
+          </>
+        )}
+        
+        {/* Modal de Configurações de Email */}
+        <EmailSettingsModal 
+          isOpen={showEmailSettings} 
+          onClose={() => setShowEmailSettings(false)} 
+        />
       </div>
     </div>
   );
