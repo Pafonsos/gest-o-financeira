@@ -1,10 +1,12 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const http = require('http');
 
 const emailRoutes = require('./routes/emailRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const { logger } = require('./utils/logger');
 
 const app = express();
@@ -61,6 +63,7 @@ app.use(express.urlencoded({
 // ============================================
 
 app.use('/api/email', emailRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ 

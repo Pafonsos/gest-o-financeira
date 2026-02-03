@@ -118,13 +118,7 @@ export const LoginForm = ({ onToggleForm }) => {
 
         <div className="mt-8 text-center">
           <p className="text-sm text-slate-600">
-            Não tem uma conta?{' '}
-            <button
-              onClick={() => onToggleForm('register')}
-              className="text-blue-600 hover:text-blue-700 font-semibold transition-colors hover:underline"
-            >
-              Cadastre-se
-            </button>
+            Acesso somente por convite.
           </p>
         </div>
       </div>

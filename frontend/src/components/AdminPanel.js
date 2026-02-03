@@ -1,0 +1,478 @@
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
+import './AdminPanel.css';
+
+// ============================================
+// PAINEL DE ADMINISTRAÇÃO
+// ============================================
+
+const AdminPanel = () => {
+  const { user } = useAuth();
+
+  // ESTADOS
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  
+  // Modal de convite
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [invitingUser, setInvitingUser] = useState(false);
+
+  // Obter token do usuário
+  const getAuthToken = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.access_token;
+  };
+
+  // ============================================
+  // FUNÇÕES
+  // ============================================
+
+  // Carregar lista de usuários
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('Não autenticado');
+      }
+
+      const response = await fetch('http://localhost:5000/api/admin/users', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Erro ao carregar usuários');
+      }
+
+      const data = await response.json();
+      setUsers(data.users || []);
+      setSuccess(`${data.count} usuário(s) encontrado(s)`);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      console.error('Erro ao carregar usuários:', err);
+      setError(err.message || 'Erro ao carregar usuários');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Convidar novo usuário
+  const handleInviteUser = async (e) => {
+    e.preventDefault();
+    
+    try {
+      setInvitingUser(true);
+      setError('');
+
+      if (!inviteEmail.includes('@')) {
+        throw new Error('Email inválido');
+      }
+
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('Não autenticado');
+      }
+
+      const response = await fetch('http://localhost:5000/api/admin/invite', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: inviteEmail })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Erro ao convidar usuário');
+      }
+
+      const data = await response.json();
+      setSuccess(`Usuário ${inviteEmail} convidado com sucesso!`);
+      setInviteEmail('');
+      setShowInviteModal(false);
+      setTimeout(() => setSuccess(''), 3000);
+      
+      // Recarregar lista
+      loadUsers();
+    } catch (err) {
+      console.error('Erro ao convidar:', err);
+      setError(err.message || 'Erro ao convidar usuário');
+    } finally {
+      setInvitingUser(false);
+    }
+  };
+
+  // Desativar usuário
+  const handleDisableUser = async (userId, email) => {
+    if (!window.confirm(`Desativar acesso de ${email}?`)) {
+      return;
+    }
+
+    try {
+      setError('');
+
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('Não autenticado');
+      }
+
+      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/disable`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Erro ao desativar usuário');
+      }
+
+      setSuccess(`${email} foi desativado`);
+      setTimeout(() => setSuccess(''), 3000);
+      loadUsers();
+    } catch (err) {
+      console.error('Erro:', err);
+      setError(err.message || 'Erro ao desativar');
+    }
+  };
+
+  // Reativar usuário
+  const handleEnableUser = async (userId, email) => {
+    if (!window.confirm(`Reativar acesso de ${email}?`)) {
+      return;
+    }
+
+    try {
+      setError('');
+
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('Não autenticado');
+      }
+
+      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/enable`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Erro ao reativar usuário');
+      }
+
+      setSuccess(`${email} foi reativado`);
+      setTimeout(() => setSuccess(''), 3000);
+      loadUsers();
+    } catch (err) {
+      console.error('Erro:', err);
+      setError(err.message || 'Erro ao reativar');
+    }
+  };
+
+  // Promover para admin
+  const handlePromoteUser = async (userId, email) => {
+    if (!window.confirm(`Promover ${email} para admin?`)) {
+      return;
+    }
+
+    try {
+      setError('');
+
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('Não autenticado');
+      }
+
+      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/promote`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Erro ao promover usuário');
+      }
+
+      setSuccess(`${email} é agora admin!`);
+      setTimeout(() => setSuccess(''), 3000);
+      loadUsers();
+    } catch (err) {
+      console.error('Erro:', err);
+      setError(err.message || 'Erro ao promover');
+    }
+  };
+
+  // Remover admin
+  const handleDemoteUser = async (userId, email) => {
+    if (!window.confirm(`Remover permissão de admin de ${email}?`)) {
+      return;
+    }
+
+    try {
+      setError('');
+
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('Não autenticado');
+      }
+
+      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/demote`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Erro ao remover admin');
+      }
+
+      setSuccess(`${email} não é mais admin`);
+      setTimeout(() => setSuccess(''), 3000);
+      loadUsers();
+    } catch (err) {
+      console.error('Erro:', err);
+      setError(err.message || 'Erro ao remover admin');
+    }
+  };
+
+  // Deletar usuário
+  const handleDeleteUser = async (userId, email) => {
+    if (!window.confirm(`Deletar usuário ${email}? Esta ação é irreversível.`)) {
+      return;
+    }
+
+    try {
+      setError('');
+
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error('Não autenticado');
+      }
+
+      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Erro ao deletar usuário');
+      }
+
+      setSuccess(`${email} foi deletado`);
+      setTimeout(() => setSuccess(''), 3000);
+      loadUsers();
+    } catch (err) {
+      console.error('Erro:', err);
+      setError(err.message || 'Erro ao deletar');
+    }
+  };
+
+  // Carregar usuários no montar
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  // ============================================
+  // RENDERIZAÇÃO
+  // ============================================
+
+  return (
+    <div className="admin-panel">
+      <div className="admin-header">
+        <h1>🔐 Administração de Acessos</h1>
+        <p>Gerencie usuários e permissões do sistema</p>
+      </div>
+
+      {/* MENSAGENS */}
+      {error && (
+        <div className="alert alert-error">
+          <span>❌ {error}</span>
+          <button onClick={() => setError('')}>✕</button>
+        </div>
+      )}
+
+      {success && (
+        <div className="alert alert-success">
+          <span>✅ {success}</span>
+          <button onClick={() => setSuccess('')}>✕</button>
+        </div>
+      )}
+
+      {/* BARRA DE AÇÕES */}
+      <div className="admin-actions">
+        <button
+          className="btn btn-primary"
+          onClick={() => setShowInviteModal(true)}
+        >
+          ➕ Convidar novo usuário
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={loadUsers}
+          disabled={loading}
+        >
+          {loading ? '⏳ Carregando...' : '🔄 Atualizar'}
+        </button>
+      </div>
+
+      {/* MODAL DE CONVITE */}
+      {showInviteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Convidar novo usuário</h2>
+            <form onSubmit={handleInviteUser}>
+              <input
+                type="email"
+                placeholder="Email do novo usuário"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                required
+                disabled={invitingUser}
+              />
+              <div className="modal-buttons">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={invitingUser}
+                >
+                  {invitingUser ? '⏳ Convidando...' : 'Convidar'}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowInviteModal(false)}
+                  disabled={invitingUser}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* TABELA DE USUÁRIOS */}
+      <div className="users-section">
+        <h2>👥 Lista de Usuários ({users.length})</h2>
+
+        {users.length === 0 ? (
+          <p className="empty-state">Nenhum usuário encontrado</p>
+        ) : (
+          <div className="users-table">
+            <div className="table-header">
+              <div className="col-email">Email</div>
+              <div className="col-role">Role</div>
+              <div className="col-status">Status</div>
+              <div className="col-created">Criado em</div>
+              <div className="col-actions">Ações</div>
+            </div>
+
+            {users.map((u) => (
+              <div key={u.id} className="table-row">
+                <div className="col-email">
+                  <span>{u.email}</span>
+                  {u.id === user?.id && <span className="badge-you">(Você)</span>}
+                </div>
+
+                <div className="col-role">
+                  <span className={`role-badge ${u.role}`}>
+                    {u.role === 'admin' ? '👑 Admin' : '👤 User'}
+                  </span>
+                </div>
+
+                <div className="col-status">
+                  <span className={`status-badge ${u.is_active ? 'active' : 'inactive'}`}>
+                    {u.is_active ? '🟢 Ativo' : '🔴 Inativo'}
+                  </span>
+                </div>
+
+                <div className="col-created">
+                  {new Date(u.created_at).toLocaleDateString('pt-BR')}
+                </div>
+
+                <div className="col-actions">
+                  {u.id !== user?.id && (
+                    <>
+                      {u.is_active ? (
+                        <button
+                          className="btn-icon btn-disable"
+                          onClick={() => handleDisableUser(u.id, u.email)}
+                          title="Desativar acesso"
+                        >
+                          🔒
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-icon btn-enable"
+                          onClick={() => handleEnableUser(u.id, u.email)}
+                          title="Reativar acesso"
+                        >
+                          🔓
+                        </button>
+                      )}
+
+                      {u.role === 'user' ? (
+                        <button
+                          className="btn-icon btn-promote"
+                          onClick={() => handlePromoteUser(u.id, u.email)}
+                          title="Promover para admin"
+                        >
+                          ⬆️
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-icon btn-demote"
+                          onClick={() => handleDemoteUser(u.id, u.email)}
+                          title="Remover admin"
+                        >
+                          ⬇️
+                        </button>
+                      )}
+
+                      <button
+                        className="btn-icon btn-delete"
+                        onClick={() => handleDeleteUser(u.id, u.email)}
+                        title="Deletar usuário"
+                      >
+                        🗑️
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdminPanel;

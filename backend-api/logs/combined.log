@@ -70,3 +70,805 @@
   "ip": "::1",
   "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
 }
+{
+  "timestamp": "2026-02-03 16:13:57",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 16:22:03",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:10",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:10",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:10",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:10",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:52",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:52",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:52",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:00:52",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:01:13",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:01:13",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:01:13",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:01:13",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:02:26",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:02:26",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:02:26",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:02:26",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:25",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:25",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:25",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:25",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:47",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:47",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonsoaq38@gmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:47",
+  "level": "error",
+  "message": "Erro ao criar usuário no auth:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:47",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:03:47",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:37",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:37",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:38",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:38",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:50",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:50",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:50",
+  "level": "error",
+  "message": "Erro ao criar usuário no auth:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:50",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:04:50",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:13",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:13",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:13",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:13",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:21",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:21",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:21",
+  "level": "error",
+  "message": "Erro ao criar usuário no auth:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:21",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:08:21",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:37",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:42",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:42",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:42",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:42",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:48",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:48",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:48",
+  "level": "error",
+  "message": "Erro ao criar usuário no auth:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:48",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:09:48",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:19",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:19",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:19",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:19",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:24",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:24",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:25",
+  "level": "error",
+  "message": "❌ Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:11:25",
+  "level": "error",
+  "message": "Erro ao listar usuários:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:13:03",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:13:10",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:13:10",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:13:10",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:13:56",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:13:56",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:13:56",
+  "level": "error",
+  "message": "Erro ao criar usuário no auth Database error creating new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:13:56",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error creating new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error creating new user\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.createUser (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:127:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:37:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:13:56",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:14:03",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:14:03",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:14:03",
+  "level": "error",
+  "message": "Erro ao criar usuário no auth Database error creating new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:14:03",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error creating new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error creating new user\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.createUser (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:127:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:37:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:14:03",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:14:49",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:14:49",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:14:49",
+  "level": "error",
+  "message": "Erro ao criar usuário no auth Database error creating new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:14:49",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error creating new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error creating new user\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.createUser (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:127:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:37:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:14:49",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:31:01",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:31:05",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:31:05",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:31:05",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:31:22",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:31:22",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:31:23",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Hook requires authorization token",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:31:23",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Hook requires authorization token",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Hook requires authorization token\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:31:23",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:34:02",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:34:33",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:34:34",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:34:34",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:34:39",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:34:39",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:34:39",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Hook requires authorization token",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:34:39",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Hook requires authorization token",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Hook requires authorization token\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:34:39",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:36:19",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:36:23",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:36:23",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:36:23",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:36:26",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:36:26",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:36:27",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:36:27",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error saving new user\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:36:27",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:45:52",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:46:14",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:46:15",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:46:15",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:46:21",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:46:21",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:46:21",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:46:21",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error saving new user\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:46:21",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:47:46",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:47:52",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:47:52",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:47:52",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:47:55",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:47:55",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:47:56",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:47:56",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error saving new user\n    at handleError (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async _handleRequest (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\afonso\\Desktop\\faculdade\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:47:56",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
