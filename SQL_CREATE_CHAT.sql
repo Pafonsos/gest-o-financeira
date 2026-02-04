@@ -56,6 +56,14 @@ end $$;
 
 do $$
 begin
+  create policy "chat_rooms_select_owner"
+    on public.chat_rooms for select
+    using (auth.uid() = created_by);
+exception when duplicate_object then null;
+end $$;
+
+do $$
+begin
   create policy "chat_rooms_insert_owner"
     on public.chat_rooms for insert
     with check (auth.uid() = created_by);
@@ -79,17 +87,12 @@ exception when duplicate_object then null;
 end $$;
 
 -- Policies: chat_room_members
+drop policy if exists "chat_members_select_members" on public.chat_room_members;
 do $$
 begin
   create policy "chat_members_select_members"
     on public.chat_room_members for select
-    using (
-      exists (
-        select 1 from public.chat_room_members m
-        where m.room_id = chat_room_members.room_id
-          and m.user_id = auth.uid()
-      )
-    );
+    using (user_id = auth.uid());
 exception when duplicate_object then null;
 end $$;
 

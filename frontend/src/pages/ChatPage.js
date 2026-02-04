@@ -27,13 +27,23 @@ const ChatPage = () => {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
+  const profileLookup = useMemo(() => {
+    const map = new Map();
+    profiles.forEach((p) => {
+      if (p?.id) map.set(p.id, p);
+    });
+    return map;
+  }, [profiles]);
+
   const memberMap = useMemo(() => {
     const map = new Map();
     members.forEach((m) => {
-      if (m.profile?.id) map.set(m.profile.id, m.profile);
+      if (m.userId) {
+        map.set(m.userId, m.profile || profileLookup.get(m.userId) || null);
+      }
     });
     return map;
-  }, [members]);
+  }, [members, profileLookup]);
 
   useEffect(() => {
     const loadProfiles = async () => {
@@ -85,7 +95,7 @@ const ChatPage = () => {
       setLoading(true);
       const { data: membersData } = await supabase
         .from('chat_room_members')
-        .select('user_id, role, profiles(id, nome, email, foto_url, avatar_url)')
+        .select('user_id, role')
         .eq('room_id', activeRoom.id);
 
       const { data: messagesData } = await supabase
@@ -98,19 +108,19 @@ const ChatPage = () => {
         (membersData || []).map((m) => ({
           userId: m.user_id,
           role: m.role,
-          profile: m.profiles || null
+          profile: profileLookup.get(m.user_id) || null
         }))
       );
 
       const enriched = (messagesData || []).map((msg) => ({
         ...msg,
-        profile: memberMap.get(msg.user_id) || null
+        profile: profileLookup.get(msg.user_id) || null
       }));
       setMessages(enriched);
       setLoading(false);
     };
     loadRoomData();
-  }, [activeRoom?.id]);
+  }, [activeRoom?.id, profileLookup]);
 
   useEffect(() => {
     if (!activeRoom?.id) return;
@@ -358,7 +368,7 @@ const ChatPage = () => {
                   <div className="chat-empty">Nenhuma mensagem ainda.</div>
                 )}
                 {messages.map((msg) => {
-                  const profile = msg.profile || memberMap.get(msg.user_id);
+                  const profile = msg.profile || memberMap.get(msg.user_id) || profileLookup.get(msg.user_id);
                   const initials = profile?.nome
                     ? profile.nome.split(' ')[0][0].toUpperCase()
                     : profile?.email?.[0]?.toUpperCase() || 'U';
