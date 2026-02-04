@@ -1,0 +1,11 @@
+node_modules/
+backend-api/node_modules/
+frontend/node_modules/
+build/
+frontend/build/
+.env
+backend-api/.env
+*.log
+backend-api/logs/
+dist/
+node_modules
