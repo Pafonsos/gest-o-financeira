@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, Settings, Upload, X, Shield } from 'lucide-react';
+import { LogOut, Settings, Upload, X, Shield, Workflow, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
@@ -192,6 +192,17 @@ const ProfileMenu = () => {
             <span className="text-sm font-medium">Configurações</span>
           </button>
 
+          <button
+            onClick={() => {
+              navigate('/chat');
+              setIsOpen(false);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors text-left"
+          >
+            <MessageCircle className="w-5 h-5 text-slate-600" />
+            <span className="text-sm font-medium">Chat</span>
+          </button>
+
           {/* Painel Admin - Apenas para admins */}
           {isAdmin && (
             <button
@@ -203,6 +214,19 @@ const ProfileMenu = () => {
             >
               <Shield className="w-5 h-5" />
               <span className="text-sm font-medium">Painel de Admin</span>
+            </button>
+          )}
+
+          {isAdmin && (
+            <button
+              onClick={() => {
+                navigate('/pipefy');
+                setIsOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-3 text-emerald-700 hover:bg-emerald-50 transition-colors text-left"
+            >
+              <Workflow className="w-5 h-5" />
+              <span className="text-sm font-medium">Pipefy</span>
             </button>
           )}
 

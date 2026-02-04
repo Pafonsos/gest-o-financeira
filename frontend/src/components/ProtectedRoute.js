@@ -20,9 +20,9 @@ export const ProtectedRoute = ({ children }) => {
 // ROTA PROTEGIDA PARA ADMINS
 // ============================================
 export const AdminRoute = ({ children }) => {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, loading, isAdmin, roleLoading } = useAuth();
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />

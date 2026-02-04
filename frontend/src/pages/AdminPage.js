@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AdminPanel from '../components/AdminPanel';
+import ProfileMenu from '../components/ProfileMenu';
 import './AdminPage.css';
 
 // ============================================
@@ -56,7 +58,20 @@ const AdminPage = () => {
   // Admin pode acessar
   return (
     <div className="admin-page">
-      <AdminPanel />
+      <div className="admin-container">
+        <div className="admin-topbar">
+          <Link to="/dashboard" className="admin-logo" aria-label="Voltar ao início">
+            <img
+              src="/logo-proteq.png"
+              alt="PROTEQ Logo"
+              className="admin-logo-image"
+              onError={(e) => (e.target.style.display = 'none')}
+            />
+          </Link>
+          <ProfileMenu />
+        </div>
+        <AdminPanel />
+      </div>
     </div>
   );
 };

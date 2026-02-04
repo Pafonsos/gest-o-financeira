@@ -20,6 +20,7 @@ const AdminPanel = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [invitingUser, setInvitingUser] = useState(false);
+  const [confirmModal, setConfirmModal] = useState({ open: false, action: '', user: null });
 
   // Obter token do usuário
   const getAuthToken = async () => {
@@ -116,10 +117,6 @@ const AdminPanel = () => {
 
   // Desativar usuário
   const handleDisableUser = async (userId, email) => {
-    if (!window.confirm(`Desativar acesso de ${email}?`)) {
-      return;
-    }
-
     try {
       setError('');
 
@@ -152,10 +149,6 @@ const AdminPanel = () => {
 
   // Reativar usuário
   const handleEnableUser = async (userId, email) => {
-    if (!window.confirm(`Reativar acesso de ${email}?`)) {
-      return;
-    }
-
     try {
       setError('');
 
@@ -188,10 +181,6 @@ const AdminPanel = () => {
 
   // Promover para admin
   const handlePromoteUser = async (userId, email) => {
-    if (!window.confirm(`Promover ${email} para admin?`)) {
-      return;
-    }
-
     try {
       setError('');
 
@@ -224,10 +213,6 @@ const AdminPanel = () => {
 
   // Remover admin
   const handleDemoteUser = async (userId, email) => {
-    if (!window.confirm(`Remover permissão de admin de ${email}?`)) {
-      return;
-    }
-
     try {
       setError('');
 
@@ -260,10 +245,6 @@ const AdminPanel = () => {
 
   // Deletar usuário
   const handleDeleteUser = async (userId, email) => {
-    if (!window.confirm(`Deletar usuário ${email}? Esta ação é irreversível.`)) {
-      return;
-    }
-
     try {
       setError('');
 
@@ -291,6 +272,48 @@ const AdminPanel = () => {
     } catch (err) {
       console.error('Erro:', err);
       setError(err.message || 'Erro ao deletar');
+    }
+  };
+
+  const openConfirm = (action, user) => {
+    setConfirmModal({ open: true, action, user });
+  };
+
+  const confirmMessage = () => {
+    const email = confirmModal.user?.email || '';
+    switch (confirmModal.action) {
+      case 'disable':
+        return `Desativar acesso de ${email}?`;
+      case 'enable':
+        return `Reativar acesso de ${email}?`;
+      case 'promote':
+        return `Promover ${email} para admin?`;
+      case 'demote':
+        return `Remover permissão de admin de ${email}?`;
+      case 'delete':
+        return `Deletar usuário ${email}? Esta ação é irreversível.`;
+      default:
+        return 'Confirmar ação?';
+    }
+  };
+
+  const handleConfirmAction = async () => {
+    const target = confirmModal.user;
+    if (!target) return;
+    setConfirmModal({ open: false, action: '', user: null });
+    switch (confirmModal.action) {
+      case 'disable':
+        return handleDisableUser(target.id, target.email);
+      case 'enable':
+        return handleEnableUser(target.id, target.email);
+      case 'promote':
+        return handlePromoteUser(target.id, target.email);
+      case 'demote':
+        return handleDemoteUser(target.id, target.email);
+      case 'delete':
+        return handleDeleteUser(target.id, target.email);
+      default:
+        return null;
     }
   };
 
@@ -397,7 +420,21 @@ const AdminPanel = () => {
             {users.map((u) => (
               <div key={u.id} className="table-row">
                 <div className="col-email">
-                  <span>{u.email}</span>
+                  <div className="user-avatar">
+                    {(u.profile_photo || u.foto_url || u.avatar_url) ? (
+                      <img src={u.profile_photo || u.foto_url || u.avatar_url} alt="Perfil" />
+                    ) : (
+                      <span>
+                        {(u.profile_name || u.email || 'U')[0]?.toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div className="user-info">
+                    <span>{u.email}</span>
+                    {u.profile_name && (
+                      <span className="user-name">{u.profile_name}</span>
+                    )}
+                  </div>
                   {u.id === user?.id && <span className="badge-you">(Você)</span>}
                 </div>
 
@@ -423,7 +460,7 @@ const AdminPanel = () => {
                       {u.is_active ? (
                         <button
                           className="btn-icon btn-disable"
-                          onClick={() => handleDisableUser(u.id, u.email)}
+                          onClick={() => openConfirm('disable', u)}
                           title="Desativar acesso"
                         >
                           🔒
@@ -431,7 +468,7 @@ const AdminPanel = () => {
                       ) : (
                         <button
                           className="btn-icon btn-enable"
-                          onClick={() => handleEnableUser(u.id, u.email)}
+                          onClick={() => openConfirm('enable', u)}
                           title="Reativar acesso"
                         >
                           🔓
@@ -441,7 +478,7 @@ const AdminPanel = () => {
                       {u.role === 'user' ? (
                         <button
                           className="btn-icon btn-promote"
-                          onClick={() => handlePromoteUser(u.id, u.email)}
+                          onClick={() => openConfirm('promote', u)}
                           title="Promover para admin"
                         >
                           ⬆️
@@ -449,7 +486,7 @@ const AdminPanel = () => {
                       ) : (
                         <button
                           className="btn-icon btn-demote"
-                          onClick={() => handleDemoteUser(u.id, u.email)}
+                          onClick={() => openConfirm('demote', u)}
                           title="Remover admin"
                         >
                           ⬇️
@@ -458,7 +495,7 @@ const AdminPanel = () => {
 
                       <button
                         className="btn-icon btn-delete"
-                        onClick={() => handleDeleteUser(u.id, u.email)}
+                        onClick={() => openConfirm('delete', u)}
                         title="Deletar usuário"
                       >
                         🗑️
@@ -471,6 +508,31 @@ const AdminPanel = () => {
           </div>
         )}
       </div>
+
+      {confirmModal.open && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Confirmar Ação</h2>
+            <p className="confirm-text">{confirmMessage()}</p>
+            <div className="modal-buttons">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setConfirmModal({ open: false, action: '', user: null })}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleConfirmAction}
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

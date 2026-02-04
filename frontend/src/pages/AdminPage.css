@@ -4,13 +4,39 @@
 
 .admin-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 20px;
+  background: linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%);
+  padding: 24px;
 }
 
-.admin-page > div {
-  max-width: 1200px;
-  margin: 0 auto;
+.admin-page > div,
+.admin-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+  padding: 20px 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.18);
+}
+
+.admin-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.admin-logo-image {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
 }
 
 /* ============================================
@@ -110,7 +136,15 @@
 
 @media (max-width: 768px) {
   .admin-page {
-    padding: 20px;
+    padding: 16px;
+  }
+
+  .admin-topbar {
+    padding: 16px;
+  }
+
+  .admin-logo-image {
+    height: 44px;
   }
 
   .access-denied {

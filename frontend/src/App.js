@@ -178,10 +178,11 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-3">Selecionar Destinatários:</label>
             <div className="border border-gray-300 rounded-lg p-4 max-h-48 overflow-y-auto bg-white">
-              {clientes.length > 0 ? clientes.map(cliente => {
+              {clientes.length > 0 ? clientes.map((cliente, idx) => {
                 const status = getClientStatus(cliente);
+                const key = `${cliente.id || cliente.email || 'idx'}-${idx}`;
                 return (
-                  <label key={cliente.id} className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors">
+                  <label key={key} className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors">
                     <input
                       type="checkbox"
                       checked={selectedClients.includes(cliente.id)}
@@ -321,9 +322,11 @@ const FinancialManager = () => {
   const [modalPagamento, setModalPagamento] = useState(false);
   const [modalDetalhes, setModalDetalhes] = useState(false);
   const [modalConfirmacao, setModalConfirmacao] = useState(false);
+  const [modalConfirmacaoTodos, setModalConfirmacaoTodos] = useState(false);
   const [modalDespesa, setModalDespesa] = useState(false);
   const [clienteEditando, setClienteEditando] = useState(null);
   const [clienteSelecionado, setClienteSelecionado] = useState(null);
+  const [toast, setToast] = useState('');
   
   const [pagamentoForm, setPagamentoForm] = useState({
     valor: '',
@@ -379,6 +382,153 @@ const parseMoedaParaNumero = (valor) => {
   // Remove pontos e substitui vírgula por ponto
   return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.')) || 0;
 };
+
+  const applyPipefyImport = (cards, fieldMap, pipeFields = []) => {
+    if (!Array.isArray(cards) || cards.length === 0) return;
+
+    const fieldLookup = Array.isArray(pipeFields) ? pipeFields : [];
+    const normalize = (value) => (value || '').toString().trim();
+
+    const normalizeValue = (value) => {
+      if (value === null || value === undefined) return '';
+      if (Array.isArray(value)) {
+        return value.map((item) => normalizeValue(item)).filter(Boolean).join(', ');
+      }
+      if (typeof value === 'object') {
+        if (value.name) return String(value.name);
+        if (value.title) return String(value.title);
+        if (value.url) return String(value.url);
+        if (value.value) return normalizeValue(value.value);
+        return JSON.stringify(value);
+      }
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+          try {
+            return normalizeValue(JSON.parse(trimmed));
+          } catch {
+            return trimmed;
+          }
+        }
+        return trimmed;
+      }
+      return String(value);
+    };
+
+    const resolveFieldCandidates = (fieldIdOrName) => {
+      if (!fieldIdOrName) return [];
+      const fromPipe = fieldLookup.find((f) => f.id === fieldIdOrName);
+      return [
+        fieldIdOrName,
+        fromPipe?.label,
+        fromPipe?.id
+      ]
+        .filter(Boolean)
+        .map((v) => String(v).toLowerCase());
+    };
+
+    const getFieldValue = (fields, fieldIdOrName) => {
+      if (!fieldIdOrName) return '';
+      const candidates = resolveFieldCandidates(fieldIdOrName);
+      const found = fields.find((f) => {
+        const name = String(f.name || '').toLowerCase();
+        const fieldId = String(f.field?.id || '').toLowerCase();
+        const fieldLabel = String(f.field?.label || '').toLowerCase();
+        return candidates.includes(name) || candidates.includes(fieldId) || candidates.includes(fieldLabel);
+      });
+      return normalizeValue(found?.value || '');
+    };
+
+    const fallbackByLabel = (label) => {
+      const found = fieldLookup.find((f) => f.label?.toLowerCase() === label);
+      return found?.id || '';
+    };
+
+    const mapId = (key, label) => fieldMap?.[key] || fallbackByLabel(label);
+
+  const imported = cards.map((card) => {
+    const fields = Array.isArray(card.fields) ? card.fields : [];
+    const nomeEmpresa = normalize(getFieldValue(fields, mapId('nomeEmpresa', 'nome da empresa'))) || card.title || '';
+    const nomeResponsavel = normalize(getFieldValue(fields, mapId('nomeResponsavel', 'nome do cliente')));
+    const email = normalize(getFieldValue(fields, mapId('email', 'e-mail')));
+    const telefone = normalize(getFieldValue(fields, mapId('telefone', 'telefone')));
+    const cnpj = normalize(getFieldValue(fields, mapId('cnpj', 'cpf/cnpj')));
+    const codigoContrato = normalize(getFieldValue(fields, mapId('codigoContrato', 'codigo do contrato')));
+    const valorTotal = parseMoedaParaNumero(getFieldValue(fields, mapId('valorTotal', 'valor total')));
+    const parcelas = parseInt(getFieldValue(fields, mapId('parcelas', 'parcelas')), 10) || 1;
+    const dataVenda = normalize(getFieldValue(fields, mapId('dataVenda', 'data da venda')));
+    const proximoVencimento = normalize(getFieldValue(fields, mapId('proximoVencimento', 'proximo vencimento')));
+    const linkPagamento = normalize(getFieldValue(fields, mapId('linkPagamento', 'link de pagamento')));
+    const observacoes = normalize(getFieldValue(fields, mapId('observacoes', 'observações')));
+
+    return {
+      id: card.id,
+      pipefyCardId: card.id,
+      nomeResponsavel,
+      nomeEmpresa,
+      email,
+      telefone,
+      valorTotal,
+      parcelas,
+      dataVenda,
+      proximoVencimento,
+      cnpj,
+      codigoContrato,
+      linkPagamento,
+      observacoes,
+      valorPago: 0,
+      parcelasPagas: 0,
+      historicosPagamentos: []
+    };
+  });
+
+  setClientes((prev) => {
+    const updated = [...prev];
+      imported.forEach((cliente) => {
+        const matchIndex = updated.findIndex((c) => {
+          if (cliente.pipefyCardId && c.pipefyCardId === cliente.pipefyCardId) return true;
+          if (cliente.pipefyCardId && String(c.id) === String(cliente.pipefyCardId)) return true;
+          if (String(c.id) === String(cliente.id)) return true;
+          if (cliente.email && c.email === cliente.email) return true;
+          if (cliente.cnpj && c.cnpj === cliente.cnpj) return true;
+          if (cliente.codigoContrato && c.codigoContrato === cliente.codigoContrato) return true;
+          return false;
+        });
+
+        if (matchIndex >= 0) {
+          const current = updated[matchIndex];
+          updated[matchIndex] = {
+            ...current,
+            ...cliente,
+            pipefyCardId: current.pipefyCardId || cliente.pipefyCardId || current.id || cliente.id
+          };
+        } else {
+          updated.push(cliente);
+        }
+      });
+      const dedupedMap = new Map();
+      updated.forEach((cliente) => {
+        const key =
+          cliente.pipefyCardId
+            ? `pipe:${cliente.pipefyCardId}`
+            : cliente.email
+            ? `email:${cliente.email}`
+            : cliente.cnpj
+            ? `cnpj:${cliente.cnpj}`
+            : cliente.codigoContrato
+            ? `contrato:${cliente.codigoContrato}`
+            : `id:${cliente.id}`;
+        if (!dedupedMap.has(key)) {
+          dedupedMap.set(key, cliente);
+        } else {
+          dedupedMap.set(key, { ...dedupedMap.get(key), ...cliente });
+        }
+      });
+      const deduped = Array.from(dedupedMap.values());
+      localStorage.setItem('financial-manager-clientes', JSON.stringify(deduped));
+      return deduped;
+    });
+  };
   const [novoCliente, setNovoCliente] = useState({
   nomeResponsavel: '',
   nomeEmpresa: '',
@@ -425,6 +575,13 @@ const parseMoedaParaNumero = (valor) => {
   useEffect(() => {
     localStorage.setItem('contas-a-pagar', JSON.stringify(despesas));
   }, [despesas]);
+
+  // Toast discreto (auto-hide)
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(''), 2500);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const calcularStatus = (cliente) => {
     if (cliente.valorPago >= cliente.valorTotal) return 'pago';
@@ -505,7 +662,7 @@ const parseMoedaParaNumero = (valor) => {
   
   setClientes([...clientes, cliente]);
   fecharModal();
-  alert('Cliente adicionado e salvo com sucesso!');
+  setToast('Cliente adicionado com sucesso!');
 };
 
   const editarCliente = () => {
@@ -533,14 +690,20 @@ const parseMoedaParaNumero = (valor) => {
     return cliente;
   }));
   fecharModal();
-  alert('Cliente editado e salvo com sucesso!');
+  setToast('Cliente editado com sucesso!');
 };
 
   const excluirCliente = () => {
     setClientes(clientes.filter(cliente => cliente.id !== clienteSelecionado.id));
     setModalConfirmacao(false);
     setClienteSelecionado(null);
-    alert('Cliente excluído com sucesso!');
+    setToast('Cliente excluído.');
+  };
+
+  const excluirTodosClientes = () => {
+    setClientes([]);
+    localStorage.removeItem('financial-manager-clientes');
+    setToast('Todos os clientes foram excluídos.');
   };
 
   const registrarPagamento = () => {
@@ -588,7 +751,7 @@ const parseMoedaParaNumero = (valor) => {
     descricao: ''
   });
   setClienteSelecionado(null);
-  alert('Pagamento registrado e salvo com sucesso!');
+  setToast('Pagamento registrado com sucesso!');
 };
 
   const exportarRelatorio = () => {
@@ -841,44 +1004,54 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
         </div>
 
         {/* CONTEÚDO DAS ABAS */}
+        {toast && (
+          <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm z-50">
+            {toast}
+          </div>
+        )}
         {abaAtiva === 'dashboard' && (
           <DashboardAprimorado clientes={clientes} />
         )}
 
-        {/* Botões de Ferramentas - Exportar */}
-        {abaAtiva === 'dashboard' && (
-          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">Ferramentas</h3>
-            <div className="flex gap-4 flex-wrap">
-              <button
-                onClick={exportarGoogleSheets}
-                className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19.5 2.25h-15v19.5h15V2.25zm-1.5 1.5v3h-12v-3h12zm0 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-12v-3h12z"/>
-                </svg>
-                Google Sheets
-              </button>
-              <button
-                onClick={exportarRelatorio}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Download className="w-5 h-5" />
-                Exportar CSV
-              </button>
-              <button
-                onClick={() => setShowEmailSettings(true)}
-                className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                <Settings className="w-5 h-5" />
-                Config. Emails
-              </button>
-            </div>
-          </div>
-        )}
-
         {abaAtiva === 'clientes' && (
           <>
+            {/* Botões de Ferramentas - Exportar */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">Ferramentas</h3>
+              <div className="flex gap-4 flex-wrap">
+                <button
+                  onClick={exportarGoogleSheets}
+                  className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.5 2.25h-15v19.5h15V2.25zm-1.5 1.5v3h-12v-3h12zm0 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-4.5v-3H18zm-6 0v3h-6v-3h6zm6 4.5v3h-12v-3h12z"/>
+                  </svg>
+                  Google Sheets
+                </button>
+                <button
+                  onClick={exportarRelatorio}
+                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Download className="w-5 h-5" />
+                  Exportar CSV
+                </button>
+                <button
+                  onClick={() => setShowEmailSettings(true)}
+                  className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <Settings className="w-5 h-5" />
+                  Config. Emails
+                </button>
+                <button
+                  onClick={() => setModalConfirmacaoTodos(true)}
+                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  <Trash2 className="w-5 h-5" />
+                  Excluir Todos
+                </button>
+              </div>
+            </div>
+
             {/* Cards de Resumo */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border-l-4 border-blue-500">
@@ -986,12 +1159,13 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                 </tr>
               </thead>
               <tbody className="bg-white/70 divide-y divide-slate-200">
-                {clientesFiltrados.map((cliente) => {
+                {clientesFiltrados.map((cliente, idx) => {
                   const status = calcularStatus(cliente);
                   const diasAtraso = calcularDiasAtraso(cliente.proximoVencimento);
+                  const key = `${cliente.id || cliente.email || 'idx'}-${idx}`;
                   
                   return (
-                    <tr key={cliente.id} className="hover:bg-slate-50/50 transition-colors">
+                      <tr key={key} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-bold text-slate-900">{cliente.nomeResponsavel}</div>
@@ -1111,6 +1285,8 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
         </div>
         </>
       )}
+
+      {abaAtiva === 'pipefy' && null}
 
       {/* Modais */}
       {/* Modal Adicionar/Editar Cliente */}
@@ -1554,6 +1730,42 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                 >
                   Excluir Cliente
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {modalConfirmacaoTodos && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex-shrink-0">
+                  <AlertCircle className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">Confirmar Exclusão</h2>
+                  <p className="text-sm text-gray-600">
+                    Tem certeza que deseja excluir todos os clientes? Esta ação não pode ser desfeita.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setModalConfirmacaoTodos(false)}
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    setModalConfirmacaoTodos(false);
+                    excluirTodosClientes();
+                  }}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                >
+                  Excluir Todos
                 </button>
               </div>
             </div>

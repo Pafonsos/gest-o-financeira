@@ -4,6 +4,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import App from './App';
 import AdminPage from './pages/AdminPage';
+import PipefyPage from './pages/PipefyPage';
+import ChatPage from './pages/ChatPage';
 import { AuthPage } from './pages/AuthPage';
 import { SetPasswordPage } from './pages/SetPasswordPage';
 
@@ -40,6 +42,26 @@ const AppRouter = () => {
               <AdminRoute>
                 <AdminPage />
               </AdminRoute>
+            }
+          />
+
+          {/* Rota protegida - Pipefy (apenas para admins) */}
+          <Route
+            path="/pipefy"
+            element={
+              <AdminRoute>
+                <PipefyPage />
+              </AdminRoute>
+            }
+          />
+
+          {/* Rota protegida - Chat */}
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
             }
           />
 

@@ -112,6 +112,29 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     }
   }, [clientes, despesas, periodo]);
 
+  const getPeriodoRange = () => {
+    const hoje = new Date();
+    const mesAtual = hoje.getMonth();
+    const anoAtual = hoje.getFullYear();
+
+    if (periodo === 'trimestre') {
+      const trimestreInicio = Math.floor(mesAtual / 3) * 3;
+      const inicio = new Date(anoAtual, trimestreInicio, 1);
+      const fim = new Date(anoAtual, trimestreInicio + 3, 0, 23, 59, 59, 999);
+      return { inicio, fim };
+    }
+
+    if (periodo === 'ano') {
+      const inicio = new Date(anoAtual, 0, 1);
+      const fim = new Date(anoAtual, 11, 31, 23, 59, 59, 999);
+      return { inicio, fim };
+    }
+
+    const inicio = new Date(anoAtual, mesAtual, 1);
+    const fim = new Date(anoAtual, mesAtual + 1, 0, 23, 59, 59, 999);
+    return { inicio, fim };
+  };
+
   const calcularMetricas = () => {
     // Garantir que clientes é um array válido
     const clientesArray = Array.isArray(clientes) ? clientes : [];
@@ -135,31 +158,63 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     }
 
     const hoje = new Date();
-    const mesAtual = hoje.getMonth();
-    const anoAtual = hoje.getFullYear();
+    const { inicio, fim } = getPeriodoRange();
+    const isInRange = (data) => data && data >= inicio && data <= fim;
 
     // Receitas
-    const receitaRealizada = clientesArray.reduce((sum, c) => sum + (c.valorPago || 0), 0);
-    const receitaPrevista = clientesArray.reduce((sum, c) => sum + (c.valorTotal || 0), 0);
+    const receitaRealizada = clientesArray.reduce((sum, c) => {
+      const pagamentos = Array.isArray(c.historicosPagamentos) ? c.historicosPagamentos : [];
+      if (pagamentos.length > 0) {
+        return sum + pagamentos.reduce((acc, p) => {
+          const data = p.data ? new Date(p.data) : null;
+          if (!data || Number.isNaN(data.getTime())) return acc;
+          if (!isInRange(data)) return acc;
+          return acc + (Number(p.valor) || 0);
+        }, 0);
+      }
+      if (c.dataVenda) {
+        const dataVenda = new Date(c.dataVenda);
+        if (isInRange(dataVenda)) {
+          return sum + (c.valorPago || 0);
+        }
+        return sum;
+      }
+      return sum + (c.valorPago || 0);
+    }, 0);
+
+    const receitaPrevista = clientesArray.reduce((sum, c) => {
+      if (c.dataVenda) {
+        const dataVenda = new Date(c.dataVenda);
+        if (!Number.isNaN(dataVenda.getTime()) && isInRange(dataVenda)) {
+          return sum + (c.valorTotal || 0);
+        }
+        return sum;
+      }
+      return sum + (c.valorTotal || 0);
+    }, 0);
     const receitaPendente = receitaPrevista - receitaRealizada;
 
     // Inadimplência
     const totalAtrasado = clientesArray
       .filter(c => {
         if (!c.proximoVencimento) return false;
-        return new Date(c.proximoVencimento) < hoje && c.valorPago < c.valorTotal;
+        const venc = new Date(c.proximoVencimento);
+        if (Number.isNaN(venc.getTime())) return false;
+        return venc < hoje && isInRange(venc) && c.valorPago < c.valorTotal;
       })
       .reduce((sum, c) => sum + (c.valorTotal - c.valorPago), 0);
 
     const inadimplencia = receitaPrevista > 0 ? (totalAtrasado / receitaPrevista) * 100 : 0;
     const clientesInadimplentes = clientesArray.filter(c => {
       if (!c.proximoVencimento) return false;
-      return new Date(c.proximoVencimento) < hoje && c.valorPago < c.valorTotal;
+      const venc = new Date(c.proximoVencimento);
+      if (Number.isNaN(venc.getTime())) return false;
+      return venc < hoje && isInRange(venc) && c.valorPago < c.valorTotal;
     }).length;
 
     // Previsão próximo mês
-    const proximoMes = new Date(anoAtual, mesAtual + 1, 1);
-    const fimProximoMes = new Date(anoAtual, mesAtual + 2, 0);
+    const proximoMes = new Date(fim.getFullYear(), fim.getMonth() + 1, 1);
+    const fimProximoMes = new Date(fim.getFullYear(), fim.getMonth() + 2, 0);
     
     const previsaoProximoMes = clientesArray
       .filter(c => {
@@ -170,7 +225,16 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       .reduce((sum, c) => sum + (c.valorParcela || 0), 0);
 
     // Despesas
-    const despesasTotais = despesas.reduce((sum, d) => sum + d.valor, 0);
+    const despesasTotais = despesas.reduce((sum, d) => {
+      if (d.vencimento) {
+        const venc = new Date(d.vencimento);
+        if (!Number.isNaN(venc.getTime()) && isInRange(venc)) {
+          return sum + (d.valor || 0);
+        }
+        return sum;
+      }
+      return sum + (d.valor || 0);
+    }, 0);
 
     // Lucro e Margem
     const lucroOperacional = receitaRealizada - despesasTotais;
@@ -180,7 +244,13 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     const fluxoCaixa = lucroOperacional;
 
     // Clientes Ativos
-    const clientesAtivos = clientesArray.filter(c => c.valorPago > 0 || (c.proximoVencimento && new Date(c.proximoVencimento) >= hoje)).length;
+    const clientesAtivos = clientesArray.filter(c => {
+      if (c.valorPago > 0) return true;
+      if (!c.proximoVencimento) return false;
+      const venc = new Date(c.proximoVencimento);
+      if (Number.isNaN(venc.getTime())) return false;
+      return venc >= inicio && venc <= fim;
+    }).length;
 
     setMetricas({
       receitaRealizada,
@@ -802,7 +872,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
           </div>
         </div>
       </div>
-      <GraficoEvolucaoMensal metricas={metricas} />
+      <GraficoEvolucaoMensal clientes={clientes} despesas={despesas} />
       {/* Alertas e Recomendações */}
       <div className="space-y-4">
         {metricas.inadimplencia > 10 && (

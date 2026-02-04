@@ -872,3 +872,1426 @@
   "message": "Erro ao convidar usuário:",
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-03 17:54:47",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:55:32",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:55:32",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:55:33",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:55:41",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:55:41",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 17:55:42",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:55:42",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error saving new user\n    at handleError (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async _handleRequest (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:55:42",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:13",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:39",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:39",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:39",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error saving new user\n    at handleError (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async _handleRequest (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:28",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:34",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:34",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:34",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:39",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:39",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:39",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Falha no convite: erro ao salvar usuário no banco do Supabase. Normalmente isso é causado por trigger/função em auth.users (ex: bloqueio por convites antigos) ou constraint inválida. Revise e remova triggers antigas (veja SQL_CREATE_INVITED_EMAILS.sql) e valide constraints no projeto Supabase.",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "Error: Falha no convite: erro ao salvar usuário no banco do Supabase. Normalmente isso é causado por trigger/função em auth.users (ex: bloqueio por convites antigos) ou constraint inválida. Revise e remova triggers antigas (veja SQL_CREATE_INVITED_EMAILS.sql) e valide constraints no projeto Supabase.\n    at AdminService.inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\services\\adminService.js:70:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 18:37:39",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:07",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:07",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:08",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:14",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:15",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:17",
+  "level": "info",
+  "message": "✅ Usuário convidado com sucesso: afonso_aq@hotmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:17",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:17",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:54:17",
+  "level": "info",
+  "message": "✅ 3 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:12",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:12",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:13",
+  "level": "info",
+  "message": "✅ 3 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:18",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:18",
+  "level": "info",
+  "message": "🗑️ Deletando usuário: 21478cdf-0e22-4b89-8031-11581d002714",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:18",
+  "level": "info",
+  "message": "✅ Usuário 21478cdf-0e22-4b89-8031-11581d002714 deletado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:18",
+  "level": "info",
+  "message": "✅ Usuário deletado: 21478cdf-0e22-4b89-8031-11581d002714",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:42",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:42",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:42",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:49",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:49",
+  "level": "info",
+  "message": "🗑️ Deletando usuário: e5a98af6-9360-406f-b6da-9d2f6f90e738",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:50",
+  "level": "info",
+  "message": "✅ Usuário e5a98af6-9360-406f-b6da-9d2f6f90e738 deletado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:50",
+  "level": "info",
+  "message": "✅ Usuário deletado: e5a98af6-9360-406f-b6da-9d2f6f90e738",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:50",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:50",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:08:51",
+  "level": "info",
+  "message": "✅ 1 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:09:01",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:09:02",
+  "level": "info",
+  "message": "🔔 Convidando usuário: afonsoaq38@gmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:09:04",
+  "level": "info",
+  "message": "✅ Usuário convidado com sucesso: afonsoaq38@gmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:09:04",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:09:04",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:09:05",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:09:28",
+  "level": "warn",
+  "message": "❌ Token inválido ou expirado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:10:31",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:10:32",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:10:33",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:15:55",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:15:55",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 19:15:56",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:38:09",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:38:09",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:38:09",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:42:41",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:42:41",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:42:41",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:44:45",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:44:45",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:44:45",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:45:04",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:45:04",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:45:04",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:46:43",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:46:43",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:46:44",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:46:58",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:46:58",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:46:58",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:47:11",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:47:11",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:47:12",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:12",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:12",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:12",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:32",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:32",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:33",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:35",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:36",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:49:36",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:50:05",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:50:06",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 15:50:06",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:21:50",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:21:50",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:21:51",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:23:02",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:23:02",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:23:03",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:28:33",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:28:52",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:29:44",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:29:44",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:29:44",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:30:06",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:32:28",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:33:31",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:33:42",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:35:00",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:36:59",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:37:05",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:37:05",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:37:11",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:42:30",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:42:55",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:42:55",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:44:59",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:45:00",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:46:05",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:46:11",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:46:12",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:46:37",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:46:37",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:48:04",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:48:17",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:48:35",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:48:43",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:48:46",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:55:59",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:56:00",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:56:00",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:00:56",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:01:19",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:08:33",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:13:08",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:13:34",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:13:34",
+  "level": "error",
+  "message": "Erro ao testar conexão Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:17:30",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:17:30",
+  "level": "error",
+  "message": "Erro ao testar conexão Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:17:34",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:18:31",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:18:31",
+  "level": "error",
+  "message": "Erro ao testar conexão Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:20:31",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:20:41",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:20:45",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:28:22",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:28:23",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:28:23",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:29:31",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:29:32",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:29:32",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:30:08",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:30:08",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:30:08",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:32:34",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:32:34",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:32:34",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:07",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:07",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:08",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:12",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:12",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:13",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:21",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:24",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:24",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:24",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:34",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:34",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:35",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:57",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:57",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:33:58",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 18:58:49",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 18:58:49",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 18:58:50",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:03:04",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:03:13",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:03:32",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:07:57",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:07:57",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:07:57",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:08:03",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:08:10",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:14:39",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:14:39",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:14:39",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:15:06",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:15:11",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:15:22",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:16:27",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:16:45",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:16:46",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:16:54",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:41",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:41",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:42",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:56",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:56",
+  "level": "info",
+  "message": "🗑️ Deletando usuário: 41f7d2ae-abf6-485a-85e4-ab27b3f28961",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:56",
+  "level": "info",
+  "message": "✅ Usuário 41f7d2ae-abf6-485a-85e4-ab27b3f28961 deletado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:56",
+  "level": "info",
+  "message": "✅ Usuário deletado: 41f7d2ae-abf6-485a-85e4-ab27b3f28961",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:56",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:56",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:22:57",
+  "level": "info",
+  "message": "✅ 1 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:23:22",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:23:23",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:23:23",
+  "level": "info",
+  "message": "✅ 1 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:24:48",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:24:51",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:29:29",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:29:45",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:29:52",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:30:08",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:30:11",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:42:32",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:42:56",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:43:27",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:47:13",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:47:55",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:48:02",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:48:07",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:48:49",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:48:51",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:53:25",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:55:48",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:56:05",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:56:12",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:59:52",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:59:54",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 19:59:56",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}

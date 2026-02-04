@@ -374,3 +374,112 @@
   "message": "Erro ao convidar usuário:",
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-03 17:55:42",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 17:55:42",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error saving new user\n    at handleError (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async _handleRequest (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 17:55:42",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "error",
+  "message": "Erro ao convidar usuário no auth Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Database error saving new user",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "AuthApiError: Database error saving new user\n    at handleError (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:66:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async _handleRequest (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:109:9)\n    at async _request (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\lib\\fetch.js:91:18)\n    at async GoTrueAdminApi.inviteUserByEmail (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\node_modules\\@supabase\\auth-js\\dist\\main\\GoTrueAdminApi.js:70:20)\n    at async AdminService.inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\services\\adminService.js:46:42)\n    at async inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 18:26:45",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-03 18:37:39",
+  "level": "error",
+  "message": "❌ Erro ao convidar usuário Falha no convite: erro ao salvar usuário no banco do Supabase. Normalmente isso é causado por trigger/função em auth.users (ex: bloqueio por convites antigos) ou constraint inválida. Revise e remova triggers antigas (veja SQL_CREATE_INVITED_EMAILS.sql) e valide constraints no projeto Supabase.",
+  "service": "email-system",
+  "status": 500,
+  "code": "unexpected_failure",
+  "stack": "Error: Falha no convite: erro ao salvar usuário no banco do Supabase. Normalmente isso é causado por trigger/função em auth.users (ex: bloqueio por convites antigos) ou constraint inválida. Revise e remova triggers antigas (veja SQL_CREATE_INVITED_EMAILS.sql) e valide constraints no projeto Supabase.\n    at AdminService.inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\services\\adminService.js:70:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async inviteUser (C:\\Users\\ResTIC16\\Desktop\\gest-o-financeira\\backend-api\\controllers\\adminController.js:54:20)"
+}
+{
+  "timestamp": "2026-02-03 18:37:39",
+  "level": "error",
+  "message": "Erro ao convidar usuário:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:37:05",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:42:55",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:45:00",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:46:12",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 16:46:37",
+  "level": "error",
+  "message": "Erro ao puxar cards do Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:13:34",
+  "level": "error",
+  "message": "Erro ao testar conexão Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:17:30",
+  "level": "error",
+  "message": "Erro ao testar conexão Pipefy:",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-04 17:18:31",
+  "level": "error",
+  "message": "Erro ao testar conexão Pipefy:",
+  "service": "email-system"
+}

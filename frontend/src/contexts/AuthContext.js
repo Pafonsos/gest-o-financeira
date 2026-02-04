@@ -14,7 +14,8 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState('user');
+  const [role, setRole] = useState(null);
+  const [roleLoading, setRoleLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(true);
   const isMountedRef = React.useRef(true);
 
@@ -26,11 +27,15 @@ export const AuthProvider = ({ children }) => {
     }
     
     try {
+      if (isMounted) setRoleLoading(true);
       console.log('🔄 fetchUserRole: iniciando para user:', userId);
       
       if (!userId) {
         console.log('🔄 fetchUserRole: userId vazio, setRole(user)');
-        if (isMounted) setRole('user');
+        if (isMounted) {
+          setRole('user');
+          setRoleLoading(false);
+        }
         return;
       }
 
@@ -54,7 +59,10 @@ export const AuthProvider = ({ children }) => {
         if (error.code !== 'PGRST116') {
           console.warn('⚠️ Erro ao buscar role:', error.message);
         }
-        if (isMounted) setRole('user');
+        if (isMounted) {
+          setRole('user');
+          setRoleLoading(false);
+        }
         return;
       }
 
@@ -65,6 +73,8 @@ export const AuthProvider = ({ children }) => {
         console.error('❌ fetchUserRole: erro no catch:', error.message);
         setRole('user');
       }
+    } finally {
+      if (isMounted) setRoleLoading(false);
     }
   };
 
@@ -92,7 +102,8 @@ export const AuthProvider = ({ children }) => {
       if (session?.user) {
         console.log('👤 Usuário encontrado:', session.user.id);
         setUser(session.user);
-        setRole('user'); // Default
+        setRole(null); // Default
+        setRoleLoading(true);
         // Busca role em background (não bloqueia a renderização)
         if (isMountedRef.current) {
           fetchUserRole(session.user.id);
@@ -101,6 +112,7 @@ export const AuthProvider = ({ children }) => {
         console.log('🚫 Nenhuma sessão ativa na inicialização');
         setUser(null);
         setRole('user');
+        setRoleLoading(false);
       }
     } catch (error) {
       if (isMounted) {
@@ -136,7 +148,8 @@ export const AuthProvider = ({ children }) => {
         
         if (session?.user) {
           setUser(session.user);
-          setRole('user'); // Default - busca em background
+          setRole(null); // Default - busca em background
+          setRoleLoading(true);
           // Busca role em background (não bloqueia a renderização)
           if (isMountedRef.current) {
             fetchUserRole(session.user.id);
@@ -144,6 +157,7 @@ export const AuthProvider = ({ children }) => {
         } else {
           setUser(null);
           setRole('user');
+          setRoleLoading(false);
         }
         
         setLoading(false);
@@ -341,6 +355,7 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,
     role,
+    roleLoading,
     isAdmin: role === 'admin',
     signUp,
     signIn,

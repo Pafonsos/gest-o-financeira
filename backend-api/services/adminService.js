@@ -42,13 +42,40 @@ class AdminService {
         ? `${process.env.FRONTEND_URL}/set-password`
         : undefined;
 
+      const inviteOptions = {};
+      if (redirectTo) {
+        inviteOptions.redirectTo = redirectTo;
+      }
+
+      const inviteData = {
+        ...(options.userData || {})
+      };
+      if (options.invitedBy) {
+        inviteData.invited_by = options.invitedBy;
+      }
+
+      if (Object.keys(inviteData).length > 0) {
+        inviteOptions.data = inviteData;
+      }
+
       // 1. Convidar via Supabase (envia link para definir senha)
       const { data, error: authError } = await this.supabase.auth.admin.inviteUserByEmail(
         normalizedEmail,
-        redirectTo ? { redirectTo } : undefined
+        Object.keys(inviteOptions).length > 0 ? inviteOptions : undefined
       );
 
       if (authError) {
+        const friendlyMessage = this._mapInviteErrorMessage(authError);
+        if (friendlyMessage) {
+          const enrichedError = new Error(friendlyMessage);
+          enrichedError.status = authError.status;
+          enrichedError.code = authError.code;
+          enrichedError.details = authError.details;
+          enrichedError.hint = authError.hint;
+          enrichedError.cause = authError;
+          throw enrichedError;
+        }
+
         logger.error('Erro ao convidar usuário no auth', {
           message: authError.message,
           status: authError.status,
@@ -118,6 +145,22 @@ class AdminService {
 
       const users = data?.users || [];
 
+      const userIds = users.map((u) => u.id);
+      let profilesMap = new Map();
+
+      if (userIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await this.supabase
+          .from('profiles')
+          .select('id, nome, email, foto_url, avatar_url')
+          .in('id', userIds);
+
+        if (profilesError) {
+          logger.warn('⚠️ Erro ao buscar profiles:', profilesError.message);
+        } else if (profilesData) {
+          profilesMap = new Map(profilesData.map((p) => [p.id, p]));
+        }
+      }
+
       // Enriquecer com dados de roles
       const usersWithRoles = await Promise.all(
         users.map(async (user) => {
@@ -127,13 +170,19 @@ class AdminService {
             .eq('user_id', user.id)
             .single();
 
+          const profile = profilesMap.get(user.id);
+
           return {
             id: user.id,
             email: user.email,
             created_at: user.created_at,
             last_sign_in_at: user.last_sign_in_at,
             role: roleData?.role || 'user',
-            is_active: !user.banned_until || new Date(user.banned_until) < new Date()
+            is_active: !user.banned_until || new Date(user.banned_until) < new Date(),
+            profile_name: profile?.nome || null,
+            profile_photo: profile?.foto_url || profile?.avatar_url || null,
+            foto_url: profile?.foto_url || null,
+            avatar_url: profile?.avatar_url || null
           };
         })
       );
@@ -411,6 +460,23 @@ class AdminService {
       password += charset.charAt(Math.floor(Math.random() * charset.length));
     }
     return password;
+  }
+
+  // ============================================
+  // HELPER: Mensagens amigáveis para falha no invite
+  // ============================================
+  _mapInviteErrorMessage(error) {
+    const message = String(error?.message || '');
+
+    if (message.includes('Hook requires authorization token')) {
+      return 'Falha no convite: o Supabase Auth Hook está exigindo token de autorização. Verifique as configurações de Auth Hooks no Supabase (inclua o segredo no hook) ou desabilite o hook para convites.';
+    }
+
+    if (message.includes('Database error saving new user')) {
+      return 'Falha no convite: erro ao salvar usuário no banco do Supabase. Normalmente isso é causado por trigger/função em auth.users (ex: bloqueio por convites antigos) ou constraint inválida. Revise e remova triggers antigas (veja SQL_CREATE_INVITED_EMAILS.sql) e valide constraints no projeto Supabase.';
+    }
+
+    return null;
   }
 }
 

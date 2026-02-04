@@ -7,6 +7,7 @@ const http = require('http');
 
 const emailRoutes = require('./routes/emailRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const pipefyRoutes = require('./routes/pipefyRoutes');
 const { logger } = require('./utils/logger');
 
 const app = express();
@@ -64,6 +65,7 @@ app.use(express.urlencoded({
 
 app.use('/api/email', emailRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/pipefy', pipefyRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ 

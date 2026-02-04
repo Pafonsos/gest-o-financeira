@@ -17,6 +17,9 @@ export const SetPasswordPage = () => {
 
       // Trocar o code da URL por sessão (link de convite)
       if (window.location.href.includes('code=')) {
+        // Garantir que não estamos reutilizando uma sessão antiga
+        await supabase.auth.signOut();
+
         const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(
           window.location.href
         );
