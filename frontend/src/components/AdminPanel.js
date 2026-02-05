@@ -23,10 +23,10 @@ const AdminPanel = () => {
   const [confirmModal, setConfirmModal] = useState({ open: false, action: '', user: null });
 
   // Obter token do usuário
-  const getAuthToken = async () => {
+  const getAuthToken = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     return session?.access_token;
-  };
+  }, []);
 
   // ============================================
   // FUNÇÕES
@@ -66,7 +66,7 @@ const AdminPanel = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getAuthToken]);
 
   // Convidar novo usuário
   const handleInviteUser = async (e) => {
@@ -116,7 +116,7 @@ const AdminPanel = () => {
   };
 
   // Desativar usuário
-  const handleDisableUser = async (userId, email) => {
+  const handleDisableUser = useCallback(async (userId, email) => {
     try {
       setError('');
 
@@ -145,7 +145,7 @@ const AdminPanel = () => {
       console.error('Erro:', err);
       setError(err.message || 'Erro ao desativar');
     }
-  }, []);
+  }, [getAuthToken, loadUsers]);
 
   // Reativar usuário
   const handleEnableUser = async (userId, email) => {
