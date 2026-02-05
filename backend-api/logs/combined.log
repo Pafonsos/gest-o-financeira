@@ -2295,3 +2295,21 @@
   "message": "✅ Token verificado para: admin@admin.com",
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-05 01:05:15",
+  "level": "info",
+  "message": "✅ Token verificado para: admin@admin.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 01:05:16",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 01:05:17",
+  "level": "info",
+  "message": "✅ 1 usuários encontrados",
+  "service": "email-system"
+}
