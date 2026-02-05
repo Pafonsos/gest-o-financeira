@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import './AdminPanel.css';
@@ -33,7 +33,7 @@ const AdminPanel = () => {
   // ============================================
 
   // Carregar lista de usuários
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -99,7 +99,7 @@ const AdminPanel = () => {
         throw new Error(data.error || 'Erro ao convidar usuário');
       }
 
-      const data = await response.json();
+      await response.json();
       setSuccess(`Usuário ${inviteEmail} convidado com sucesso!`);
       setInviteEmail('');
       setShowInviteModal(false);
@@ -145,7 +145,7 @@ const AdminPanel = () => {
       console.error('Erro:', err);
       setError(err.message || 'Erro ao desativar');
     }
-  };
+  }, []);
 
   // Reativar usuário
   const handleEnableUser = async (userId, email) => {
@@ -320,7 +320,7 @@ const AdminPanel = () => {
   // Carregar usuários no montar
   useEffect(() => {
     loadUsers();
-  }, []);
+  }, [loadUsers]);
 
   // ============================================
   // RENDERIZAÇÃO

@@ -49,7 +49,7 @@ const ProfileMenu = () => {
       }
     };
     carregarPerfil();
-  }, [user]);
+  }, [user, getUserProfile]);
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {

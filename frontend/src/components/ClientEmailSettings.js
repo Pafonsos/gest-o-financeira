@@ -3,7 +3,7 @@
 // src/components/ClientEmailSettings.js
 // ============================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Shield, Check, X } from 'lucide-react';
 import { emailSettingsService } from '../services/emailSettingsService';
 
@@ -20,13 +20,7 @@ export const ClientEmailSettings = ({ cliente }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
-  useEffect(() => {
-    if (cliente?.id) {
-      loadExceptions();
-    }
-  }, [cliente?.id]);
-
-  const loadExceptions = async () => {
+  const loadExceptions = useCallback(async () => {
     setLoading(true);
     setMessage({ type: '', text: '' });
     
@@ -39,7 +33,13 @@ export const ClientEmailSettings = ({ cliente }) => {
     }
     
     setLoading(false);
-  };
+  }, [cliente?.id]);
+
+  useEffect(() => {
+    if (cliente?.id) {
+      loadExceptions();
+    }
+  }, [cliente?.id, loadExceptions]);
 
   const handleChange = (field, value) => {
     setExceptions({ ...exceptions, [field]: value });

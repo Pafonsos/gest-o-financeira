@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 const AuthContext = createContext({});
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const isMountedRef = React.useRef(true);
 
   // Função para buscar role do usuário
-  const fetchUserRole = async (userId) => {
+  const fetchUserRole = useCallback(async (userId) => {
     if (!isMounted) {
       console.log('⚠️ fetchUserRole: componente não montado');
       return;
@@ -76,10 +76,10 @@ export const AuthProvider = ({ children }) => {
     } finally {
       if (isMounted) setRoleLoading(false);
     }
-  };
+  }, [isMounted]);
 
   // Verificar sessão inicial
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     try {
       console.log('🔍 Verificando sessão inicial...');
       
@@ -126,7 +126,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     }
-  };
+  }, [fetchUserRole, isMounted]);
 
   useEffect(() => {
     console.log('🔐 AuthProvider iniciando...');
@@ -172,55 +172,13 @@ export const AuthProvider = ({ children }) => {
         authListener.subscription.unsubscribe();
       }
     };
-  }, []);
+  }, [checkUser, fetchUserRole, isMounted]);
 
   const signUp = async (email, password, userData) => {
     try {
       console.log('📝 Iniciando cadastro para:', email);
 
       return { data: null, error: 'Cadastro desativado. Use o convite para acessar.' };
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: userData
-        }
-      });
-
-      if (error) {
-        console.error('❌ Erro ao cadastrar:', error.message);
-        throw error;
-      }
-
-      console.log('✅ Usuário criado com sucesso');
-
-      // ⚠️ TEMPORARIAMENTE DESABILITADO: Criação de perfil na tabela profiles
-      // Está causando erro de RLS. Para reabilitar, configure as políticas no Supabase
-      /*
-      if (data.user) {
-        try {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert([
-              {
-                id: data.user.id,
-                email: email,
-                nome: userData.nome,
-                created_at: new Date().toISOString()
-              }
-            ]);
-
-          if (profileError) {
-            console.warn('⚠️ Aviso ao criar perfil:', profileError.message);
-          }
-        } catch (err) {
-          console.warn('⚠️ Erro ao criar perfil (ignorado):', err.message);
-        }
-      }
-      */
-
-      return { data, error: null };
     } catch (error) {
       console.error('❌ Erro completo:', error);
       return { data: null, error: error.message };

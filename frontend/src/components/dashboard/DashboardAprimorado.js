@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, DollarSign, AlertCircle, Calendar, Clock, CheckCircle, BarChart3, Briefcase, CreditCard, ArrowUpRight, ArrowDownRight, Wallet, Edit2, Plus, Trash2, X, Save, Download, Activity } from 'lucide-react';
 import GraficoEvolucaoMensal from './GraficoEvolucaoMensal';
 
@@ -106,11 +106,6 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     clientesInadimplentes: 0
   });
 
-  useEffect(() => {
-    if (clientes) {
-      calcularMetricas();
-    }
-  }, [clientes, despesas, periodo]);
 
   const getPeriodoRange = () => {
     const hoje = new Date();
@@ -135,7 +130,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     return { inicio, fim };
   };
 
-  const calcularMetricas = () => {
+  const calcularMetricas = useCallback(() => {
     // Garantir que clientes é um array válido
     const clientesArray = Array.isArray(clientes) ? clientes : [];
     
@@ -265,7 +260,13 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       clientesAtivos,
       clientesInadimplentes
     });
-  };
+  }, [clientes, despesas, periodo]);
+
+  useEffect(() => {
+    if (clientes) {
+      calcularMetricas();
+    }
+  }, [clientes, despesas, periodo, calcularMetricas]);
 
   const formatMoney = (value) => {
     return new Intl.NumberFormat('pt-BR', {

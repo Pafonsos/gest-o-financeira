@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, LogOut, ChevronDown, Settings } from 'lucide-react';
+import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, Settings } from 'lucide-react';
 import emailService from './services/emailService';
 import { EmailSettingsModal } from './components/EmailSettingsModal';
 import ClientEmailSettings from './components/ClientEmailSettings';
@@ -307,7 +307,7 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
 };
 
 const FinancialManager = () => {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const [showEmailSettings, setShowEmailSettings] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState('dashboard');
@@ -366,12 +366,6 @@ const formatarMoedaInput = (valor) => {
     maximumFractionDigits: 2
   });
 };
-const formatarValorParaEmail = (valor) => {
-  return valor.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  });
-};
 const parseMoedaParaNumero = (valor) => {
   // Se já for número, retorna direto
   if (typeof valor === 'number') return valor;
@@ -383,152 +377,6 @@ const parseMoedaParaNumero = (valor) => {
   return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.')) || 0;
 };
 
-  const applyPipefyImport = (cards, fieldMap, pipeFields = []) => {
-    if (!Array.isArray(cards) || cards.length === 0) return;
-
-    const fieldLookup = Array.isArray(pipeFields) ? pipeFields : [];
-    const normalize = (value) => (value || '').toString().trim();
-
-    const normalizeValue = (value) => {
-      if (value === null || value === undefined) return '';
-      if (Array.isArray(value)) {
-        return value.map((item) => normalizeValue(item)).filter(Boolean).join(', ');
-      }
-      if (typeof value === 'object') {
-        if (value.name) return String(value.name);
-        if (value.title) return String(value.title);
-        if (value.url) return String(value.url);
-        if (value.value) return normalizeValue(value.value);
-        return JSON.stringify(value);
-      }
-      if (typeof value === 'string') {
-        const trimmed = value.trim();
-        if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
-          try {
-            return normalizeValue(JSON.parse(trimmed));
-          } catch {
-            return trimmed;
-          }
-        }
-        return trimmed;
-      }
-      return String(value);
-    };
-
-    const resolveFieldCandidates = (fieldIdOrName) => {
-      if (!fieldIdOrName) return [];
-      const fromPipe = fieldLookup.find((f) => f.id === fieldIdOrName);
-      return [
-        fieldIdOrName,
-        fromPipe?.label,
-        fromPipe?.id
-      ]
-        .filter(Boolean)
-        .map((v) => String(v).toLowerCase());
-    };
-
-    const getFieldValue = (fields, fieldIdOrName) => {
-      if (!fieldIdOrName) return '';
-      const candidates = resolveFieldCandidates(fieldIdOrName);
-      const found = fields.find((f) => {
-        const name = String(f.name || '').toLowerCase();
-        const fieldId = String(f.field?.id || '').toLowerCase();
-        const fieldLabel = String(f.field?.label || '').toLowerCase();
-        return candidates.includes(name) || candidates.includes(fieldId) || candidates.includes(fieldLabel);
-      });
-      return normalizeValue(found?.value || '');
-    };
-
-    const fallbackByLabel = (label) => {
-      const found = fieldLookup.find((f) => f.label?.toLowerCase() === label);
-      return found?.id || '';
-    };
-
-    const mapId = (key, label) => fieldMap?.[key] || fallbackByLabel(label);
-
-  const imported = cards.map((card) => {
-    const fields = Array.isArray(card.fields) ? card.fields : [];
-    const nomeEmpresa = normalize(getFieldValue(fields, mapId('nomeEmpresa', 'nome da empresa'))) || card.title || '';
-    const nomeResponsavel = normalize(getFieldValue(fields, mapId('nomeResponsavel', 'nome do cliente')));
-    const email = normalize(getFieldValue(fields, mapId('email', 'e-mail')));
-    const telefone = normalize(getFieldValue(fields, mapId('telefone', 'telefone')));
-    const cnpj = normalize(getFieldValue(fields, mapId('cnpj', 'cpf/cnpj')));
-    const codigoContrato = normalize(getFieldValue(fields, mapId('codigoContrato', 'codigo do contrato')));
-    const valorTotal = parseMoedaParaNumero(getFieldValue(fields, mapId('valorTotal', 'valor total')));
-    const parcelas = parseInt(getFieldValue(fields, mapId('parcelas', 'parcelas')), 10) || 1;
-    const dataVenda = normalize(getFieldValue(fields, mapId('dataVenda', 'data da venda')));
-    const proximoVencimento = normalize(getFieldValue(fields, mapId('proximoVencimento', 'proximo vencimento')));
-    const linkPagamento = normalize(getFieldValue(fields, mapId('linkPagamento', 'link de pagamento')));
-    const observacoes = normalize(getFieldValue(fields, mapId('observacoes', 'observações')));
-
-    return {
-      id: card.id,
-      pipefyCardId: card.id,
-      nomeResponsavel,
-      nomeEmpresa,
-      email,
-      telefone,
-      valorTotal,
-      parcelas,
-      dataVenda,
-      proximoVencimento,
-      cnpj,
-      codigoContrato,
-      linkPagamento,
-      observacoes,
-      valorPago: 0,
-      parcelasPagas: 0,
-      historicosPagamentos: []
-    };
-  });
-
-  setClientes((prev) => {
-    const updated = [...prev];
-      imported.forEach((cliente) => {
-        const matchIndex = updated.findIndex((c) => {
-          if (cliente.pipefyCardId && c.pipefyCardId === cliente.pipefyCardId) return true;
-          if (cliente.pipefyCardId && String(c.id) === String(cliente.pipefyCardId)) return true;
-          if (String(c.id) === String(cliente.id)) return true;
-          if (cliente.email && c.email === cliente.email) return true;
-          if (cliente.cnpj && c.cnpj === cliente.cnpj) return true;
-          if (cliente.codigoContrato && c.codigoContrato === cliente.codigoContrato) return true;
-          return false;
-        });
-
-        if (matchIndex >= 0) {
-          const current = updated[matchIndex];
-          updated[matchIndex] = {
-            ...current,
-            ...cliente,
-            pipefyCardId: current.pipefyCardId || cliente.pipefyCardId || current.id || cliente.id
-          };
-        } else {
-          updated.push(cliente);
-        }
-      });
-      const dedupedMap = new Map();
-      updated.forEach((cliente) => {
-        const key =
-          cliente.pipefyCardId
-            ? `pipe:${cliente.pipefyCardId}`
-            : cliente.email
-            ? `email:${cliente.email}`
-            : cliente.cnpj
-            ? `cnpj:${cliente.cnpj}`
-            : cliente.codigoContrato
-            ? `contrato:${cliente.codigoContrato}`
-            : `id:${cliente.id}`;
-        if (!dedupedMap.has(key)) {
-          dedupedMap.set(key, cliente);
-        } else {
-          dedupedMap.set(key, { ...dedupedMap.get(key), ...cliente });
-        }
-      });
-      const deduped = Array.from(dedupedMap.values());
-      localStorage.setItem('financial-manager-clientes', JSON.stringify(deduped));
-      return deduped;
-    });
-  };
   const [novoCliente, setNovoCliente] = useState({
   nomeResponsavel: '',
   nomeEmpresa: '',
@@ -607,22 +455,6 @@ const parseMoedaParaNumero = (valor) => {
     const diferenca = hoje - vencimento;
     return Math.max(0, Math.ceil(diferenca / (1000 * 60 * 60 * 24)));
   };
-  const calcularParcelasEmAtraso = (cliente) => {
-  const status = calcularStatus(cliente);
-  if (status !== 'em_atraso') return 0;
-  
-  const parcelasRestantes = cliente.parcelas - cliente.parcelasPagas;
-  const diasAtraso = calcularDiasAtraso(cliente.proximoVencimento);
-  
-  // Calcula quantas parcelas atrasadas baseado em 30 dias por parcela
-  const parcelasAtrasadasEstimadas = Math.min(
-    Math.ceil(diasAtraso / 30),
-    parcelasRestantes
-  );
-  
-  return parcelasAtrasadasEstimadas || 1;
-};
-
   const clientesFiltrados = clientes.filter(cliente => {
     const status = calcularStatus(cliente);
     const statusFiltro = filtros.status === 'todos' || status === filtros.status;
@@ -854,7 +686,6 @@ const parseMoedaParaNumero = (valor) => {
     `;
 
     // Criar URL para Google Sheets
-    const encodedData = encodeURIComponent(htmlTable);
     const googleSheetsUrl = `https://docs.google.com/spreadsheets/create?usp=sharing`;
     
     // Copiar dados para área de transferência

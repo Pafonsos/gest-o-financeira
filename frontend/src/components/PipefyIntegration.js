@@ -88,7 +88,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
     if (!savedAt) {
       setSavedAt(payload.savedAt);
     }
-  }, [config, simpleMap, selectedClients, activeTab, pipeFields, pipePhases, pipeCards]);
+  }, [config, simpleMap, selectedClients, activeTab, pipeFields, pipePhases, pipeCards, savedAt]);
 
   const handleSave = () => {
     const payload = { ...config, simpleMap, selectedClients, activeTab, pipeFields, pipePhases, pipeCards, savedAt: new Date().toISOString() };

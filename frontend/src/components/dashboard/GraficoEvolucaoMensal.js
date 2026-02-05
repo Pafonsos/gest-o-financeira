@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Calendar, BarChart3 } from 'lucide-react';
+import { TrendingUp, BarChart3 } from 'lucide-react';
 
 const GraficoEvolucaoMensal = ({ clientes = [], despesas = [] }) => {
   const [historico, setHistorico] = useState([]);

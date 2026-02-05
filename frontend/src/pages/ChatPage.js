@@ -81,8 +81,8 @@ const ChatPage = () => {
         .filter((r) => r.id);
 
       setRooms(mapped);
-      if (!activeRoom && mapped.length > 0) {
-        setActiveRoom(mapped[0]);
+      if (mapped.length > 0) {
+        setActiveRoom((prev) => prev || mapped[0]);
       }
       setLoading(false);
     };
