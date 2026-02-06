@@ -2325,3 +2325,15 @@
   "message": "✅ Service de Admin inicializado",
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-06 09:10:02",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-06 09:11:33",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
