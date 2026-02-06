@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { LogOut, Settings, Upload, X, Shield, Workflow, MessageCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -367,3 +367,18 @@ const ProfileMenu = () => {
 };
 
 export default ProfileMenu;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,10 +1,8 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 import { supabase } from '../lib/supabaseClient';
+import { config } from '../lib/config';
 
-const API_BASE_URL =
-  (import.meta?.env?.VITE_API_URL) ||
-  (typeof process !== 'undefined' ? process.env.REACT_APP_API_URL : undefined) ||
-  'http://localhost:5000/api';
+const API_BASE_URL = config.apiUrl;
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -62,3 +60,13 @@ const pipefyService = {
 };
 
 export default pipefyService;
+
+
+
+
+
+
+
+
+
+

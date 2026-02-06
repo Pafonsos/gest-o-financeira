@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Plus } from 'lucide-react';
+import { useUI } from '../../contexts/UiContext';
 
 const ModalDespesa = ({ isOpen, onClose, onSave }) => {
+  const { showMessage } = useUI();
   const [formData, setFormData] = useState({
     fornecedor: '',
     descricao: '',
@@ -9,6 +11,7 @@ const ModalDespesa = ({ isOpen, onClose, onSave }) => {
     vencimento: '',
     pago: false
   });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -20,6 +23,25 @@ const ModalDespesa = ({ isOpen, onClose, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError('');
+    if (!formData.fornecedor || !formData.valor || !formData.vencimento) {
+      setError('Preencha os camposão obrigatórios');
+      showMessage({
+        title: 'Camposão obrigatórios',
+        message: 'Preencha fornecedor, valor e vencimento.',
+        type: 'warning'
+      });
+      return;
+    }
+    if (Number(formData.valor) <= 0) {
+      setError('O valor deve ser maior que zero');
+      showMessage({
+        title: 'Valor inválido',
+        message: 'O valor deve ser maior que zero.',
+        type: 'warning'
+      });
+      return;
+    }
     if (formData.fornecedor && formData.valor && formData.vencimento) {
       onSave({
         ...formData,
@@ -32,8 +54,6 @@ const ModalDespesa = ({ isOpen, onClose, onSave }) => {
         vencimento: '',
         pago: false
       });
-    } else {
-      alert('Preencha todos os campos obrigatórios!');
     }
   };
 
@@ -53,6 +73,11 @@ const ModalDespesa = ({ isOpen, onClose, onSave }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 text-sm font-medium">
+              {error}
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Fornecedor *
@@ -150,3 +175,16 @@ const ModalDespesa = ({ isOpen, onClose, onSave }) => {
 };
 
 export default ModalDespesa;
+
+
+
+
+
+
+
+
+
+
+
+
+

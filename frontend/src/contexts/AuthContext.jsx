@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+﻿import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 const AuthContext = createContext({});
@@ -22,16 +22,16 @@ export const AuthProvider = ({ children }) => {
   // Função para buscar role do usuário
   const fetchUserRole = useCallback(async (userId) => {
     if (!isMounted) {
-      console.log('⚠️ fetchUserRole: componente não montado');
+      console.log('fetchUserRole: componente não montado');
       return;
     }
     
     try {
       if (isMounted) setRoleLoading(true);
-      console.log('🔄 fetchUserRole: iniciando para user:', userId);
+      console.log('"" fetchUserRole: iniciando para user:', userId);
       
       if (!userId) {
-        console.log('🔄 fetchUserRole: userId vazio, setRole(user)');
+        console.log('"" fetchUserRole: userId vazio, setRole(user)');
         if (isMounted) {
           setRole('user');
           setRoleLoading(false);
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      console.log('🔄 fetchUserRole: fazendo query ao Supabase...');
+      console.log('"" fetchUserRole: fazendo query ao Supabase...');
       
       const { data, error } = await supabase
         .from('user_roles')
@@ -47,17 +47,17 @@ export const AuthProvider = ({ children }) => {
         .eq('user_id', userId)
         .single();
 
-      console.log('🔄 fetchUserRole: resposta recebida', { data, error });
+      console.log('"" fetchUserRole: resposta recebida', { data, error });
 
       if (!isMounted) {
-        console.log('⚠️ fetchUserRole: componente desmontou durante query');
+        console.log('fetchUserRole: componente desmontou durante query');
         return;
       }
 
       if (error) {
-        console.warn('⚠️ fetchUserRole: erro na query', error.code, error.message);
+        console.warn('fetchUserRole: erro na query', error.code, error.message);
         if (error.code !== 'PGRST116') {
-          console.warn('⚠️ Erro ao buscar role:', error.message);
+          console.warn('Erro ao buscar role:', error.message);
         }
         if (isMounted) {
           setRole('user');
@@ -66,11 +66,11 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      console.log('✅ fetchUserRole: role encontrado:', data?.role || 'user');
+      console.log('fetchUserRole: role encontrado:', data?.role || 'user');
       if (isMounted) setRole(data?.role || 'user');
     } catch (error) {
       if (isMounted) {
-        console.error('❌ fetchUserRole: erro no catch:', error.message);
+        console.error(' fetchUserRole: erro no catch:', error.message);
         setRole('user');
       }
     } finally {
@@ -81,18 +81,18 @@ export const AuthProvider = ({ children }) => {
   // Verificar sessão inicial
   const checkUser = useCallback(async () => {
     try {
-      console.log('🔍 Verificando sessão inicial...');
+      console.log(' Verificando sessão inicial...');
       
       const { data: { session }, error } = await supabase.auth.getSession();
-      console.log('📦 Resposta de getSession:', { hasSession: !!session, email: session?.user?.email, error });
+      console.log('Resposta de getSession:', { hasSession: !!session, email: session?.user?.email, error });
       
       if (!isMounted) {
-        console.log('⚠️ Componente desmontado após getSession, ignorando setUser');
+        console.log('Componente desmontado após getSession, ignorando setUser');
         return;
       }
 
       if (error) {
-        console.error('❌ Erro ao obter sessão:', error);
+        console.error(' Erro ao obter sessão:', error);
         setUser(null);
         setRole('user');
         setLoading(false);
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (session?.user) {
-        console.log('👤 Usuário encontrado:', session.user.id);
+        console.log('Usuário encontrado:', session.user.id);
         setUser(session.user);
         setRole(null); // Default
         setRoleLoading(true);
@@ -109,27 +109,27 @@ export const AuthProvider = ({ children }) => {
           fetchUserRole(session.user.id);
         }
       } else {
-        console.log('🚫 Nenhuma sessão ativa na inicialização');
+        console.log('Nenhuma sessão ativa na inicialização');
         setUser(null);
         setRole('user');
         setRoleLoading(false);
       }
     } catch (error) {
       if (isMounted) {
-        console.error('❌ Erro na verificação de usuário:', error);
+        console.error(' Erro na verificação de usuário:', error);
         setUser(null);
         setRole('user');
       }
     } finally {
       if (isMounted) {
-        console.log('✓ Finalizando checkUser, setLoading(false)');
+        console.log('" Finalizando checkUser, setLoading(false)');
         setLoading(false);
       }
     }
   }, [fetchUserRole, isMounted]);
 
   useEffect(() => {
-    console.log('🔐 AuthProvider iniciando...');
+    console.log(' AuthProvider iniciando...');
     setIsMounted(true);
     isMountedRef.current = true;
     
@@ -139,10 +139,10 @@ export const AuthProvider = ({ children }) => {
     // Escutar mudanças de autenticação
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔄 Auth state changed:', event);
+        console.log('"" Auth state changed:', event);
         
         if (!isMounted) {
-          console.log('⚠️ Componente desmontado, ignorando mudança de auth');
+          console.log('Componente desmontado, ignorando mudança de auth');
           return;
         }
         
@@ -165,7 +165,7 @@ export const AuthProvider = ({ children }) => {
     );
 
     return () => {
-      console.log('🧹 Limpando AuthProvider...');
+      console.log('Limpando AuthProvider...');
       setIsMounted(false);
       isMountedRef.current = false;
       if (authListener?.subscription?.unsubscribe) {
@@ -176,18 +176,18 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, userData) => {
     try {
-      console.log('📝 Iniciando cadastro para:', email);
+      console.log(' Iniciando cadastro para:', email);
 
       return { data: null, error: 'Cadastro desativado. Use o convite para acessar.' };
     } catch (error) {
-      console.error('❌ Erro completo:', error);
+      console.error(' Erro completo:', error);
       return { data: null, error: error.message };
     }
   };
 
   const signIn = async (email, password) => {
     try {
-      console.log('🔐 Iniciando login para:', email);
+      console.log(' Iniciando login para:', email);
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -195,15 +195,15 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (error) {
-        console.error('❌ Erro ao fazer login:', error.message);
+        console.error(' Erro ao fazer login:', error.message);
         console.error('Código do erro:', error.status);
         throw error;
       }
 
-      console.log('✅ Login realizado com sucesso');
+      console.log('. Login realizado com sucesso');
       return { data, error: null };
     } catch (error) {
-      console.error('❌ Erro completo no login:', error);
+      console.error(' Erro completo no login:', error);
       return { data: null, error: error.message };
     }
   };
@@ -330,3 +330,15 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+

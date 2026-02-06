@@ -1,4 +1,4 @@
-// ============================================
+﻿// ============================================
 // COMPONENTE DE CONFIGURAÇÕES POR CLIENTE
 // src/components/ClientEmailSettings.js
 // ============================================
@@ -51,7 +51,7 @@ export const ClientEmailSettings = ({ cliente }) => {
     setSaving(true);
     setMessage({ type: '', text: '' });
 
-    // Se todas as opções estão desativadas, remover o registro
+    // Se todas as opções est desativadas, remover o registro
     const todasDesativadas = 
       !exceptions.todos_emails_desativados &&
       !exceptions.lembrete_vencimento_desativado &&
@@ -244,3 +244,16 @@ export const ClientEmailSettings = ({ cliente }) => {
 };
 
 export default ClientEmailSettings;
+
+
+
+
+
+
+
+
+
+
+
+
+

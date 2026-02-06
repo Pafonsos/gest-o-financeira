@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { TrendingUp, DollarSign, AlertCircle, Calendar, Clock, CheckCircle, BarChart3, Briefcase, CreditCard, ArrowUpRight, ArrowDownRight, Wallet, Edit2, Plus, Trash2, X, Save, Download, Activity } from 'lucide-react';
 import GraficoEvolucaoMensal from './GraficoEvolucaoMensal';
+import { useUI } from '../../contexts/UiContext';
 
 const DashboardFinanceiro = ({ clientes = [] }) => {
   const [periodo, setPeriodo] = useState('mes');
   const [modalDespesas, setModalDespesas] = useState(false);
   const [modalMeta, setModalMeta] = useState(false);
+  const { showMessage } = useUI();
   
   // Despesas editáveis (salvos no localStorage)
   const [despesas, setDespesas] = useState(() => {
@@ -34,14 +36,25 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
 
   // Estado para edição de despesa
   const [editandoDespesa, setEditandoDespesa] = useState(null);
+  const [despesaError, setDespesaError] = useState('');
 
   // Funções para gerenciar despesas
   const adicionarDespesa = () => {
+    setDespesaError('');
+    if (!novaDespesa.categoria || !novaDespesa.valor) {
+      setDespesaError('Informe categoria e valor');
+      return;
+    }
+    if (Number(novaDespesa.valor) <= 0) {
+      setDespesaError('O valor deve ser maior que zero');
+      return;
+    }
     if (novaDespesa.categoria && novaDespesa.valor) {
       // Converte string de centavos para número
       const valorNumerico = parseFloat(novaDespesa.valor) / 100;
       setDespesas([...despesas, { ...novaDespesa, valor: valorNumerico }]);
       setNovaDespesa({ categoria: '', valor: '', tipo: 'fixa' });
+      setDespesaError('');
     }
   };
 
@@ -60,6 +73,15 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
   };
 
   const salvarEdicaoDespesa = () => {
+    setDespesaError('');
+    if (!novaDespesa.categoria || !novaDespesa.valor) {
+      setDespesaError('Informe categoria e valor');
+      return;
+    }
+    if (Number(novaDespesa.valor) <= 0) {
+      setDespesaError('O valor deve ser maior que zero');
+      return;
+    }
     if (novaDespesa.categoria && novaDespesa.valor) {
       const valorNumerico = parseFloat(novaDespesa.valor) / 100;
       const novasDespesas = [...despesas];
@@ -70,6 +92,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       setDespesas(novasDespesas);
       setEditandoDespesa(null);
       setNovaDespesa({ categoria: '', valor: '', tipo: 'fixa' });
+      setDespesaError('');
     }
   };
 
@@ -207,7 +230,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       return venc < hoje && isInRange(venc) && c.valorPago < c.valorTotal;
     }).length;
 
-    // Previsão próximo mês
+    // Previs próximo mês
     const proximoMes = new Date(fim.getFullYear(), fim.getMonth() + 1, 1);
     const fimProximoMes = new Date(fim.getFullYear(), fim.getMonth() + 2, 0);
     
@@ -319,7 +342,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       ['Taxa de Inadimplência', `${metricas.inadimplencia.toFixed(2)}%`],
       ['Clientes Ativos', metricas.clientesAtivos.toString()],
       ['Clientes Inadimplentes', metricas.clientesInadimplentes.toString()],
-      ['Previsão Próximo Mês', formatMoney(metricas.previsaoProximoMes)],
+      ['Previs Próximo Mês', formatMoney(metricas.previsaoProximoMes)],
       ['Meta Mensal', formatMoney(metaMensal)],
       [''],
       ['DESPESAS DETALHADAS']
@@ -374,7 +397,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       ['Taxa de Inadimplência', `${metricas.inadimplencia.toFixed(2)}%`],
       ['Clientes Ativos', metricas.clientesAtivos.toString()],
       ['Clientes Inadimplentes', metricas.clientesInadimplentes.toString()],
-      ['Previsão Próximo Mês', formatMoney(metricas.previsaoProximoMes)],
+      ['Previs Próximo Mês', formatMoney(metricas.previsaoProximoMes)],
       ['Meta Mensal', formatMoney(metaMensal)],
       [''],
       ['DESPESAS DETALHADAS'],
@@ -403,10 +426,18 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       window.open('https://docs.google.com/spreadsheets/create', '_blank');
       
       // Mostrar mensagem de instrução
-      alert('✅ Dados copiados para a área de transferência!\n\n📋 No Google Sheets que acabou de abrir:\n1. Clique na célula A1\n2. Pressione Ctrl+V (ou Cmd+V no Mac) para colar os dados\n3. Os dados serão organizados automaticamente nas colunas');
+      showMessage({
+        title: 'Dados copiados',
+        message: 'A planilha foi aberta. Cole os dados na célula A1.',
+        type: 'success'
+      });
     } catch (err) {
       console.error('Erro ao copiar dados:', err);
-      alert('❌ Erro ao copiar dados. Tente novamente ou use a opção CSV.');
+      showMessage({
+        title: 'Erro ao copiar',
+        message: 'Tente novamente ou use a opção CSV.',
+        type: 'error'
+      });
     }
   };
 
@@ -448,7 +479,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
             />
             <div>
               <h1 className="text-2xl font-bold text-white">Dashboard Financeiro PROTEQ</h1>
-              <p className="text-blue-100 text-sm">Sistema de Gestão Financeira Empresarial</p>
+              <p className="text-blue-100 text-sm">Sistema de Gest Financeira Empresarial</p>
             </div>
           </div>
           <div className="flex gap-3">
@@ -611,7 +642,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
           </div>
         </div>
 
-        {/* Previsão Próximo Mês */}
+        {/* Previs Próximo Mês */}
         <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 rounded-xl border border-blue-200/50 shadow-lg">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -619,7 +650,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                 <Calendar className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-blue-900">Previsão Próximo Mês</h3>
+                <h3 className="text-lg font-bold text-blue-900">Previs Próximo Mês</h3>
                 <p className="text-sm text-blue-700">Receita prevista com vencimentos</p>
               </div>
             </div>
@@ -694,7 +725,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                   <div key={index} className="flex items-center justify-between py-2 px-3 bg-orange-50/50 rounded-lg border border-orange-100">
                     <div className="flex-1">
                       <p className="text-sm font-medium text-orange-900">{cliente.nome}</p>
-                      <p className="text-xs text-orange-700">{cliente.servico || 'Serviço'}</p>
+                      <p className="text-xs text-orange-700">{cliente.servico || 'Servi'}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-bold text-orange-900">{formatMoney(cliente.valorTotal - cliente.valorPago)}</p>
@@ -804,7 +835,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                 <p className="text-xs text-emerald-700 font-medium">
                   {metricas.margemLucro >= 20 ? 'Excelente' : metricas.margemLucro >= 10 ? 'Boa' : 'Atenção'}
                 </p>
-                <p className="text-xs text-emerald-600">Meta: ≥20%</p>
+                <p className="text-xs text-emerald-600">Meta: •20%</p>
               </div>
             </div>
 
@@ -826,7 +857,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                   {((metricas.receitaRealizada / metricas.receitaPrevista) * 100 || 0) >= 90 ? 'Excelente' : 
                    ((metricas.receitaRealizada / metricas.receitaPrevista) * 100 || 0) >= 75 ? 'Boa' : 'Atenção'}
                 </p>
-                <p className="text-xs text-emerald-600">Meta: ≥90%</p>
+                <p className="text-xs text-emerald-600">Meta: •90%</p>
               </div>
             </div>
 
@@ -848,7 +879,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                 <p className="text-xs text-emerald-700 font-medium">
                   {metricas.inadimplencia > 10 ? 'Atenção' : 'Controlada'}
                 </p>
-                <p className="text-xs text-emerald-600">Meta: ≤10%</p>
+                <p className="text-xs text-emerald-600">Meta: •10%</p>
               </div>
             </div>
 
@@ -897,7 +928,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
               <div>
                 <h4 className="text-yellow-800 font-bold mb-1">Margem de Lucro Baixa</h4>
                 <p className="text-yellow-700 text-sm">
-                  Margem atual de {metricas.margemLucro.toFixed(1)}%. Considere revisar preços dos serviços ou reduzir custos operacionais.
+                  Margem atual de {metricas.margemLucro.toFixed(1)}%. Considere revisar pres dos servis ou reduzir custos operacionais.
                 </p>
               </div>
             </div>
@@ -935,6 +966,11 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
 
             {/* Formulário para adicionar/editar */}
             <div className="space-y-4 mb-6">
+              {despesaError && (
+                <div className="bg-red-50 text-red-700 border border-red-200 rounded-lg p-3 text-sm font-medium">
+                  {despesaError}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Categoria
@@ -958,7 +994,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                     let valor = e.target.value.replace(/\D/g, '');
                     valor = valor.substring(0, 10);
                     
-                    // Permite que o usuário digite apenas "0"
+                    // Permite que o Usuário digite apenas "0"
                     if (valor === '') {
                       setNovaDespesa({...novaDespesa, valor: ''});
                     } else if (valor === '0') {
@@ -1119,3 +1155,21 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
 };
 
 export default DashboardFinanceiro;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

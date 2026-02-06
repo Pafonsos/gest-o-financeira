@@ -1,4 +1,4 @@
-// ============================================
+﻿// ============================================
 // SERVIÇO COMPLETO DE CONFIGURAÇÕES DE EMAIL
 // src/services/emailSettingsService.js
 // ============================================
@@ -183,7 +183,7 @@ export const emailSettingsService = {
       // 2. Verificar exceções do cliente
       const { data: exception } = await this.getClientException(clienteId);
 
-      // Se todos os emails estão desativados para este cliente
+      // Se todos os emails est desativados para este cliente
       if (exception?.todos_emails_desativados) {
         return { 
           canSend: false, 
@@ -266,3 +266,13 @@ export const emailSettingsService = {
 };
 
 export default emailSettingsService;
+
+
+
+
+
+
+
+
+
+

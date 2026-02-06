@@ -1,26 +1,27 @@
-import { createClient } from '@supabase/supabase-js';
+﻿import { createClient } from '@supabase/supabase-js';
+import { config } from './config';
 
-const supabaseUrl =
-  (import.meta.env && import.meta.env.VITE_SUPABASE_URL) ||
-  (typeof process !== 'undefined' ? process.env.REACT_APP_SUPABASE_URL : undefined);
-const supabaseAnonKey =
-  (import.meta.env && import.meta.env.VITE_SUPABASE_ANON_KEY) ||
-  (typeof process !== 'undefined' ? process.env.REACT_APP_SUPABASE_ANON_KEY : undefined);
+const supabaseUrl = config.supabaseUrl;
+const supabaseAnonKey = config.supabaseAnonKey;
 
-// Debug: mostrar se as variáveis estão carregadas
-console.log('🔍 DEBUG - Variáveis de ambiente:');
-console.log('VITE_SUPABASE_URL:', import.meta.env && import.meta.env.VITE_SUPABASE_URL);
-console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env && import.meta.env.VITE_SUPABASE_ANON_KEY);
+if (config.isDev) {
+  console.log('DEBUG - VariÃ¡veis de ambiente:');
+  console.log('VITE_SUPABASE_URL:', supabaseUrl);
+  console.log('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey);
+}
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('❌ ERRO: Variáveis do Supabase não configuradas!');
+  console.error('ERRO: VariÃ¡veis do Supabase nÃ£o configuradas!');
   console.error('SUPABASE_URL:', supabaseUrl);
   console.error('SUPABASE_ANON_KEY:', supabaseAnonKey);
   console.error('Verifique o arquivo .env na raiz do projeto');
-} else {
-  console.log('✅ Supabase configurado com sucesso');
-  console.log('URL:', supabaseUrl);
-  console.log('KEY:', supabaseAnonKey.substring(0, 20) + '...');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+
+
+
+
+
+

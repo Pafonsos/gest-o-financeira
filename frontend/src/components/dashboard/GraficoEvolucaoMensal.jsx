@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { TrendingUp, BarChart3 } from 'lucide-react';
 import {
   AreaChart,
@@ -195,3 +195,13 @@ const GraficoEvolucaoMensal = ({ clientes = [], despesas = [] }) => {
 };
 
 export default GraficoEvolucaoMensal;
+
+
+
+
+
+
+
+
+
+

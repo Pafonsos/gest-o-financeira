@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 
@@ -119,7 +119,7 @@ export const SetPasswordPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                  placeholder="••••••••"
+                  placeholder="••••••••••••••••••"
                   required
                 />
               </div>
@@ -133,7 +133,7 @@ export const SetPasswordPage = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full px-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                  placeholder="••••••••"
+                  placeholder="••••••••••••••••••"
                   required
                 />
               </div>
@@ -156,3 +156,13 @@ export const SetPasswordPage = () => {
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+

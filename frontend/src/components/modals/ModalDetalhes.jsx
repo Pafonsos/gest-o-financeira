@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { X } from 'lucide-react';
 import ClientEmailSettings from '../ClientEmailSettings';
 
@@ -100,3 +100,13 @@ const ModalDetalhes = ({
 };
 
 export default ModalDetalhes;
+
+
+
+
+
+
+
+
+
+

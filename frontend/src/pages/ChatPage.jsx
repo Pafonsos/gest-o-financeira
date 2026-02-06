@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, Plus, Users, X, Send, Paperclip } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
@@ -509,7 +509,7 @@ const ChatPage = () => {
               <label>Usuários disponíveis</label>
               <div className="chat-modal-list">
                 {availableProfiles.length === 0 && (
-                  <p className="chat-empty">Todos já estão na sala.</p>
+                  <p className="chat-empty">Todos já est na sala.</p>
                 )}
                 {availableProfiles.map((profile) => (
                   <label key={profile.id} className="chat-modal-item">
@@ -545,3 +545,13 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+
+
+
+
+
+
+
+
+
+

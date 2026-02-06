@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, Settings } from 'lucide-react';
 import emailService from './services/emailService';
 import { EmailSettingsModal } from './components/EmailSettingsModal';
@@ -8,27 +8,33 @@ import ModalDespesa from './components/modals/ModalDespesa';
 import { useAuth } from './contexts/AuthContext';
 import ProfileMenu from './components/ProfileMenu';
 import { AuthPage } from './pages/AuthPage';
+import { useUI } from './contexts/UiContext';
 
 const EmailManager = ({ clientes }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [subject, setSubject] = useState('');
   const [selectedClients, setSelectedClients] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { showMessage } = useUI();
 
   const templates = [
     { value: 'primeira-cobranca', label: 'Primeira Cobrança (Notificação Inicial)', subject: 'Notificação de Pendência Financeira - PROTEQ' },
-    { value: 'cobranca-7dias', label: 'Cobrança Leve (≥ 7 dias de atraso)', subject: 'Lembrete Amigável: Pagamento em Atraso - PROTEQ' },
-    { value: 'cobranca-15dias', label: 'Cobrança Moderada (≥ 15 dias de atraso)', subject: '⚠️ Importante: Regularização Necessária - PROTEQ' },
-    { value: 'cobranca-30dias', label: 'Cobrança Pesada (≥ 30 dias de atraso)', subject: '🚨 URGENTE: Notificação Final - PROTEQ' },
+    { value: 'cobranca-7dias', label: 'Cobrança Leve (• 7 dias de atraso)', subject: 'Lembrete Amigável: Pagamento em Atraso - PROTEQ' },
+    { value: 'cobranca-15dias', label: 'Cobrança Moderada (• 15 dias de atraso)', subject: 'Importante: Regularização Necessária - PROTEQ' },
+    { value: 'cobranca-30dias', label: 'Cobrança Pesada (• 30 dias de atraso)', subject: 'URGENTE: Notificação Final - PROTEQ' },
     { value: 'solicitacao-contato', label: 'Cliente entrar em contato', subject: 'Entrar em contato conosco - PROTEQ' },
 ];
   const sendEmails = async () => {
   if (!selectedTemplate || !subject || selectedClients.length === 0) {
-    alert('Por favor, preencha todos os campos e selecione pelo menos um cliente.');
+    showMessage({
+      title: 'Dados incompletos',
+      message: 'Preencha todos os campos e selecione pelo menos um cliente.',
+      type: 'warning'
+    });
     return;
   }
 
-  // FUNÇÕES AUXILIARES DENTRO DO sendEmails
+  // FUN•.ES AUXILIARES DENTRO DO sendEmails
   const calcularStatus = (cliente) => {
     if (cliente.valorPago >= cliente.valorTotal) return 'pago';
     if (cliente.proximoVencimento && new Date(cliente.proximoVencimento) < new Date()) return 'em_atraso';
@@ -68,11 +74,11 @@ const EmailManager = ({ clientes }) => {
         email: cliente.email || 'cliente@exemplo.com',
         nomeResponsavel: cliente.nomeResponsavel,
         nomeEmpresa: cliente.nomeEmpresa,
-        cnpj: cliente.cnpj || 'Não informado',
+        cnpj: cliente.cnpj || 'não informado',
         valorPendente: `R$ ${(cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ',')}`,
         parcelasAtraso: parcelasAtraso > 1 ? `${parcelasAtraso} parcelas` : '1 parcela',
-        proximoVencimento: cliente.proximoVencimento || 'Não informado',
-        linkPagamento: cliente.linkPagamento || '#' // ← USA O LINK DO CLIENTE
+        proximoVencimento: cliente.proximoVencimento || 'não informado',
+        linkPagamento: cliente.linkPagamento || '#' // • USA O LINK DO CLIENTE
       };
 
       // DEBUG
@@ -85,7 +91,7 @@ const EmailManager = ({ clientes }) => {
 
       return recipient;
     });
-console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
+console.log(' PAYLOAD COMPLETO:', JSON.stringify({
   recipients,
   subject,
   template: selectedTemplate
@@ -97,13 +103,21 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
     });
 
     if (response.success) {
-      alert(`Emails enviados com sucesso!\n${response.statistics.successful} enviados\n${response.statistics.failed} falhas\nTaxa de sucesso: ${response.statistics.successRate}`);
+      showMessage({
+        title: 'Emailsão enviados',
+        message: `${response.statistics.successful} enviados, ${response.statistics.failed} falhas. Taxa: ${response.statistics.successRate}`,
+        type: 'success'
+      });
       setSelectedClients([]);
       setSubject('');
       setSelectedTemplate('');
     }
   } catch (error) {
-    alert('Erro ao enviar emails: ' + (error.response?.data?.message || error.message));
+    showMessage({
+      title: 'Erro ao enviar emails',
+      message: error.response?.data?.message || error.message,
+      type: 'error'
+    });
   } finally {
     setLoading(false);
   }
@@ -233,12 +247,12 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
           </div>
         </div>
 
-        {/* Estatísticas e Informações */}
+        {/* Estatticas e Informações */}
         <div className="space-y-6">
           <div className="bg-gradient-to-br from-slate-50 to-gray-50 p-6 rounded-xl border border-slate-200/50 shadow-sm">
             <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-slate-600" />
-              Estatísticas
+              Estatticas
             </h4>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="bg-white/70 rounded-lg p-3 shadow-sm border border-slate-100">
@@ -308,6 +322,7 @@ console.log('📤 PAYLOAD COMPLETO:', JSON.stringify({
 
 const FinancialManager = () => {
   const { user, loading } = useAuth();
+  const { showMessage } = useUI();
   const [showEmailSettings, setShowEmailSettings] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState('dashboard');
@@ -345,7 +360,7 @@ const formatarCNPJ = (valor) => {
   // Remove tudo que não é número
   const numeros = valor.replace(/\D/g, '');
   
-  // Aplica a máscara XX.XXX.XXX/XXXX-XX
+  // Aplica a mêscara XX.XXX.XXX/XXXX-XX
   if (numeros.length <= 2) return numeros;
   if (numeros.length <= 5) return numeros.replace(/(\d{2})(\d{0,3})/, '$1.$2');
   if (numeros.length <= 8) return numeros.replace(/(\d{2})(\d{3})(\d{0,3})/, '$1.$2.$3');
@@ -388,7 +403,7 @@ const parseMoedaParaNumero = (valor) => {
   proximoVencimento: '',
   cnpj: '',
   codigoContrato: '',
-  linkPagamento: '', // ← ADICIONAR
+  linkPagamento: '', // • ADICIONAR
   observacoes: ''
 });
 
@@ -473,18 +488,22 @@ const parseMoedaParaNumero = (valor) => {
 
   const adicionarCliente = () => {
   if (!novoCliente.nomeResponsavel || !novoCliente.nomeEmpresa || !novoCliente.valorTotal) {
-    alert('Por favor, preencha os campos obrigatórios');
+    showMessage({
+      title: 'Camposão obrigatórios',
+      message: 'Por favor, preencha os camposão obrigatórios.',
+      type: 'warning'
+    });
     return;
   }
 
-  const valorNumerico = parseMoedaParaNumero(novoCliente.valorTotal); // ← ADICIONAR
-  const valorParcela = valorNumerico / parseInt(novoCliente.parcelas); // ← MUDAR
+  const valorNumerico = parseMoedaParaNumero(novoCliente.valorTotal); // • ADICIONAR
+  const valorParcela = valorNumerico / parseInt(novoCliente.parcelas); // • MUDAR
   const novoId = Math.max(...clientes.map(c => c.id), 0) + 1;
   
   const cliente = {
     ...novoCliente,
     id: novoId,
-    valorTotal: valorNumerico, // ← MUDAR
+    valorTotal: valorNumerico, // • MUDAR
     valorPago: 0,
     parcelasPagas: 0,
     valorParcela: valorParcela,
@@ -499,7 +518,11 @@ const parseMoedaParaNumero = (valor) => {
 
   const editarCliente = () => {
   if (!clienteEditando.nomeResponsavel || !clienteEditando.nomeEmpresa || !clienteEditando.valorTotal) {
-    alert('Por favor, preencha os campos obrigatórios');
+    showMessage({
+      title: 'Camposão obrigatórios',
+      message: 'Por favor, preencha os camposão obrigatórios.',
+      type: 'warning'
+    });
     return;
   }
 
@@ -541,7 +564,11 @@ const parseMoedaParaNumero = (valor) => {
   const registrarPagamento = () => {
   const valorPago = parseFloat(pagamentoForm.valor);
   if (!valorPago || valorPago <= 0) {
-    alert('Por favor, insira um valor válido');
+    showMessage({
+      title: 'Valor inválido',
+      message: 'Por favor, insira um valor válido.',
+      type: 'warning'
+    });
     return;
   }
 
@@ -555,7 +582,7 @@ const parseMoedaParaNumero = (valor) => {
         descricao: pagamentoForm.descricao || `Pagamento - ${formatarData(pagamentoForm.data)}`
       }];
 
-      // CORREÇÃO: Atualizar próximo vencimento
+      // CORRE•fO: Atualizar próximo vencimento
       let novoProximoVencimento = cliente.proximoVencimento;
       
       if (novasParcelasPagas > cliente.parcelasPagas && cliente.proximoVencimento) {
@@ -569,7 +596,7 @@ const parseMoedaParaNumero = (valor) => {
         ...cliente,
         valorPago: novoValorPago,
         parcelasPagas: novasParcelasPagas,
-        proximoVencimento: novoProximoVencimento, // ← LINHA ADICIONADA
+        proximoVencimento: novoProximoVencimento, // • LINHA ADICIONADA
         historicosPagamentos: novoHistorico
       };
     }
@@ -587,15 +614,25 @@ const parseMoedaParaNumero = (valor) => {
 };
 
   const exportarRelatorio = () => {
+    if (!clientes || clientes.length === 0) {
+      console.error('Exportação cancelada: lista de clientes vazia');
+      showMessage({
+        title: 'Sem dados',
+        message: 'Não há clientes para exportar no momento.',
+        type: 'warning'
+      });
+      return;
+    }
+
     // Preparar dados organizados
     const relatorio = clientes.map(cliente => ({
       'ID': cliente.id,
       'Nome do Responsável': cliente.nomeResponsavel,
       'Nome da Empresa': cliente.nomeEmpresa,
-      'Email': cliente.email || 'Não informado',
-      'Telefone': cliente.telefone || 'Não informado',
+      'Email': cliente.email || 'não informado',
+      'Telefone': cliente.telefone || 'não informado',
       'Código do Contrato': cliente.codigoContrato,
-      'CNPJ': cliente.cnpj || 'Não informado',
+      'CNPJ': cliente.cnpj || 'não informado',
       'Valor Total (R$)': cliente.valorTotal.toFixed(2).replace('.', ','),
       'Valor Pago (R$)': cliente.valorPago.toFixed(2).replace('.', ','),
       'Valor Restante (R$)': (cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ','),
@@ -604,15 +641,34 @@ const parseMoedaParaNumero = (valor) => {
       'Valor por Parcela (R$)': cliente.valorParcela.toFixed(2).replace('.', ','),
       'Status': calcularStatus(cliente) === 'pago' ? 'Pago' : 
                calcularStatus(cliente) === 'em_atraso' ? 'Em Atraso' : 'Pendente',
-      'Data da Venda': cliente.dataVenda || 'Não informado',
-      'Próximo Vencimento': cliente.proximoVencimento || 'Não informado',
+      'Data da Venda': cliente.dataVenda || 'não informado',
+      'Próximo Vencimento': cliente.proximoVencimento || 'não informado',
       'Dias em Atraso': calcularStatus(cliente) === 'em_atraso' ? 
                         calcularDiasAtraso(cliente.proximoVencimento) : 0,
       'Observações': cliente.observacoes || 'Nenhuma'
     }));
 
+    if (!relatorio || relatorio.length === 0 || !relatorio[0]) {
+      console.error('Exportação cancelada: relatório vazio ou inválido', { relatorio });
+      showMessage({
+        title: 'Relatório inválido',
+        message: 'Não foi possível gerar o relatório. Tente novamente.',
+        type: 'error'
+      });
+      return;
+    }
+
     // Criar CSV bem formatado
-    const headers = Object.keys(relatorio[0]);
+    const headers = Object.keys(relatorio[0]).filter((key) => key && key.trim().length > 0);
+    if (headers.length === 0) {
+      console.error('Exportação cancelada: nenhum cabeçalho detectado no relatório', { relatorio });
+      showMessage({
+        title: 'Relatório inválido',
+        message: 'Nenhum cabeçalho encontrado para exportação.',
+        type: 'error'
+      });
+      return;
+    }
     const csvContent = [
       headers.join(';'), // Usar ; para melhor compatibilidade com Excel brasileiro
       ...relatorio.map(row => 
@@ -639,7 +695,11 @@ const parseMoedaParaNumero = (valor) => {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 
-    alert('Relatório exportado com sucesso!\nO arquivo pode ser aberto no Excel ou Google Sheets.');
+    showMessage({
+      title: 'Relatório exportado',
+      message: 'O arquivo pode ser aberto no Excel ou Google Sheets.',
+      type: 'success'
+    });
   };
 
   // NOVA função para exportar direto para Google Sheets
@@ -648,9 +708,9 @@ const parseMoedaParaNumero = (valor) => {
       'ID': cliente.id,
       'Nome do Responsável': cliente.nomeResponsavel,
       'Nome da Empresa': cliente.nomeEmpresa,
-      'Email': cliente.email || 'Não informado',
-      'Telefone': cliente.telefone || 'Não informado',
-      'CNPJ': cliente.cnpj || 'Não informado',
+      'Email': cliente.email || 'não informado',
+      'Telefone': cliente.telefone || 'não informado',
+      'CNPJ': cliente.cnpj || 'não informado',
       'Código do Contrato': cliente.codigoContrato,
       'Valor Total': `R$ ${cliente.valorTotal.toFixed(2).replace('.', ',')}`,
       'Valor Pago': `R$ ${cliente.valorPago.toFixed(2).replace('.', ',')}`,
@@ -659,8 +719,8 @@ const parseMoedaParaNumero = (valor) => {
       'Valor por Parcela': `R$ ${cliente.valorParcela.toFixed(2).replace('.', ',')}`,
       'Status': calcularStatus(cliente) === 'pago' ? 'Pago' : 
                calcularStatus(cliente) === 'em_atraso' ? 'Em Atraso' : 'Pendente',
-      'Data da Venda': cliente.dataVenda || 'Não informado',
-      'Próximo Vencimento': cliente.proximoVencimento || 'Não informado',
+      'Data da Venda': cliente.dataVenda || 'não informado',
+      'Próximo Vencimento': cliente.proximoVencimento || 'não informado',
       'Dias em Atraso': calcularStatus(cliente) === 'em_atraso' ? 
                         calcularDiasAtraso(cliente.proximoVencimento) : 0,
       'Observações': cliente.observacoes || 'Nenhuma'
@@ -675,20 +735,21 @@ const parseMoedaParaNumero = (valor) => {
     ).join('\n')).then(() => {
       // Abrir Google Sheets em nova aba
       window.open(googleSheetsUrl, '_blank');
-      
-      alert(`Dados copiados para área de transferência!
 
-Passos para colar no Google Sheets:
-1. Uma nova planilha do Google Sheets foi aberta
-2. Clique na célula A1 
-3. Pressione Ctrl+V (ou Cmd+V no Mac) para colar
-4. Os dados serão organizados automaticamente nas colunas
-
-Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
+      showMessage({
+        title: 'Dados copiados',
+        message: 'A planilha foi aberta. Clique na célula A1 e cole (Ctrl+V/Cmd+V).',
+        type: 'success'
+      });
     }).catch(() => {
       // Fallback se clipboard não funcionar
       window.open(googleSheetsUrl, '_blank');
-      alert('Google Sheets aberto em nova aba.\nCopie e cole os dados manualmente da tabela atual.');
+
+      showMessage({
+        title: 'Dados copiados',
+        message: 'A planilha foi aberta. Clique na célula A1 e cole (Ctrl+V/Cmd+V).',
+        type: 'success'
+      });
     });
   };
 
@@ -706,7 +767,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
     dataVenda: '',
     proximoVencimento: '',
     codigoContrato: '',
-    linkPagamento: '', // ← ADICIONAR
+    linkPagamento: '', // • ADICIONAR
     observacoes: ''
   });
 };
@@ -815,7 +876,7 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
           </button>
         </div>
 
-        {/* CONTEÚDO DAS ABAS */}
+        {/* CONTEDO DAS ABAS */}
         {toast && (
           <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-lg text-sm z-50">
             {toast}
@@ -1693,3 +1754,20 @@ Dica: Você pode formatar as colunas de valores como moeda depois de colar.`);
 };
 
 export default FinancialManager;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

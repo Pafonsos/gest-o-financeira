@@ -1,11 +1,13 @@
-import React from 'react';
+﻿import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { UiProvider } from './contexts/UiContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import App from './App';
 import AdminPage from './pages/AdminPage';
 import PipefyPage from './pages/PipefyPage';
 import ChatPage from './pages/ChatPage';
+import LandingPage from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { SetPasswordPage } from './pages/SetPasswordPage';
 
@@ -14,16 +16,18 @@ import { SetPasswordPage } from './pages/SetPasswordPage';
 // ============================================
 
 const AppRouter = () => {
-  console.log('📱 AppRouter renderizando');
+  console.log(' AppRouter renderizando');
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthProvider>
-        <Routes>
+      <UiProvider>
+        <AuthProvider>
+          <Routes>
           {/* Rota de login/registro */}
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/register" element={<AuthPage />} />
           <Route path="/set-password" element={<SetPasswordPage />} />
+          <Route path="/home" element={<LandingPage />} />
 
           {/* Rota protegida - Dashboard principal */}
           <Route
@@ -76,10 +80,21 @@ const AppRouter = () => {
             path="*"
             element={<Navigate to="/dashboard" />}
           />
-        </Routes>
-      </AuthProvider>
+          </Routes>
+        </AuthProvider>
+      </UiProvider>
     </Router>
   );
 };
 
 export default AppRouter;
+
+
+
+
+
+
+
+
+
+

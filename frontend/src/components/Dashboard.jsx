@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -265,7 +265,7 @@ const Dashboard = ({ clientes }) => {
                 Atenção: {metricas.clientesEmAtraso} cliente(s) em atraso
               </h4>
               <p className="text-red-700 text-sm">
-                Considere enviar lembretes de cobrança através do sistema de email marketing.
+                Considere enviar lembretes de cobrança atrav do sistema de email marketing.
               </p>
             </div>
           </div>
@@ -314,3 +314,13 @@ const MetricCard = ({ title, value, icon, color, trend, subtitle }) => {
 };
 
 export default Dashboard;
+
+
+
+
+
+
+
+
+
+

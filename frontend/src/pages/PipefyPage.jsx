@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PipefyIntegration from '../components/PipefyIntegration';
 import ProfileMenu from '../components/ProfileMenu';
@@ -195,3 +195,13 @@ const PipefyPage = () => {
 };
 
 export default PipefyPage;
+
+
+
+
+
+
+
+
+
+

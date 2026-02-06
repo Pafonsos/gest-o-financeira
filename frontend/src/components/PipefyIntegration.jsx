@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { CheckCircle, AlertCircle, CloudUpload, CloudDownload, Activity } from 'lucide-react';
+﻿import React, { useEffect, useState } from 'react';
+import { CheckCircle, AlertCircle, CloudUpload, CloudDownload, Activity, HelpCircle, X } from 'lucide-react';
 import pipefyService from '../services/pipefyService';
 
 const STORAGE_KEY = 'pipefy-integration-settings';
@@ -36,7 +36,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
   const [simpleMap, setSimpleMap] = useState({});
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [selectedClients, setSelectedClients] = useState([]);
-  const [activeTab, setActiveTab] = useState('config');
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -54,9 +54,6 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
         }
         if (parsed.selectedClients) {
           setSelectedClients(parsed.selectedClients);
-        }
-        if (parsed.activeTab) {
-          setActiveTab(parsed.activeTab);
         }
         if (Array.isArray(parsed.pipeFields)) {
           setPipeFields(parsed.pipeFields);
@@ -78,7 +75,6 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
       ...config,
       simpleMap,
       selectedClients,
-      activeTab,
       pipeFields,
       pipePhases,
       pipeCards,
@@ -88,10 +84,10 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
     if (!savedAt) {
       setSavedAt(payload.savedAt);
     }
-  }, [config, simpleMap, selectedClients, activeTab, pipeFields, pipePhases, pipeCards, savedAt]);
+  }, [config, simpleMap, selectedClients, pipeFields, pipePhases, pipeCards, savedAt]);
 
   const handleSave = () => {
-    const payload = { ...config, simpleMap, selectedClients, activeTab, pipeFields, pipePhases, pipeCards, savedAt: new Date().toISOString() };
+    const payload = { ...config, simpleMap, selectedClients, pipeFields, pipePhases, pipeCards, savedAt: new Date().toISOString() };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     setSavedAt(payload.savedAt);
     setStatus({ type: 'success', text: 'Configuração salva localmente.' });
@@ -297,47 +293,50 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
           <h3 className="text-xl font-bold text-slate-800">Integração Pipefy</h3>
           <p className="text-sm text-slate-600">Configure tokens e IDs para iniciar a integração.</p>
         </div>
-        <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold ${
-          isConfigured ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-        }`}>
-          {isConfigured ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-          {isConfigured ? 'Configuração ok' : 'Configuração pendente'}
+        <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold ${
+            isConfigured ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+          }`}>
+            {isConfigured ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+            {isConfigured ? 'Configuração ok' : 'Configuração pendente'}
+          </div>
+          <button
+            onClick={() => setShowHelp(true)}
+            className="flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800"
+            title="Como usar"
+          >
+            <HelpCircle className="w-4 h-4" />
+            ?
+          </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-2 mb-6 flex flex-wrap gap-2">
-        {[
-          { id: 'config', label: 'Configuração + Sincronização' },
-          { id: 'map', label: 'Mapeamento' },
-          { id: 'pipe', label: 'Visão do Pipe + Mover Cards' }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-              activeTab === tab.id
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {showHelp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-lg rounded-xl bg-white shadow-xl border border-slate-200">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+              <h3 className="text-lg font-bold text-slate-900">Como usar a integração</h3>
+              <button onClick={() => setShowHelp(false)} className="text-slate-500 hover:text-slate-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="px-5 py-4 text-sm text-slate-700 space-y-2">
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>Preencha o API Token e o Pipe ID.</li>
+                <li>Salve a configuração e teste a conexão.</li>
+                <li>Carregue os campos do Pipe e faça o mapeamento.</li>
+                <li>Selecione os clientes e envie para o Pipefy.</li>
+                <li>Use “Importar cards” para atualizar o sistema.</li>
+                <li>Se necessário, mova cards de fase manualmente.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {activeTab === 'config' && (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <div className="xl:col-span-2 bg-white rounded-lg shadow-md p-6">
-          <h4 className="font-semibold text-slate-800 mb-4">Passo a passo rápido</h4>
-          <ol className="text-sm text-slate-600 space-y-2">
-            <li>1. Preencha o Pipe ID.</li>
-            <li>2. Clique em “Carregar Campos do Pipe”.</li>
-            <li>3. Faça o mapeamento simples abaixo.</li>
-            <li>4. Clique em “Enviar clientes”.</li>
-            <li>5. Use “Importar cards” quando quiser puxar atualizações.</li>
-          </ol>
-
-          <h4 className="font-semibold text-slate-800 mt-6 mb-4">Credenciais e IDs</h4>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 bg-white rounded-lg shadow-md p-6">
+          <h4 className="font-semibold text-slate-800 mb-4">Credenciais e IDs</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">API Token</label>
@@ -401,7 +400,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
           </div>
           {savedAt && (
             <p className="text-xs text-slate-500 mt-3">
-              Última atualização: {new Date(savedAt).toLocaleString('pt-BR')}
+              ltima atualização: {new Date(savedAt).toLocaleString('pt-BR')}
             </p>
           )}
           {status.text && (
@@ -413,148 +412,130 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
               {status.text}
             </div>
           )}
-          </div>
-
-          <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg shadow-md p-6 border border-slate-200/60">
-            <h4 className="font-semibold text-slate-800 mb-3">Sincronização</h4>
-            <ul className="text-sm text-slate-600 space-y-2 mb-4">
-              <li>Defina o Pipe ID e os field_ids no mapa.</li>
-              <li>Teste a conexão antes de sincronizar.</li>
-              <li>Selecione quais clientes deseja enviar.</li>
-              <li>Use "Importar cards" para atualizar o sistema.</li>
-            </ul>
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={handlePushClients}
-                disabled={loading || clientes.length === 0 || selectedClients.length === 0}
-                className="px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-md disabled:opacity-60"
-              >
-                <CloudUpload className="w-4 h-4 inline mr-2" />
-                Enviar clientes
-              </button>
-              <button
-                onClick={handlePullCards}
-                disabled={loading}
-                className="px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md disabled:opacity-60"
-              >
-                <CloudDownload className="w-4 h-4 inline mr-2" />
-                Importar cards
-              </button>
-            </div>
-          </div>
         </div>
-      )}
 
-      {activeTab === 'map' && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h4 className="font-semibold text-slate-800 mb-2">Mapeamento simples</h4>
-          <p className="text-xs text-slate-500 mb-3">
-            Selecione qual campo do Pipefy corresponde a cada informação do sistema.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {Object.keys(defaultFieldMap).map((key) => (
-              <div key={key}>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">{key}</label>
-                <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                  value={simpleMap[key] || ''}
-                  onChange={(e) => setSimpleMap({ ...simpleMap, [key]: e.target.value })}
-                  disabled={pipeFields.length === 0}
-                >
-                  <option value="">(não usar)</option>
-                  {pipeFields.map((f) => (
-                    <option key={f.id} value={f.id}>{f.label} ({f.id})</option>
-                  ))}
-                </select>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex gap-3 mt-6">
+        <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg shadow-md p-6 border border-slate-200/60">
+          <h4 className="font-semibold text-slate-800 mb-3">Sincronização</h4>
+          <div className="flex flex-col gap-3">
             <button
-              onClick={() => setShowAdvanced((prev) => !prev)}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              onClick={handlePushClients}
+              disabled={loading || clientes.length === 0 || selectedClients.length === 0}
+              className="px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-md disabled:opacity-60"
             >
-              {showAdvanced ? 'Ocultar JSON' : 'Mostrar JSON'}
+              <CloudUpload className="w-4 h-4 inline mr-2" />
+              Enviar clientes
+            </button>
+            <button
+              onClick={handlePullCards}
+              disabled={loading}
+              className="px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md disabled:opacity-60"
+            >
+              <CloudDownload className="w-4 h-4 inline mr-2" />
+              Importar cards
             </button>
           </div>
+        </div>
+      </div>
 
-          {showAdvanced && (
-            <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Mapa de Campos (JSON)</label>
-              <textarea
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 font-mono text-xs"
-                rows="8"
-                value={config.fieldMap}
-                onChange={(e) => setConfig({ ...config, fieldMap: e.target.value })}
-                placeholder='{"email":"field_id"}'
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Se preferir, você pode editar o JSON manualmente.
-              </p>
+      <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+        <h4 className="font-semibold text-slate-800 mb-2">Mapeamento simples</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {Object.keys(defaultFieldMap).map((key) => (
+            <div key={key}>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">{key}</label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                value={simpleMap[key] || ''}
+                onChange={(e) => setSimpleMap({ ...simpleMap, [key]: e.target.value })}
+                disabled={pipeFields.length === 0}
+              >
+                <option value="">(não usar)</option>
+                {pipeFields.map((f) => (
+                  <option key={f.id} value={f.id}>{f.label} ({f.id})</option>
+                ))}
+              </select>
             </div>
+          ))}
+        </div>
+
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={() => setShowAdvanced((prev) => !prev)}
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            {showAdvanced ? 'Ocultar JSON' : 'Mostrar JSON'}
+          </button>
+        </div>
+
+        {showAdvanced && (
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Mapa de Campos (JSON)</label>
+            <textarea
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 font-mono text-xs"
+              rows="8"
+              value={config.fieldMap}
+              onChange={(e) => setConfig({ ...config, fieldMap: e.target.value })}
+              placeholder='{"email":"field_id"}'
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+        <h4 className="font-semibold text-slate-800 mb-3">Selecionar clientes</h4>
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={() => {
+              const keys = clientes.map((c, idx) => c.id || c.email || `idx-${idx}`);
+              setSelectedClients(keys);
+            }}
+            className="px-3 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300"
+          >
+            Selecionar todos
+          </button>
+          <button
+            onClick={() => setSelectedClients([])}
+            className="px-3 py-2 text-xs bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
+          >
+            Limpar
+          </button>
+          <span className="text-xs text-slate-500 self-center">
+            {selectedClients.length} selecionado(s)
+          </span>
+        </div>
+        <div className="max-h-64 overflow-y-auto bg-white border border-slate-200 rounded-lg p-2">
+          {clientes.length === 0 ? (
+            <p className="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado</p>
+          ) : (
+            clientes.map((cliente, idx) => {
+              const key = cliente.id || cliente.email || `idx-${idx}`;
+              const checked = selectedClients.includes(key);
+              return (
+                <label key={`${key}-${idx}`} className="flex items-center gap-2 px-2 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      setSelectedClients((prev) =>
+                        prev.includes(key)
+                          ? prev.filter((k) => k !== key)
+                          : [...prev, key]
+                      );
+                    }}
+                  />
+                  <span className="font-medium">{cliente.nomeEmpresa || cliente.nomeResponsavel || cliente.email || 'Cliente'}</span>
+                  {cliente.email && (
+                    <span className="text-slate-400">({cliente.email})</span>
+                  )}
+                </label>
+              );
+            })
           )}
         </div>
-      )}
+      </div>
 
-      {activeTab === 'config' && (
-        <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-          <h4 className="font-semibold text-slate-800 mb-3">Selecionar clientes</h4>
-          <div className="flex gap-2 mb-3">
-            <button
-              onClick={() => {
-                const keys = clientes.map((c, idx) => c.id || c.email || `idx-${idx}`);
-                setSelectedClients(keys);
-              }}
-              className="px-3 py-2 text-xs bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300"
-            >
-              Selecionar todos
-            </button>
-            <button
-              onClick={() => setSelectedClients([])}
-              className="px-3 py-2 text-xs bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200"
-            >
-              Limpar
-            </button>
-            <span className="text-xs text-slate-500 self-center">
-              {selectedClients.length} selecionado(s)
-            </span>
-          </div>
-          <div className="max-h-64 overflow-y-auto bg-white border border-slate-200 rounded-lg p-2">
-            {clientes.length === 0 ? (
-              <p className="text-xs text-slate-500 text-center py-4">Nenhum cliente cadastrado</p>
-            ) : (
-              clientes.map((cliente, idx) => {
-                const key = cliente.id || cliente.email || `idx-${idx}`;
-                const checked = selectedClients.includes(key);
-                return (
-                  <label key={`${key}-${idx}`} className="flex items-center gap-2 px-2 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded">
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => {
-                        setSelectedClients((prev) =>
-                          prev.includes(key)
-                            ? prev.filter((k) => k !== key)
-                            : [...prev, key]
-                        );
-                      }}
-                    />
-                    <span className="font-medium">{cliente.nomeEmpresa || cliente.nomeResponsavel || cliente.email || 'Cliente'}</span>
-                    {cliente.email && (
-                      <span className="text-slate-400">({cliente.email})</span>
-                    )}
-                  </label>
-                );
-              })
-            )}
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'pipe' && (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+        <div className="bg-white rounded-lg shadow-md p-6">
           <h4 className="font-semibold text-slate-800 mb-3">Mover cards de fase (manual)</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -593,57 +574,63 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
               </button>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3">
-            Dica: clique em “Carregar Campos do Pipe” e depois “Importar cards” para listar os cards.
-          </p>
-          </div>
+        </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="font-semibold text-slate-800">Visão do Pipe (colunas)</h4>
-              <button
-                onClick={handlePullCards}
-                disabled={loading}
-                className="px-3 py-2 text-xs bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-60"
-              >
-                Atualizar visão
-              </button>
-            </div>
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              {pipePhases.length === 0 && (
-                <div className="text-sm text-slate-500">
-                  Clique em “Carregar Campos do Pipe” para trazer as fases.
-                </div>
-              )}
-              {pipePhases.map((phase, idx) => {
-                const cards = cardsByPhase[phase.id] || [];
-                return (
-                  <div key={`${phase.id}-${idx}`} className="border border-slate-200 rounded-lg p-3 bg-slate-50">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-slate-800">{phase.name}</span>
-                      <span className="text-xs text-slate-500">{cards.length}</span>
-                    </div>
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {cards.length === 0 ? (
-                        <div className="text-xs text-slate-400">Sem cards</div>
-                      ) : (
-                        cards.map((card, cidx) => (
-                          <div key={`${card.id}-${cidx}`} className="bg-white border border-slate-200 rounded-md px-2 py-2 text-xs text-slate-700">
-                            <div className="font-semibold">{card.title}</div>
-                            <div className="text-slate-400">{card.id}</div>
-                          </div>
-                        ))
-                      )}
-                    </div>
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="font-semibold text-slate-800">Visão do Pipe (colunas)</h4>
+            <button
+              onClick={handlePullCards}
+              disabled={loading}
+              className="px-3 py-2 text-xs bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-60"
+            >
+              Atualizar visão
+            </button>
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            {pipePhases.length === 0 && (
+              <div className="text-sm text-slate-500">
+                Nenhuma fase carregada.
+              </div>
+            )}
+            {pipePhases.map((phase, idx) => {
+              const cards = cardsByPhase[phase.id] || [];
+              return (
+                <div key={`${phase.id}-${idx}`} className="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-slate-800">{phase.name}</span>
+                    <span className="text-xs text-slate-500">{cards.length}</span>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {cards.length === 0 ? (
+                      <div className="text-xs text-slate-400">Sem cards</div>
+                    ) : (
+                      cards.map((card, cidx) => (
+                        <div key={`${card.id}-${cidx}`} className="bg-white border border-slate-200 rounded-md px-2 py-2 text-xs text-slate-700">
+                          <div className="font-semibold">{card.title}</div>
+                          <div className="text-slate-400">{card.id}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
 export default PipefyIntegration;
+
+
+
+
+
+
+
+
+
+

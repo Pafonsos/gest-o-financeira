@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 
@@ -9,18 +9,27 @@ export const LoginForm = ({ onToggleForm }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { signIn } = useAuth();
-  console.log('🔍 signIn no LoginForm:', signIn); 
+  const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
+  console.log(' signIn no LoginForm:', signIn); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!isValidEmail(email)) {
+      setError('Informe um email válido');
+      return;
+    }
+    if (!password || password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres');
+      return;
+    }
     setLoading(true);
 
-    const result = await signIn(email, password); // ✅ CORRETO
+    const result = await signIn(email, password); // . CORRETO
 
     if (result.error) {
       setError('Email ou senha incorretos');
-}
+    }
 
     setLoading(false);
   };
@@ -73,7 +82,7 @@ export const LoginForm = ({ onToggleForm }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-12 pr-14 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                placeholder="••••••••"
+                placeholder="••••••••••••••••••"
                 required
               />
               <button
@@ -125,3 +134,15 @@ export const LoginForm = ({ onToggleForm }) => {
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+

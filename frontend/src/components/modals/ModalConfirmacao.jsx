@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { AlertCircle } from 'lucide-react';
 
 const ModalConfirmacao = ({ 
@@ -45,3 +45,13 @@ const ModalConfirmacao = ({
 };
 
 export default ModalConfirmacao;
+
+
+
+
+
+
+
+
+
+

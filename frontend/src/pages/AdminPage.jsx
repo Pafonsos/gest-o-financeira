@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AdminPanel from '../components/AdminPanel';
@@ -30,7 +30,7 @@ const AdminPage = () => {
     return (
       <div className="admin-page">
         <div className="access-denied">
-          <h1>🔐 Acesso Negado</h1>
+          <h1> Acesso Negado</h1>
           <p>Você precisa estar autenticado para acessar esta página.</p>
           <a href="/login" className="btn btn-primary">
             Ir para Login
@@ -45,7 +45,7 @@ const AdminPage = () => {
     return (
       <div className="admin-page">
         <div className="access-denied">
-          <h1>🚫 Sem Permissão</h1>
+          <h1>Sem Permissão</h1>
           <p>Apenas administradores podem acessar o painel de administração.</p>
           <a href="/dashboard" className="btn btn-secondary">
             Voltar ao Dashboard
@@ -77,3 +77,13 @@ const AdminPage = () => {
 };
 
 export default AdminPage;
+
+
+
+
+
+
+
+
+
+

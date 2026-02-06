@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { X } from 'lucide-react';
 
 const ModalCliente = ({ 
@@ -195,3 +195,13 @@ const ModalCliente = ({
 };
 
 export default ModalCliente;
+
+
+
+
+
+
+
+
+
+

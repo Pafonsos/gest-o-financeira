@@ -1,16 +1,14 @@
-import React from 'react';
+﻿import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import LoadingState from './ui/LoadingState';
+import AccessDenied from './ui/AccessDenied';
 
 export const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <LoadingState message="Carregando sessão..." />;
   }
 
   return user ? children : <Navigate to="/auth" />;
@@ -23,11 +21,7 @@ export const AdminRoute = ({ children }) => {
   const { user, loading, isAdmin, roleLoading } = useAuth();
 
   if (loading || roleLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <LoadingState message="Validando permissões..." />;
   }
 
   if (!user) {
@@ -35,8 +29,19 @@ export const AdminRoute = ({ children }) => {
   }
 
   if (!isAdmin) {
-    return <Navigate to="/dashboard" />;
+    return <AccessDenied message="Somente administradores podem acessar esta página." />;
   }
 
   return children;
 };
+
+
+
+
+
+
+
+
+
+
+

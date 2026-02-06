@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    ADMIN PANEL STYLES
    ============================================ */
 
@@ -86,7 +86,7 @@
 }
 
 /* ============================================
-   BARRA DE AÇÕES
+   BARRA DE A•.ES
    ============================================ */
 
 .admin-actions {
@@ -96,6 +96,28 @@
   flex-wrap: wrap;
 }
 
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 20px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #1f2937;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: white;
+}
 .btn {
   padding: 10px 16px;
   border: none;
@@ -128,9 +150,121 @@
   background-color: #cbd5f5;
 }
 
+.btn-ghost {
+  background: transparent;
+  color: #1f2937;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* ============================================
+   LANDING MANAGER
+   ============================================ */
+
+.landing-manager {
+  margin-top: 32px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.landing-manager h2 {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+}
+
+.landing-manager p {
+  margin: 0 0 16px 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.landing-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.landing-slides {
+  display: grid;
+  gap: 14px;
+}
+
+.landing-slide {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 180px 1fr 120px;
+  gap: 14px;
+  align-items: center;
+}
+
+.landing-preview {
+  width: 100%;
+  height: 110px;
+  border-radius: 10px;
+  background: #e2e8f0;
+  display: grid;
+  place-items: center;
+  color: #64748b;
+  font-size: 12px;
+  background-size: cover;
+  background-position: center;
+}
+
+.landing-fields {
+  display: grid;
+  gap: 8px;
+}
+
+.landing-fields label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: #334155;
+}
+
+.landing-fields input[type="text"] {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.file-input input[type="file"] {
+  font-size: 12px;
+}
+
+.landing-slide-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .landing-slide {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ============================================
@@ -396,15 +530,22 @@
   justify-content: flex-end;
 }
 
-.btn-icon {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 4px;
-  transition: all 0.2s;
-  opacity: 0.7;
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.btn-action span {
+  font-weight: 600;
+}
+
+.btn-action svg {
+  width: 16px;
+  height: 16px;
 }
 
 .btn-icon:hover {
@@ -545,3 +686,21 @@
     border-top: 1px solid #eee;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 900px) {
+  .btn-action span {
+    display: none;
+  }
+}
+

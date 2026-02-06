@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Settings, X, Clock, Mail, AlertCircle, Check } from 'lucide-react';
 import { emailSettingsService } from '../services/emailSettingsService';
 
@@ -204,7 +204,7 @@ export const EmailSettingsModal = ({ isOpen, onClose }) => {
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-medium text-blue-900 mb-2">ℹ️ Informações</h4>
+              <h4 className="font-medium text-blue-900 mb-2">Informações</h4>
               <ul className="text-sm text-blue-700 space-y-1">
                 <li>• Você pode desativar emails para clientes específicos na tela de detalhes</li>
                 <li>• Todas as verificações são feitas automaticamente pelo sistema</li>
@@ -240,3 +240,13 @@ export const EmailSettingsModal = ({ isOpen, onClose }) => {
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+

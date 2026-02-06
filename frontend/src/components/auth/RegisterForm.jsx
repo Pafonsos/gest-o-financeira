@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Mail, Lock, User, Eye, EyeOff, UserPlus } from 'lucide-react';
 
@@ -87,7 +87,7 @@ export const RegisterForm = ({ onToggleForm }) => {
                 value={formData.nome}
                 onChange={handleChange}
                 className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                placeholder="João Silva"
+                placeholder="Jo Silva"
                 required
               />
             </div>
@@ -123,7 +123,7 @@ export const RegisterForm = ({ onToggleForm }) => {
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full pl-12 pr-14 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                placeholder="••••••••"
+                placeholder="••••••••••••••••••"
                 required
               />
               <button
@@ -148,7 +148,7 @@ export const RegisterForm = ({ onToggleForm }) => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/70 backdrop-blur-sm transition-all duration-200 shadow-sm hover:shadow-md"
-                placeholder="••••••••"
+                placeholder="••••••••••••••••••"
                 required
               />
             </div>
@@ -185,3 +185,13 @@ export const RegisterForm = ({ onToggleForm }) => {
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+
