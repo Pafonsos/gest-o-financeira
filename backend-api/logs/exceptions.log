@@ -831,3 +831,1019 @@
   ],
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-05 08:41:12",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:41:12 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 1556,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 61906944,
+      "heapTotal": 30130176,
+      "heapUsed": 16555536,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 1704.937
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:42:45",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:42:45 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 2152,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 62230528,
+      "heapTotal": 30392320,
+      "heapUsed": 16696248,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 1797.656
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:43:28",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:43:28 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 1532,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 61935616,
+      "heapTotal": 29868032,
+      "heapUsed": 16602416,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 1840.953
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:46:15",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:46:15 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 16696,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 61972480,
+      "heapTotal": 30654464,
+      "heapUsed": 16683400,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 2008.484
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:46:22",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:46:22 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 2392,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 60665856,
+      "heapTotal": 30130176,
+      "heapUsed": 16579904,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 2015.031
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:46:28",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:46:28 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 17820,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 60461056,
+      "heapTotal": 30130176,
+      "heapUsed": 16539200,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 2021.578
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:46:42",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:46:42 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 17988,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 60575744,
+      "heapTotal": 30130176,
+      "heapUsed": 16575424,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 2034.953
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:46:54",
+  "level": "error",
+  "message": "uncaughtException: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\nError: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "error": {
+    "code": "MODULE_NOT_FOUND",
+    "requireStack": [
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ]
+  },
+  "stack": "Error: Cannot find module '@supabase/supabase-js'\nRequire stack:\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\controllers\\adminController.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\routes\\adminRoutes.js\n- C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1421:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1059:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1064:22)\n    at Module._load (node:internal/modules/cjs/loader:1227:37)\n    at TracingChannel.traceSync (node:diagnostics_channel:328:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)\n    at Module.require (node:internal/modules/cjs/loader:1504:12)\n    at require (node:internal/modules/helpers:152:16)\n    at Object.<anonymous> (C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js:1:26)\n    at Module._compile (node:internal/modules/cjs/loader:1761:14)",
+  "exception": true,
+  "date": "Thu Feb 05 2026 08:46:54 GMT-0300 (Horário Padrão de Brasília)",
+  "process": {
+    "pid": 872,
+    "uid": null,
+    "gid": null,
+    "cwd": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.11.1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\server.js"
+    ],
+    "memoryUsage": {
+      "rss": 60465152,
+      "heapTotal": 30392320,
+      "heapUsed": 16615200,
+      "external": 2397320,
+      "arrayBuffers": 18927
+    }
+  },
+  "os": {
+    "loadavg": [
+      0,
+      0,
+      0
+    ],
+    "uptime": 2047.218
+  },
+  "trace": [
+    {
+      "column": 15,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._resolveFilename",
+      "line": 1421,
+      "method": "_resolveFilename",
+      "native": false
+    },
+    {
+      "column": 19,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "defaultResolveImpl",
+      "line": 1059,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 22,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "resolveForCJSWithHooks",
+      "line": 1064,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 37,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._load",
+      "line": 1227,
+      "method": "_load",
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:diagnostics_channel",
+      "function": "TracingChannel.traceSync",
+      "line": 328,
+      "method": "traceSync",
+      "native": false
+    },
+    {
+      "column": 24,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "wrapModuleLoad",
+      "line": 245,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 12,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module.require",
+      "line": 1504,
+      "method": "require",
+      "native": false
+    },
+    {
+      "column": 16,
+      "file": "node:internal/modules/helpers",
+      "function": "require",
+      "line": 152,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 26,
+      "file": "C:\\Users\\afonso\\Desktop\\faculdade\\backend-api\\services\\adminService.js",
+      "function": null,
+      "line": 1,
+      "method": null,
+      "native": false
+    },
+    {
+      "column": 14,
+      "file": "node:internal/modules/cjs/loader",
+      "function": "Module._compile",
+      "line": 1761,
+      "method": "_compile",
+      "native": false
+    }
+  ],
+  "service": "email-system"
+}

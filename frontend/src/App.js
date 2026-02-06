@@ -666,25 +666,6 @@ const parseMoedaParaNumero = (valor) => {
       'Observações': cliente.observacoes || 'Nenhuma'
     }));
 
-    // Converter para formato de tabela HTML
-    const headers = Object.keys(relatorio[0]);
-    const htmlTable = `
-      <table border="1" style="border-collapse: collapse; width: 100%;">
-        <thead>
-          <tr style="background-color: #f0f0f0;">
-            ${headers.map(header => `<th style="padding: 8px; text-align: left;">${header}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${relatorio.map(row => `
-            <tr>
-              ${Object.values(row).map(value => `<td style="padding: 8px;">${value}</td>`).join('')}
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-
     // Criar URL para Google Sheets
     const googleSheetsUrl = `https://docs.google.com/spreadsheets/create?usp=sharing`;
     

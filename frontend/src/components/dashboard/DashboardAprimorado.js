@@ -107,7 +107,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
   });
 
 
-  const getPeriodoRange = () => {
+  const getPeriodoRange = useCallback(() => {
     const hoje = new Date();
     const mesAtual = hoje.getMonth();
     const anoAtual = hoje.getFullYear();
@@ -128,7 +128,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     const inicio = new Date(anoAtual, mesAtual, 1);
     const fim = new Date(anoAtual, mesAtual + 1, 0, 23, 59, 59, 999);
     return { inicio, fim };
-  };
+  }, [periodo]);
 
   const calcularMetricas = useCallback(() => {
     // Garantir que clientes é um array válido
@@ -260,7 +260,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       clientesAtivos,
       clientesInadimplentes
     });
-  }, [clientes, despesas, periodo]);
+  }, [clientes, despesas, periodo, getPeriodoRange]);
 
   useEffect(() => {
     if (clientes) {

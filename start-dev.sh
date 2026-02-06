@@ -24,14 +24,14 @@ echo ""
 echo "🚀 Iniciando Backend (Render em 5000)..."
 cd backend-api
 npm install
-npm start &
+npm run dev &
 BACKEND_PID=$!
 
 # Aguardar um pouco
 sleep 3
 
 # Iniciar Frontend
-echo "🎨 Iniciando Frontend (Vercel em 3000)..."
+echo "🎨 Iniciando Frontend (Vercel em 5173)..."
 cd ../frontend
 npm install
 npm start &
@@ -41,7 +41,7 @@ echo ""
 echo "============================================"
 echo "✅ Ambos os servidores estão iniciando!"
 echo ""
-echo "Frontend: http://localhost:3000"
+echo "Frontend: http://localhost:5173"
 echo "Backend:  http://localhost:5000/api/health"
 echo ""
 echo "Para parar: Ctrl+C ou execute:"

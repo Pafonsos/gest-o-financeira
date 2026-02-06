@@ -22,7 +22,9 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://127.0.0.1:3000',
-  process.env.FRONTEND_URL || 'http://localhost:3000'
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  process.env.FRONTEND_URL || 'http://localhost:5173'
 ].filter(url => url); // Remove duplicatas
 
 app.use(cors({
@@ -116,11 +118,11 @@ server.listen(PORT, () => {
   console.log('='.repeat(60));
   console.log(`🌐 Porta: ${PORT}`);
   console.log(`📍 API: http://localhost:${PORT}/api`);
-  console.log(`🔗 Frontend aceito: http://localhost:3000`); // ← MUDOU AQUI!
+  console.log(`🔗 Frontend aceito: http://localhost:5173`); // ← MUDOU AQUI!
   console.log(`📊 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log('='.repeat(60));
   console.log('\n💡 Configurações aplicadas:');
-  console.log('   ✓ CORS: http://localhost:3000');
+  console.log('   ✓ CORS: http://localhost:5173');
   console.log('   ✓ Headers: SEM LIMITE');
   console.log('   ✓ Payload: 100MB');
   console.log('   ✓ Timeout: DESATIVADO\n');

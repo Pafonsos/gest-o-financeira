@@ -2313,3 +2313,15 @@
   "message": "✅ 1 usuários encontrados",
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-05 08:47:48",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-05 08:52:17",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}

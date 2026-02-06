@@ -23,21 +23,21 @@ echo.
 REM Iniciar Backend em uma nova janela
 echo 🚀 Iniciando Backend (Render em 5000)...
 cd backend-api
-start cmd /k "npm install && npm start"
+start cmd /k "npm install && npm run dev"
 
 REM Aguardar um pouco
 timeout /t 3 /nobreak
 
 REM Iniciar Frontend em uma nova janela
-echo 🎨 Iniciando Frontend (Vercel em 3000)...
+echo 🎨 Iniciando Frontend (Vercel em 5173)...
 cd ..\frontend
-start cmd /k "npm install && npm start"
+start cmd /k "npm install && npm run dev"
 
 echo.
 echo ============================================
 echo ✅ Ambos os servidores estão iniciando!
 echo.
-echo Frontend: http://localhost:3000
+echo Frontend: http://localhost:5173
 echo Backend:  http://localhost:5000/api/health
 echo ============================================
 echo.
