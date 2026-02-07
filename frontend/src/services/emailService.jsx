@@ -124,7 +124,7 @@ const emailService = {
         
         throw new Error(`Erro ${status}: ${serverMessage || error.message}`);
       } else if (error.request) {
-        throw new Error(Servidor não respondeu. Verifique se o backend está rodando em );
+        throw new Error(`Servidor não respondeu. Verifique se o backend está rodando em ${API_BASE_URL}`);
       } else {
         throw new Error(error.message);
       }
@@ -163,6 +163,8 @@ const emailService = {
 };
 
 export default emailService;
+
+
 
 
 
