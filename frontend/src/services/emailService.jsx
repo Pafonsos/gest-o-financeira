@@ -124,7 +124,7 @@ const emailService = {
         
         throw new Error(`Erro ${status}: ${serverMessage || error.message}`);
       } else if (error.request) {
-        throw new Error('Servidor não respondeu. Verifique se o backend está rodando em http://localhost:5000');
+        throw new Error(Servidor não respondeu. Verifique se o backend está rodando em );
       } else {
         throw new Error(error.message);
       }
@@ -163,6 +163,7 @@ const emailService = {
 };
 
 export default emailService;
+
 
 
 

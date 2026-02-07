@@ -6,15 +6,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
   plugins: [react()],
-  esbuild: {
-    loader: "jsx",
-    include: /src\/.*\.js$/,
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        ".js": "jsx",
-      },
+  esbuild: {\n    jsx: 'automatic',\n    loader: 'jsx',\n    include: /src\/.*\.[jt]sx?$/,\n  },
+  optimizeDeps: {\n    esbuildOptions: {\n      loader: {\n        '.js': 'jsx',\n        '.jsx': 'jsx',\n        '.ts': 'ts',\n        '.tsx': 'tsx'\n      },\n    },\n  },
     },
   },
   define: {
@@ -35,4 +28,5 @@ export default defineConfig(({ mode }) => {
   },
   };
 });
+
 

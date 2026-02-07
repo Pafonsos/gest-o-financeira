@@ -2,6 +2,7 @@
 import { UserX, UserCheck, Shield, ShieldOff, Trash2 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
+import { config } from '../lib/config';
 import LoadingState from './ui/LoadingState';
 import ErrorState from './ui/ErrorState';
 import EmptyState from './ui/EmptyState';
@@ -24,6 +25,7 @@ const defaultLandingSlides = [
 ];
 
 const AdminPanel = () => {
+  const API_URL = config.apiUrl;
   const { user } = useAuth();
 
   // ESTADOS
@@ -61,7 +63,7 @@ const AdminPanel = () => {
         throw new Error('Não autenticado');
       }
 
-      const response = await fetch('http://localhost:5000/api/admin/users', {
+      const response = await fetch(`${API_URL}/admin/users`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -281,7 +283,7 @@ const AdminPanel = () => {
         throw new Error('Não autenticado');
       }
 
-      const response = await fetch('http://localhost:5000/api/admin/invite', {
+      const response = await fetch(`${API_URL}/admin/invite`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -321,7 +323,7 @@ const AdminPanel = () => {
         throw new Error('Não autenticado');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/disable`, {
+      const response = await fetch(`${API_URL}/admin/users/${userId}/disable`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -353,7 +355,7 @@ const AdminPanel = () => {
         throw new Error('Não autenticado');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/enable`, {
+      const response = await fetch(`${API_URL}/admin/users/${userId}/enable`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -385,7 +387,7 @@ const AdminPanel = () => {
         throw new Error('Não autenticado');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/promote`, {
+      const response = await fetch(`${API_URL}/admin/users/${userId}/promote`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -417,7 +419,7 @@ const AdminPanel = () => {
         throw new Error('Não autenticado');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/demote`, {
+      const response = await fetch(`${API_URL}/admin/users/${userId}/demote`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -449,7 +451,7 @@ const AdminPanel = () => {
         throw new Error('Não autenticado');
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+      const response = await fetch(`${API_URL}/admin/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -834,6 +836,12 @@ const AdminPanel = () => {
 };
 
 export default AdminPanel;
+
+
+
+
+
+
 
 
 
