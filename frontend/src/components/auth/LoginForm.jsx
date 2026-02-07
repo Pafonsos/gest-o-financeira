@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useUI } from '../../contexts/UiContext';
 import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 
 export const LoginForm = ({ onToggleForm }) => {
@@ -9,6 +10,7 @@ export const LoginForm = ({ onToggleForm }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { signIn } = useAuth();
+  const { showMessage } = useUI();
   const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
   console.log(' signIn no LoginForm:', signIn); 
 
@@ -16,11 +18,15 @@ export const LoginForm = ({ onToggleForm }) => {
     e.preventDefault();
     setError('');
     if (!isValidEmail(email)) {
-      setError('Informe um email válido');
+      const message = 'Informe um email válido';
+      setError(message);
+      showMessage({ title: 'Email inválido', message, type: 'warning' });
       return;
     }
     if (!password || password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres');
+      const message = 'A senha deve ter pelo menos 6 caracteres';
+      setError(message);
+      showMessage({ title: 'Senha inválida', message, type: 'warning' });
       return;
     }
     setLoading(true);
@@ -28,7 +34,9 @@ export const LoginForm = ({ onToggleForm }) => {
     const result = await signIn(email, password); // . CORRETO
 
     if (result.error) {
-      setError('Email ou senha incorretos');
+      const message = 'Email ou senha incorretos';
+      setError(message);
+      showMessage({ title: 'Falha no login', message, type: 'error' });
     }
 
     setLoading(false);
@@ -134,6 +142,8 @@ export const LoginForm = ({ onToggleForm }) => {
     </div>
   );
 };
+
+
 
 
 

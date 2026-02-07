@@ -1,8 +1,11 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { CheckCircle, AlertCircle, CloudUpload, CloudDownload, Activity, HelpCircle, X } from 'lucide-react';
 import pipefyService from '../services/pipefyService';
+import { supabase } from '../lib/supabaseClient';
 
 const STORAGE_KEY = 'pipefy-integration-settings';
+const PIPEFY_SETTINGS_TABLE = 'pipefy_settings';
+const PIPEFY_SETTINGS_ROW = 'default';
 
 const defaultFieldMap = {
   nomeEmpresa: '',
@@ -39,35 +42,61 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    const loadSettings = async () => {
+      const localRaw = localStorage.getItem(STORAGE_KEY);
+      let localData = null;
       try {
-        const parsed = JSON.parse(saved);
+        localData = localRaw ? JSON.parse(localRaw) : null;
+      } catch {
+        localData = null;
+      }
+
+      if (localData) {
         setConfig({
-          apiToken: parsed.apiToken || '',
-          pipeId: parsed.pipeId || '',
-          fieldMap: parsed.fieldMap || JSON.stringify(defaultFieldMap, null, 2)
+          apiToken: localData.apiToken || '',
+          pipeId: localData.pipeId || '',
+          fieldMap: localData.fieldMap || JSON.stringify(defaultFieldMap, null, 2)
         });
-        setSavedAt(parsed.savedAt || null);
-        if (parsed.simpleMap) {
-          setSimpleMap(parsed.simpleMap);
-        }
-        if (parsed.selectedClients) {
-          setSelectedClients(parsed.selectedClients);
-        }
-        if (Array.isArray(parsed.pipeFields)) {
-          setPipeFields(parsed.pipeFields);
-        }
-        if (Array.isArray(parsed.pipePhases)) {
-          setPipePhases(parsed.pipePhases);
-        }
-        if (Array.isArray(parsed.pipeCards)) {
-          setPipeCards(parsed.pipeCards);
+        setSavedAt(localData.savedAt || null);
+        if (localData.simpleMap) setSimpleMap(localData.simpleMap);
+        if (localData.selectedClients) setSelectedClients(localData.selectedClients);
+        if (Array.isArray(localData.pipeFields)) setPipeFields(localData.pipeFields);
+        if (Array.isArray(localData.pipePhases)) setPipePhases(localData.pipePhases);
+        if (Array.isArray(localData.pipeCards)) setPipeCards(localData.pipeCards);
+        return;
+      }
+
+      try {
+        const { data } = await supabase
+          .from(PIPEFY_SETTINGS_TABLE)
+          .select('config, simple_map, saved_at')
+          .eq('id', PIPEFY_SETTINGS_ROW)
+          .single();
+
+        if (data?.config) {
+          setConfig({
+            apiToken: data.config.apiToken || '',
+            pipeId: data.config.pipeId || '',
+            fieldMap: data.config.fieldMap || JSON.stringify(defaultFieldMap, null, 2)
+          });
+          if (data.simple_map) setSimpleMap(data.simple_map);
+          if (data.saved_at) setSavedAt(data.saved_at);
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              ...data.config,
+              simpleMap: data.simple_map,
+              savedAt: data.saved_at,
+              draftUpdatedAt: data.saved_at || new Date().toISOString()
+            })
+          );
         }
       } catch {
-        // Ignore invalid storage
+        // ignore
       }
-    }
+    };
+
+    loadSettings();
   }, []);
 
   useEffect(() => {
@@ -78,19 +107,45 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
       pipeFields,
       pipePhases,
       pipeCards,
-      savedAt: savedAt || new Date().toISOString()
+      savedAt: savedAt || new Date().toISOString(),
+      draftUpdatedAt: new Date().toISOString()
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    if (!savedAt) {
-      setSavedAt(payload.savedAt);
-    }
   }, [config, simpleMap, selectedClients, pipeFields, pipePhases, pipeCards, savedAt]);
 
-  const handleSave = () => {
-    const payload = { ...config, simpleMap, selectedClients, pipeFields, pipePhases, pipeCards, savedAt: new Date().toISOString() };
+  const handleSave = async () => {
+    const savedAtNow = new Date().toISOString();
+    const payload = {
+      ...config,
+      simpleMap,
+      selectedClients,
+      pipeFields,
+      pipePhases,
+      pipeCards,
+      savedAt: savedAtNow,
+      draftUpdatedAt: savedAtNow
+    };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    setSavedAt(payload.savedAt);
-    setStatus({ type: 'success', text: 'Configuração salva localmente.' });
+    setSavedAt(savedAtNow);
+
+    try {
+      await supabase
+        .from(PIPEFY_SETTINGS_TABLE)
+        .upsert({
+          id: PIPEFY_SETTINGS_ROW,
+          config: {
+            apiToken: config.apiToken,
+            pipeId: config.pipeId,
+            fieldMap: config.fieldMap
+          },
+          simple_map: simpleMap,
+          saved_at: savedAtNow
+        }, { onConflict: 'id' });
+      setStatus({ type: 'success', text: 'Configuração salva com sucesso.' });
+    } catch (err) {
+      console.error('Erro ao salvar no Supabase:', err);
+      setStatus({ type: 'error', text: 'Falha ao salvar no Supabase.' });
+    }
   };
 
   const handleClear = () => {
@@ -624,6 +679,11 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
 };
 
 export default PipefyIntegration;
+
+
+
+
+
 
 
 

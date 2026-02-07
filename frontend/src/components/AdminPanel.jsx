@@ -3,6 +3,8 @@ import { UserX, UserCheck, Shield, ShieldOff, Trash2 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import LoadingState from './ui/LoadingState';
+import ErrorState from './ui/ErrorState';
+import EmptyState from './ui/EmptyState';
 import './AdminPanel.css';
 
 // ============================================
@@ -10,6 +12,11 @@ import './AdminPanel.css';
 // ============================================
 
 const LANDING_SLIDES_KEY = 'proteq-landing-slides';
+const LANDING_BUCKET = 'landing-carousel';
+const LANDING_TABLE = 'landing_settings';
+const LANDING_ROW_ID = 'default';
+const LANDING_DRAFT_KEY = 'proteq-landing-slides-draft';
+
 const defaultLandingSlides = [
   { title: 'Equipe Proteq', subtitle: 'Gente focada em resultado', image: '' },
   { title: 'Operação', subtitle: 'Processos organizados e confiáveis', image: '' },
@@ -40,7 +47,7 @@ const AdminPanel = () => {
   }, []);
 
   // ============================================
-  // FUN•.ES
+  // FUNÇÕES
   // ============================================
 
   // Carregar lista de Usuários
@@ -51,7 +58,7 @@ const AdminPanel = () => {
 
       const token = await getAuthToken();
       if (!token) {
-        throw new Error('não autenticado');
+        throw new Error('Não autenticado');
       }
 
       const response = await fetch('http://localhost:5000/api/admin/users', {
@@ -79,8 +86,54 @@ const AdminPanel = () => {
     }
   }, [getAuthToken]);
 
-  const loadLandingSlides = useCallback(() => {
+  const loadLandingSlides = useCallback(async () => {
+    const draftRaw = localStorage.getItem(LANDING_DRAFT_KEY);
+    let draft = null;
     try {
+      draft = draftRaw ? JSON.parse(draftRaw) : null;
+    } catch {
+      draft = null;
+    }
+
+    const draftUpdatedAt = draft?.draftUpdatedAt ? new Date(draft.draftUpdatedAt).getTime() : 0;
+
+    if (draft?.slides && Array.isArray(draft.slides) && draft.slides.length > 0) {
+      setLandingSlides(draft.slides);
+      localStorage.setItem(LANDING_SLIDES_KEY, JSON.stringify(draft.slides));
+      return;
+    }
+
+    try {
+      const { data: rowData } = await supabase
+        .from(LANDING_TABLE)
+        .select('slides, updated_at')
+        .eq('id', LANDING_ROW_ID)
+        .single();
+
+      const serverUpdatedAt = rowData?.updated_at ? new Date(rowData.updated_at).getTime() : 0;
+
+      if (draft?.slides && Array.isArray(draft.slides) && draftUpdatedAt > serverUpdatedAt) {
+        setLandingSlides(draft.slides);
+        localStorage.setItem(LANDING_SLIDES_KEY, JSON.stringify(draft.slides));
+        return;
+      }
+
+      if (rowData?.slides && Array.isArray(rowData.slides)) {
+        setLandingSlides(rowData.slides);
+        localStorage.setItem(LANDING_SLIDES_KEY, JSON.stringify(rowData.slides));
+        localStorage.setItem(
+          LANDING_DRAFT_KEY,
+          JSON.stringify({ slides: rowData.slides, draftUpdatedAt: rowData.updated_at || new Date().toISOString() })
+        );
+        return;
+      }
+
+      if (draft?.slides && Array.isArray(draft.slides) && draft.slides.length > 0) {
+        setLandingSlides(draft.slides);
+        localStorage.setItem(LANDING_SLIDES_KEY, JSON.stringify(draft.slides));
+        return;
+      }
+
       const raw = localStorage.getItem(LANDING_SLIDES_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
@@ -91,27 +144,53 @@ const AdminPanel = () => {
       }
       setLandingSlides(defaultLandingSlides);
     } catch {
+      if (draft?.slides && Array.isArray(draft.slides) && draft.slides.length > 0) {
+        setLandingSlides(draft.slides);
+        return;
+      }
       setLandingSlides(defaultLandingSlides);
     }
   }, []);
 
-  const saveLandingSlides = () => {
+  const saveLandingSlides = async () => {
     localStorage.setItem(LANDING_SLIDES_KEY, JSON.stringify(landingSlides));
-    setSuccess('Carrossel atualizado com sucesso');
-    setTimeout(() => setSuccess(''), 2500);
+    localStorage.setItem(
+      LANDING_DRAFT_KEY,
+      JSON.stringify({ slides: landingSlides, draftUpdatedAt: new Date().toISOString() })
+    );
+    try {
+      await supabase
+        .from(LANDING_TABLE)
+        .upsert({ id: LANDING_ROW_ID, slides: landingSlides }, { onConflict: 'id' });
+      setSuccess('Carrossel atualizado com sucesso');
+      setTimeout(() => setSuccess(''), 2500);
+    } catch (err) {
+      console.error('Erro ao salvar carrossel no Supabase:', err);
+      setError('Não foi possível salvar no Supabase');
+      setTimeout(() => setError(''), 2500);
+    }
   };
 
   const resetLandingSlides = () => {
     setLandingSlides(defaultLandingSlides);
     localStorage.setItem(LANDING_SLIDES_KEY, JSON.stringify(defaultLandingSlides));
+    localStorage.setItem(
+      LANDING_DRAFT_KEY,
+      JSON.stringify({ slides: defaultLandingSlides, draftUpdatedAt: new Date().toISOString() })
+    );
     setSuccess('Carrossel restaurado para o padrão');
     setTimeout(() => setSuccess(''), 2500);
   };
 
   const handleSlideChange = (index, field, value) => {
-    setLandingSlides((prev) =>
-      prev.map((slide, i) => (i === index ? { ...slide, [field]: value } : slide))
-    );
+    setLandingSlides((prev) => {
+      const next = prev.map((slide, i) => (i === index ? { ...slide, [field]: value } : slide));
+      localStorage.setItem(
+        LANDING_DRAFT_KEY,
+        JSON.stringify({ slides: next, draftUpdatedAt: new Date().toISOString() })
+      );
+      return next;
+    });
   };
 
   const handleAddSlide = () => {
@@ -120,23 +199,63 @@ const AdminPanel = () => {
       setTimeout(() => setError(''), 2500);
       return;
     }
-    setLandingSlides((prev) => ([
-      ...prev,
-      { title: 'Novo slide', subtitle: 'Descrição curta', image: '' }
-    ]));
+    setLandingSlides((prev) => {
+      const next = [
+        ...prev,
+        { title: 'Novo slide', subtitle: 'Descrição curta', image: '' }
+      ];
+      localStorage.setItem(
+        LANDING_DRAFT_KEY,
+        JSON.stringify({ slides: next, draftUpdatedAt: new Date().toISOString() })
+      );
+      return next;
+    });
   };
 
   const handleRemoveSlide = (index) => {
-    setLandingSlides((prev) => prev.filter((_, i) => i !== index));
+    setLandingSlides((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      localStorage.setItem(
+        LANDING_DRAFT_KEY,
+        JSON.stringify({ slides: next, draftUpdatedAt: new Date().toISOString() })
+      );
+      return next;
+    });
   };
 
-  const handleUploadSlide = (index, file) => {
+  const handleUploadSlide = async (index, file) => {
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setError('Imagem muito grande (máximo 2MB)');
+      setTimeout(() => setError(''), 2500);
+      return;
+    }
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
       const result = evt.target?.result;
       if (typeof result === 'string') {
-        handleSlideChange(index, 'image', result);
+        try {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `landing-${Date.now()}-${index}.${fileExt}`;
+          const filePath = `slides/${fileName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from(LANDING_BUCKET)
+            .upload(filePath, file, { upsert: true });
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from(LANDING_BUCKET)
+            .getPublicUrl(filePath);
+
+          handleSlideChange(index, 'image', publicUrl);
+          return;
+        } catch (err) {
+          console.error('Erro ao fazer upload:', err);
+          // fallback local (apenas neste navegador)
+          handleSlideChange(index, 'image', result);
+        }
       }
     };
     reader.readAsDataURL(file);
@@ -159,7 +278,7 @@ const AdminPanel = () => {
 
       const token = await getAuthToken();
       if (!token) {
-        throw new Error('não autenticado');
+        throw new Error('Não autenticado');
       }
 
       const response = await fetch('http://localhost:5000/api/admin/invite', {
@@ -199,7 +318,7 @@ const AdminPanel = () => {
 
       const token = await getAuthToken();
       if (!token) {
-        throw new Error('não autenticado');
+        throw new Error('Não autenticado');
       }
 
       const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/disable`, {
@@ -231,7 +350,7 @@ const AdminPanel = () => {
 
       const token = await getAuthToken();
       if (!token) {
-        throw new Error('não autenticado');
+        throw new Error('Não autenticado');
       }
 
       const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/enable`, {
@@ -263,7 +382,7 @@ const AdminPanel = () => {
 
       const token = await getAuthToken();
       if (!token) {
-        throw new Error('não autenticado');
+        throw new Error('Não autenticado');
       }
 
       const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/promote`, {
@@ -295,7 +414,7 @@ const AdminPanel = () => {
 
       const token = await getAuthToken();
       if (!token) {
-        throw new Error('não autenticado');
+        throw new Error('Não autenticado');
       }
 
       const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/demote`, {
@@ -327,7 +446,7 @@ const AdminPanel = () => {
 
       const token = await getAuthToken();
       if (!token) {
-        throw new Error('não autenticado');
+        throw new Error('Não autenticado');
       }
 
       const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
@@ -417,15 +536,15 @@ const AdminPanel = () => {
       {/* MENSAGENS */}
       {error && (
         <div className="alert alert-error">
-          <span> {error}</span>
-          <button onClick={() => setError('')}>.</button>
+          <span>{error}</span>
+          <button onClick={() => setError('')}>×</button>
         </div>
       )}
 
       {success && (
         <div className="alert alert-success">
-          <span>. {success}</span>
-          <button onClick={() => setSuccess('')}>.</button>
+          <span>{success}</span>
+          <button onClick={() => setSuccess('')}>×</button>
         </div>
       )}
 
@@ -446,13 +565,13 @@ const AdminPanel = () => {
 
       {activeAdminTab === 'users' && (
         <>
-          {/* BARRA DE A•.ES */}
+          {/* BARRA DE AÇÕES */}
           <div className="admin-actions">
             <button
               className="btn btn-primary"
               onClick={() => setShowInviteModal(true)}
             >
-              . Convidar novo Usuário
+              Convidar novo Usuário
             </button>
             <button
               className="btn btn-secondary"
@@ -507,8 +626,12 @@ const AdminPanel = () => {
 
           {loading && <LoadingState message="Carregando usuários..." />}
 
-          {users.length === 0 ? (
-            <p className="empty-state">Nenhum Usuário encontrado</p>
+          {!loading && error && (
+            <ErrorState title="Erro ao carregar usuários" message={error} onRetry={loadUsers} />
+          )}
+
+          {!loading && !error && users.length === 0 ? (
+            <EmptyState title="Nenhum usuário encontrado" message="Ainda não há usuários cadastrados." />
           ) : (
             <div className="users-table">
               <div className="table-header">
@@ -622,17 +745,20 @@ const AdminPanel = () => {
           <h2>Carrossel da página inicial</h2>
           <p>Máximo de 5 imagens.</p>
 
-          <div className="landing-actions">
-            <button className="btn btn-secondary" type="button" onClick={handleAddSlide}>
-              Adicionar slide
-            </button>
-            <button className="btn btn-primary" type="button" onClick={saveLandingSlides}>
-              Salvar alterações
-            </button>
-            <button className="btn btn-ghost" type="button" onClick={resetLandingSlides}>
-              Restaurar padrão
-            </button>
-          </div>
+        <div className="landing-actions">
+          <button className="btn btn-secondary" type="button" onClick={handleAddSlide}>
+            Adicionar slide
+          </button>
+          <button className="btn btn-primary" type="button" onClick={saveLandingSlides}>
+            Salvar alterações
+          </button>
+          <button className="btn btn-secondary" type="button" onClick={() => window.open('/home', '_blank')}>
+            Ver página
+          </button>
+          <button className="btn btn-ghost" type="button" onClick={resetLandingSlides}>
+            Restaurar padrão
+          </button>
+        </div>
 
           <div className="landing-slides">
             {landingSlides.map((slide, idx) => (
@@ -708,6 +834,10 @@ const AdminPanel = () => {
 };
 
 export default AdminPanel;
+
+
+
+
 
 
 

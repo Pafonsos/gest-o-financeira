@@ -1,9 +1,12 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 import { ArrowRight, ShieldCheck, Users, Target } from 'lucide-react';
 import './LandingPage.css';
 
 const LANDING_SLIDES_KEY = 'proteq-landing-slides';
+const LANDING_TABLE = 'landing_settings';
+const LANDING_ROW_ID = 'default';
 
 const defaultSlides = [
   {
@@ -42,14 +45,33 @@ const LandingPage = () => {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(LANDING_SLIDES_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setSlides(normalizeSlides(parsed));
-          return;
+      const fetchSlides = async () => {
+        try {
+          const { data: rowData } = await supabase
+            .from(LANDING_TABLE)
+            .select('slides')
+            .eq('id', LANDING_ROW_ID)
+            .single();
+          if (rowData?.slides && Array.isArray(rowData.slides)) {
+            setSlides(normalizeSlides(rowData.slides));
+            localStorage.setItem(LANDING_SLIDES_KEY, JSON.stringify(rowData.slides));
+            return;
+          }
+        } catch (err) {
+          console.warn('Sem dados globais do carrossel:', err?.message || err);
         }
-      }
+
+        const raw = localStorage.getItem(LANDING_SLIDES_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setSlides(normalizeSlides(parsed));
+            return;
+          }
+        }
+        setSlides(normalizeSlides(defaultSlides));
+      };
+      fetchSlides();
     } catch {
       // ignore invalid storage
     }
