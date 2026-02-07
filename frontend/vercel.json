@@ -1,6 +1,6 @@
-{
+﻿{
   "buildCommand": "npm run build",
-  "outputDirectory": "build",
+  "outputDirectory": "dist",
   "installCommand": "npm install",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
@@ -9,3 +9,4 @@
     "REACT_APP_ENV": "production"
   }
 }
+
