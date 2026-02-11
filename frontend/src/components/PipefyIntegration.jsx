@@ -9,6 +9,7 @@ const PIPEFY_SETTINGS_ROW = 'default';
 
 const defaultFieldMap = {
   nomeEmpresa: '',
+  nomeFantasia: '',
   nomeResponsavel: '',
   email: '',
   telefone: '',
@@ -29,7 +30,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
     fieldMap: JSON.stringify(defaultFieldMap, null, 2)
   });
   const [savedAt, setSavedAt] = useState(null);
-  const [status, setStatus] = useState({ type: '', text: '' });
+  const [status, setStatus] = useState({ type: '', text: '', details: [] });
   const [loading, setLoading] = useState(false);
   const [pipeFields, setPipeFields] = useState([]);
   const [pipePhases, setPipePhases] = useState([]);
@@ -159,7 +160,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
     setSimpleMap({});
     setPipeFields([]);
     setPipePhases([]);
-    setStatus({ type: '', text: '' });
+    setStatus({ type: '', text: '', details: [] });
     setPipeCards([]);
   };
 
@@ -210,10 +211,12 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
           fields.find((f) => f.label?.toLowerCase() === label)?.id;
 
         guess.nomeEmpresa = byLabel('nome da empresa');
+        guess.nomeFantasia = byLabel('nome fantasia');
         guess.nomeResponsavel = byLabel('nome do cliente');
         guess.email = byLabel('e-mail');
         guess.telefone = byLabel('telefone');
-        guess.cnpj = byLabel('cpf/cnpj');
+        guess.cnpj = byLabel('cnpj') || byLabel('cpf/cnpj');
+        guess.valorTotal = byLabel('valor total do contrato') || byLabel('valor total');
         guess.observacoes = byLabel('observações');
 
         setSimpleMap(Object.fromEntries(
@@ -270,12 +273,17 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
         apiToken: config.apiToken
       });
 
+      const failures = (result.results || []).filter((item) => !item.success);
       setStatus({
         type: result.failureCount ? 'error' : 'success',
-        text: `Enviados: ${result.successCount}, Falhas: ${result.failureCount}`
+        text: `Enviados: ${result.successCount}, Falhas: ${result.failureCount}`,
+        details: failures.map((item) => ({
+          client: item.client || 'Cliente',
+          error: item.error || 'Falha ao enviar'
+        }))
       });
     } catch (error) {
-      setStatus({ type: 'error', text: error.message || 'Falha ao enviar clientes' });
+      setStatus({ type: 'error', text: error.message || 'Falha ao enviar clientes', details: [] });
     } finally {
       setLoading(false);
     }
@@ -464,7 +472,17 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
                 ? 'bg-green-100 text-green-800'
                 : 'bg-red-100 text-red-800'
             }`}>
-              {status.text}
+              <div>{status.text}</div>
+              {status.details?.length > 0 && (
+                <div className="mt-2 space-y-1 text-xs font-normal">
+                  <div className="font-semibold">Falhas:</div>
+                  {status.details.map((item, index) => (
+                    <div key={`${item.client}-${index}`}>
+                      {item.client}: {item.error}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

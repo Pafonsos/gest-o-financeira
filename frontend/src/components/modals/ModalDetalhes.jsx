@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 import { X } from 'lucide-react';
-import ClientEmailSettings from '../ClientEmailSettings';
 
 const ModalDetalhes = ({ 
   isOpen, 
@@ -28,15 +27,31 @@ const ModalDetalhes = ({
               <div className="mt-2 space-y-2 text-sm text-gray-900">
                 <p><span className="font-medium">Responsável:</span> {cliente.nomeResponsavel}</p>
                 <p><span className="font-medium">Empresa:</span> {cliente.nomeEmpresa}</p>
+                {cliente.nomeFantasia && (
+                  <p><span className="font-medium">Nome Fantasia:</span> {cliente.nomeFantasia}</p>
+                )}
                 <p><span className="font-medium">Email:</span> {cliente.email}</p>
                 <p><span className="font-medium">Telefone:</span> {cliente.telefone}</p>
                 <p><span className="font-medium">Código do Contrato:</span> {cliente.codigoContrato}</p>
+                {cliente.contratoDataUrl ? (
+                  <p>
+                    <span className="font-medium">Contrato:</span>{' '}
+                    <a
+                      href={cliente.contratoDataUrl}
+                      download={cliente.contratoNome || 'contrato'}
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      {cliente.contratoNome || 'Baixar contrato'}
+                    </a>
+                  </p>
+                ) : (
+                  <p>
+                    <span className="font-medium">Contrato:</span>{' '}
+                    <span className="text-gray-500">Nenhum contrato anexado</span>
+                  </p>
+                )}
               </div>
             </div>
-          </div>
-
-          <div className="mt-6">
-            <ClientEmailSettings cliente={cliente} />
           </div>
 
           <div className="space-y-4">

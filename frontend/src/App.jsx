@@ -2,13 +2,13 @@
 import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, Settings } from 'lucide-react';
 import emailService from './services/emailService';
 import { EmailSettingsModal } from './components/EmailSettingsModal';
-import ClientEmailSettings from './components/ClientEmailSettings';
 import DashboardAprimorado from './components/dashboard/DashboardAprimorado';
 import ModalDespesa from './components/modals/ModalDespesa';
 import { useAuth } from './contexts/AuthContext';
 import ProfileMenu from './components/ProfileMenu';
 import { AuthPage } from './pages/AuthPage';
 import { useUI } from './contexts/UiContext';
+import { supabase } from './lib/supabaseClient';
 
 const EmailManager = ({ clientes }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
@@ -325,8 +325,8 @@ const FinancialManager = () => {
   const { showMessage } = useUI();
   const [showEmailSettings, setShowEmailSettings] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
-  const [abaAtiva, setAbaAtiva] = useState('dashboard');
-  // Estado inicial vazio - será carregado do localStorage
+  const [abaAtiva, setAbaAtiva] = useState('clientes');
+  // Estado inicial vazio - será carregado do Supabase
   const [clientes, setClientes] = useState([]);
 
   const [filtros, setFiltros] = useState({
@@ -350,10 +350,7 @@ const FinancialManager = () => {
   });
 
   // Estado para Contas a Pagar - INDEPENDENTE DO DASHBOARD
-  const [despesas, setDespesas] = useState(() => {
-    const saved = localStorage.getItem('contas-a-pagar');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [despesas, setDespesas] = useState([]);
 
   // Funções de formatação
 const formatarCNPJ = (valor) => {
@@ -381,7 +378,7 @@ const formatarMoedaInput = (valor) => {
     maximumFractionDigits: 2
   });
 };
-const parseMoedaParaNumero = (valor) => {
+  const parseMoedaParaNumero = (valor) => {
   // Se já for número, retorna direto
   if (typeof valor === 'number') return valor;
   
@@ -392,9 +389,159 @@ const parseMoedaParaNumero = (valor) => {
   return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.')) || 0;
 };
 
+  const mapClientFromDb = (row) => {
+    const rawContrato = row.contrato_data_url || '';
+    const isDataUrl = rawContrato.startsWith('data:');
+    return {
+      id: row.id,
+      legacyId: row.legacy_id || null,
+      pipefyCardId: row.pipefy_card_id || null,
+      nomeResponsavel: row.nome_responsavel || '',
+      nomeEmpresa: row.nome_empresa || '',
+      nomeFantasia: row.nome_fantasia || '',
+      email: row.email || '',
+      telefone: row.telefone || '',
+      cnpj: row.cnpj || '',
+      codigoContrato: row.codigo_contrato || '',
+      contratoNome: row.contrato_nome || '',
+      contratoPath: isDataUrl ? '' : rawContrato,
+      contratoDataUrl: isDataUrl ? rawContrato : '',
+      linkPagamento: row.link_pagamento || '',
+      valorTotal: Number(row.valor_total || 0),
+      valorPago: Number(row.valor_pago || 0),
+      parcelas: row.parcelas ?? 1,
+      parcelasPagas: row.parcelas_pagas ?? 0,
+      valorParcela: Number(row.valor_parcela || 0),
+      dataVenda: row.data_venda || '',
+      proximoVencimento: row.proximo_vencimento || '',
+      observacoes: row.observacoes || '',
+      historicosPagamentos: row.historicos_pagamentos || []
+    };
+  };
+
+  const mapClientToDb = (client) => {
+    const payload = {
+      legacy_id: typeof client.id === 'number' ? client.id : (client.legacyId || null),
+      pipefy_card_id: client.pipefyCardId || null,
+      nome_responsavel: client.nomeResponsavel || '',
+      nome_empresa: client.nomeEmpresa || '',
+      nome_fantasia: client.nomeFantasia || null,
+      email: client.email || null,
+      telefone: client.telefone || null,
+      cnpj: client.cnpj || null,
+      codigo_contrato: client.codigoContrato || null,
+      contrato_nome: client.contratoNome || null,
+      contrato_data_url: client.contratoPath || null,
+      link_pagamento: client.linkPagamento || null,
+      valor_total: Number(client.valorTotal || 0),
+      valor_pago: Number(client.valorPago || 0),
+      parcelas: Number(client.parcelas || 1),
+      parcelas_pagas: Number(client.parcelasPagas || 0),
+      valor_parcela: Number(client.valorParcela || 0),
+      data_venda: client.dataVenda || null,
+      proximo_vencimento: client.proximoVencimento || null,
+      observacoes: client.observacoes || null,
+      historicos_pagamentos: client.historicosPagamentos || []
+    };
+
+    // Envia id apenas quando já for UUID válido (updates e registros já persistidos).
+    if (typeof client.id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(client.id)) {
+      payload.id = client.id;
+    }
+
+    return payload;
+  };
+
+  const createSignedContratoUrl = async (path) => {
+    if (!path) return '';
+    const { data, error } = await supabase
+      .storage
+      .from('contratos')
+      .createSignedUrl(path, 60 * 60 * 24 * 7);
+    if (error) throw error;
+    return data?.signedUrl || '';
+  };
+
+  const uploadContrato = async (file, clientId) => {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `clientes/${clientId}/${Date.now()}_${safeName}`;
+    const { error: uploadError } = await supabase
+      .storage
+      .from('contratos')
+      .upload(path, file, { upsert: true });
+    if (uploadError) throw uploadError;
+    const signedUrl = await createSignedContratoUrl(path);
+    return { path, signedUrl };
+  };
+
+  const deleteContrato = async (path) => {
+    if (!path) return;
+    await supabase.storage.from('contratos').remove([path]);
+  };
+
+  const mapDespesaFromDb = (row) => ({
+    id: row.id,
+    fornecedor: row.fornecedor || '',
+    descricao: row.descricao || '',
+    valor: Number(row.valor || 0),
+    vencimento: row.vencimento || '',
+    pago: !!row.pago
+  });
+
+  const mapDespesaToDb = (despesa) => ({
+    id: despesa.id || undefined,
+    fornecedor: despesa.fornecedor || '',
+    descricao: despesa.descricao || null,
+    valor: Number(despesa.valor || 0),
+    vencimento: despesa.vencimento || null,
+    pago: !!despesa.pago
+  });
+
+  const handleContratoChange = (file, isEditing) => {
+    if (!file) {
+      if (isEditing) {
+        setClienteEditando({
+          ...clienteEditando,
+          contratoNome: '',
+          contratoDataUrl: '',
+          contratoArquivo: null,
+          contratoRemover: true
+        });
+      } else {
+        setNovoCliente({
+          ...novoCliente,
+          contratoNome: '',
+          contratoDataUrl: '',
+          contratoPath: '',
+          contratoArquivo: null,
+          contratoRemover: false
+        });
+      }
+      return;
+    }
+
+    const payload = {
+      contratoNome: file.name,
+      contratoArquivo: file,
+      contratoRemover: false
+    };
+    if (isEditing) {
+      setClienteEditando({
+        ...clienteEditando,
+        ...payload
+      });
+    } else {
+      setNovoCliente({
+        ...novoCliente,
+        ...payload
+      });
+    }
+  };
+
   const [novoCliente, setNovoCliente] = useState({
   nomeResponsavel: '',
   nomeEmpresa: '',
+  nomeFantasia: '',
   email: '',
   telefone: '',
   valorTotal: '',
@@ -403,41 +550,138 @@ const parseMoedaParaNumero = (valor) => {
   proximoVencimento: '',
   cnpj: '',
   codigoContrato: '',
+  contratoNome: '',
+  contratoDataUrl: '',
+  contratoPath: '',
+  contratoArquivo: null,
+  contratoRemover: false,
   linkPagamento: '', // • ADICIONAR
   observacoes: ''
 });
 
-  // NOVO: Carregar dados salvos quando o componente inicia
+  // Carregar dados do Supabase e migrar localStorage (apenas se o banco estiver vazio)
   useEffect(() => {
-    const dadosSalvos = localStorage.getItem('financial-manager-clientes');
-    if (dadosSalvos) {
+    let cancelled = false;
+
+    const loadData = async () => {
       try {
-        const clientesCarregados = JSON.parse(dadosSalvos);
-        setClientes(clientesCarregados);
-        console.log('Dados carregados do localStorage:', clientesCarregados.length, 'clientes');
+        const { data: clientesData, error: clientesError } = await supabase
+          .from('clientes')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (clientesError) throw clientesError;
+
+        let clientesRows = clientesData || [];
+
+        if (clientesRows.length === 0) {
+          const localRaw = localStorage.getItem('financial-manager-clientes');
+          if (localRaw) {
+            try {
+              const localList = JSON.parse(localRaw) || [];
+              const rowsToInsert = localList.map((client) => {
+                const isNumericId = typeof client.id === 'number' && Number.isFinite(client.id);
+                const pipefyCardId =
+                  client.pipefyCardId ||
+                  (typeof client.id === 'string' ? client.id : null);
+
+                return {
+                  ...mapClientToDb({
+                    ...client,
+                    id: undefined,
+                    legacyId: isNumericId ? client.id : null,
+                    pipefyCardId: pipefyCardId || null
+                  })
+                };
+              });
+
+              if (rowsToInsert.length > 0) {
+                const { data: inserted, error: insertError } = await supabase
+                  .from('clientes')
+                  .insert(rowsToInsert)
+                  .select('*');
+
+                if (insertError) throw insertError;
+                clientesRows = inserted || [];
+                localStorage.removeItem('financial-manager-clientes');
+              }
+            } catch (error) {
+              console.error('Erro ao migrar clientes do localStorage:', error);
+            }
+          }
+        }
+
+        if (!cancelled) {
+          const mapped = (clientesRows || []).map(mapClientFromDb);
+          try {
+            const enriched = await Promise.all(mapped.map(async (cliente) => {
+              if (cliente.contratoPath) {
+                try {
+                  const signedUrl = await createSignedContratoUrl(cliente.contratoPath);
+                  return { ...cliente, contratoDataUrl: signedUrl };
+                } catch {
+                  return cliente;
+                }
+              }
+              return cliente;
+            }));
+            if (!cancelled) setClientes(enriched);
+          } catch {
+            setClientes(mapped);
+          }
+        }
       } catch (error) {
-        console.error('Erro ao carregar dados salvos:', error);
-        // Se der erro, usar dados exemplo
-        
+        console.error('Erro ao carregar clientes do Supabase:', error);
       }
-    } else {
-      
-    
-    }
+
+      try {
+        const { data: despesasData, error: despesasError } = await supabase
+          .from('despesas')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (despesasError) throw despesasError;
+
+        let despesasRows = despesasData || [];
+
+        if (despesasRows.length === 0) {
+          const localRaw = localStorage.getItem('contas-a-pagar');
+          if (localRaw) {
+            try {
+              const localList = JSON.parse(localRaw) || [];
+              const rowsToInsert = localList.map((despesa) => ({
+                ...mapDespesaToDb({ ...despesa, id: undefined })
+              }));
+
+              if (rowsToInsert.length > 0) {
+                const { data: inserted, error: insertError } = await supabase
+                  .from('despesas')
+                  .insert(rowsToInsert)
+                  .select('*');
+
+                if (insertError) throw insertError;
+                despesasRows = inserted || [];
+                localStorage.removeItem('contas-a-pagar');
+              }
+            } catch (error) {
+              console.error('Erro ao migrar despesas do localStorage:', error);
+            }
+          }
+        }
+
+        if (!cancelled) {
+          setDespesas((despesasRows || []).map(mapDespesaFromDb));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar despesas do Supabase:', error);
+      }
+    };
+
+    loadData();
+    return () => {
+      cancelled = true;
+    };
   }, []);
-
-  // NOVO: Salvar dados sempre que a lista de clientes mudar
-  useEffect(() => {
-    if (clientes.length > 0) {
-      localStorage.setItem('financial-manager-clientes', JSON.stringify(clientes));
-      console.log('Dados salvos no localStorage:', clientes.length, 'clientes');
-    }
-  }, [clientes]);
-
-  // Salvar despesas no localStorage quando mudam (INDEPENDENTE DO DASHBOARD)
-  useEffect(() => {
-    localStorage.setItem('contas-a-pagar', JSON.stringify(despesas));
-  }, [despesas]);
 
   // Toast discreto (auto-hide)
   useEffect(() => {
@@ -486,7 +730,7 @@ const parseMoedaParaNumero = (valor) => {
     totalClientes: clientes.length
   };
 
-  const adicionarCliente = () => {
+  const adicionarCliente = async () => {
   if (!novoCliente.nomeResponsavel || !novoCliente.nomeEmpresa || !novoCliente.valorTotal) {
     showMessage({
       title: 'Camposão obrigatórios',
@@ -511,12 +755,56 @@ const parseMoedaParaNumero = (valor) => {
     historicosPagamentos: []
   };
   
-  setClientes([...clientes, cliente]);
-  fecharModal();
-  setToast('Cliente adicionado com sucesso!');
+  try {
+    const payload = mapClientToDb({ ...cliente, id: undefined });
+    const { data, error } = await supabase
+      .from('clientes')
+      .insert([payload])
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    let savedClient = mapClientFromDb(data);
+
+    if (novoCliente.contratoArquivo) {
+      try {
+        const uploadResult = await uploadContrato(novoCliente.contratoArquivo, savedClient.id);
+        const { data: updated, error: updateError } = await supabase
+          .from('clientes')
+          .update({
+            contrato_nome: novoCliente.contratoNome || novoCliente.contratoArquivo.name,
+            contrato_data_url: uploadResult.path
+          })
+          .eq('id', savedClient.id)
+          .select('*')
+          .single();
+        if (updateError) throw updateError;
+        savedClient = {
+          ...mapClientFromDb(updated),
+          contratoDataUrl: uploadResult.signedUrl
+        };
+      } catch (uploadError) {
+        showMessage({
+          title: 'Contrato não enviado',
+          message: uploadError.message || 'Não foi possível enviar o contrato para o storage.',
+          type: 'warning'
+        });
+      }
+    }
+
+    setClientes([...clientes, savedClient]);
+    fecharModal();
+    setToast('Cliente adicionado com sucesso!');
+  } catch (error) {
+    showMessage({
+      title: 'Erro ao salvar cliente',
+      message: error.message || 'Não foi possível salvar no Supabase.',
+      type: 'error'
+    });
+  }
 };
 
-  const editarCliente = () => {
+  const editarCliente = async () => {
   if (!clienteEditando.nomeResponsavel || !clienteEditando.nomeEmpresa || !clienteEditando.valorTotal) {
     showMessage({
       title: 'Camposão obrigatórios',
@@ -533,35 +821,131 @@ const parseMoedaParaNumero = (valor) => {
     
   const valorParcela = valorNumerico / parseInt(clienteEditando.parcelas);
   
-  setClientes(clientes.map(cliente => {
-    if (cliente.id === clienteEditando.id) {
-      return {
-        ...clienteEditando,
-        valorTotal: valorNumerico,
-        valorParcela: valorParcela,
-        parcelas: parseInt(clienteEditando.parcelas)
-      };
+  const atualizado = {
+    ...clienteEditando,
+    valorTotal: valorNumerico,
+    valorParcela: valorParcela,
+    parcelas: parseInt(clienteEditando.parcelas)
+  };
+
+  try {
+    const payload = mapClientToDb(atualizado);
+    const { data, error } = await supabase
+      .from('clientes')
+      .update(payload)
+      .eq('id', clienteEditando.id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    let savedClient = mapClientFromDb(data);
+
+    if (clienteEditando.contratoRemover && clienteEditando.contratoPath) {
+      await deleteContrato(clienteEditando.contratoPath);
+      const { data: cleared, error: clearError } = await supabase
+        .from('clientes')
+        .update({
+          contrato_nome: null,
+          contrato_data_url: null
+        })
+        .eq('id', clienteEditando.id)
+        .select('*')
+        .single();
+      if (!clearError && cleared) {
+        savedClient = mapClientFromDb(cleared);
+      }
     }
-    return cliente;
-  }));
-  fecharModal();
-  setToast('Cliente editado com sucesso!');
+
+    if (clienteEditando.contratoArquivo) {
+      try {
+        const uploadResult = await uploadContrato(clienteEditando.contratoArquivo, clienteEditando.id);
+        const { data: updated, error: updateError } = await supabase
+          .from('clientes')
+          .update({
+            contrato_nome: clienteEditando.contratoNome || clienteEditando.contratoArquivo.name,
+            contrato_data_url: uploadResult.path
+          })
+          .eq('id', clienteEditando.id)
+          .select('*')
+          .single();
+        if (updateError) throw updateError;
+        savedClient = {
+          ...mapClientFromDb(updated),
+          contratoDataUrl: uploadResult.signedUrl
+        };
+      } catch (uploadError) {
+        showMessage({
+          title: 'Contrato não enviado',
+          message: uploadError.message || 'Não foi possível enviar o contrato para o storage.',
+          type: 'warning'
+        });
+      }
+    }
+
+    if (savedClient.contratoPath && !savedClient.contratoDataUrl) {
+      try {
+        const signedUrl = await createSignedContratoUrl(savedClient.contratoPath);
+        savedClient = { ...savedClient, contratoDataUrl: signedUrl };
+      } catch {}
+    }
+
+    setClientes(clientes.map(cliente => (
+      cliente.id === clienteEditando.id ? savedClient : cliente
+    )));
+    fecharModal();
+    setToast('Cliente editado com sucesso!');
+  } catch (error) {
+    showMessage({
+      title: 'Erro ao atualizar cliente',
+      message: error.message || 'Não foi possível salvar no Supabase.',
+      type: 'error'
+    });
+  }
 };
 
-  const excluirCliente = () => {
-    setClientes(clientes.filter(cliente => cliente.id !== clienteSelecionado.id));
-    setModalConfirmacao(false);
-    setClienteSelecionado(null);
-    setToast('Cliente excluído.');
+  const excluirCliente = async () => {
+    try {
+      const { error } = await supabase
+        .from('clientes')
+        .delete()
+        .eq('id', clienteSelecionado.id);
+
+      if (error) throw error;
+
+      setClientes(clientes.filter(cliente => cliente.id !== clienteSelecionado.id));
+      setModalConfirmacao(false);
+      setClienteSelecionado(null);
+      setToast('Cliente excluído.');
+    } catch (error) {
+      showMessage({
+        title: 'Erro ao excluir cliente',
+        message: error.message || 'Não foi possível excluir no Supabase.',
+        type: 'error'
+      });
+    }
   };
 
-  const excluirTodosClientes = () => {
-    setClientes([]);
-    localStorage.removeItem('financial-manager-clientes');
-    setToast('Todos os clientes foram excluídos.');
+  const excluirTodosClientes = async () => {
+    try {
+      const { error } = await supabase
+        .from('clientes')
+        .delete()
+        .not('id', 'is', null);
+
+      if (error) throw error;
+
+      setClientes([]);
+      setToast('Todos os clientes foram excluídos.');
+    } catch (error) {
+      showMessage({
+        title: 'Erro ao excluir todos',
+        message: error.message || 'Não foi possível excluir no Supabase.',
+        type: 'error'
+      });
+    }
   };
 
-  const registrarPagamento = () => {
+  const registrarPagamento = async () => {
   const valorPago = parseFloat(pagamentoForm.valor);
   if (!valorPago || valorPago <= 0) {
     showMessage({
@@ -572,7 +956,8 @@ const parseMoedaParaNumero = (valor) => {
     return;
   }
 
-  setClientes(clientes.map(cliente => {
+  let atualizado = null;
+  const updatedClientes = clientes.map(cliente => {
     if (cliente.id === clienteSelecionado.id) {
       const novoValorPago = cliente.valorPago + valorPago;
       const novasParcelasPagas = Math.floor(novoValorPago / cliente.valorParcela);
@@ -582,7 +967,7 @@ const parseMoedaParaNumero = (valor) => {
         descricao: pagamentoForm.descricao || `Pagamento - ${formatarData(pagamentoForm.data)}`
       }];
 
-      // CORRE•fO: Atualizar próximo vencimento
+      // CORREÇÃO: Atualizar próximo vencimento
       let novoProximoVencimento = cliente.proximoVencimento;
       
       if (novasParcelasPagas > cliente.parcelasPagas && cliente.proximoVencimento) {
@@ -592,16 +977,42 @@ const parseMoedaParaNumero = (valor) => {
         novoProximoVencimento = dataAtual.toISOString().split('T')[0];
       }
 
-      return {
+      atualizado = {
         ...cliente,
         valorPago: novoValorPago,
         parcelasPagas: novasParcelasPagas,
-        proximoVencimento: novoProximoVencimento, // • LINHA ADICIONADA
+        proximoVencimento: novoProximoVencimento,
         historicosPagamentos: novoHistorico
       };
+      return atualizado;
     }
     return cliente;
-  }));
+  });
+
+  if (atualizado) {
+    try {
+      const payload = mapClientToDb(atualizado);
+      const { data, error } = await supabase
+        .from('clientes')
+        .update(payload)
+        .eq('id', atualizado.id)
+        .select('*')
+        .single();
+
+      if (error) throw error;
+
+      setClientes(updatedClientes.map(cliente => (
+        cliente.id === atualizado.id ? mapClientFromDb(data) : cliente
+      )));
+    } catch (error) {
+      showMessage({
+        title: 'Erro ao salvar pagamento',
+        message: error.message || 'Não foi possível atualizar no Supabase.',
+        type: 'error'
+      });
+      return;
+    }
+  }
 
   setModalPagamento(false);
   setPagamentoForm({
@@ -759,6 +1170,7 @@ const parseMoedaParaNumero = (valor) => {
   setNovoCliente({
     nomeResponsavel: '',
     nomeEmpresa: '',
+    nomeFantasia: '',
     email: '',
     cnpj: '',
     telefone: '',
@@ -767,6 +1179,11 @@ const parseMoedaParaNumero = (valor) => {
     dataVenda: '',
     proximoVencimento: '',
     codigoContrato: '',
+    contratoNome: '',
+    contratoDataUrl: '',
+    contratoPath: '',
+    contratoArquivo: null,
+    contratoRemover: false,
     linkPagamento: '', // • ADICIONAR
     observacoes: ''
   });
@@ -1205,6 +1622,22 @@ const parseMoedaParaNumero = (valor) => {
                   />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome Fantasia</label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    value={clienteEditando ? (clienteEditando.nomeFantasia || '') : (novoCliente.nomeFantasia || '')}
+                    onChange={(e) => {
+                      const valor = e.target.value;
+                      if (clienteEditando) {
+                        setClienteEditando({...clienteEditando, nomeFantasia: valor});
+                      } else {
+                        setNovoCliente({...novoCliente, nomeFantasia: valor});
+                      }
+                    }}
+                  />
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">CNPJ</label>
                   <input
                     type="text"
@@ -1272,6 +1705,29 @@ const parseMoedaParaNumero = (valor) => {
                       }
                     }}
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Anexar Contrato</label>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    onChange={(e) => handleContratoChange(e.target.files && e.target.files[0] ? e.target.files[0] : null, !!clienteEditando)}
+                  />
+                  {(clienteEditando ? clienteEditando.contratoNome : novoCliente.contratoNome) && (
+                    <div className="mt-2 flex items-center justify-between gap-2 text-xs text-gray-600">
+                      <span className="truncate">
+                        {(clienteEditando ? clienteEditando.contratoNome : novoCliente.contratoNome)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleContratoChange(null, !!clienteEditando)}
+                        className="px-2 py-1 border border-gray-300 rounded hover:bg-gray-50"
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Link de Pagamento (Asaas)</label>
@@ -1489,16 +1945,32 @@ const parseMoedaParaNumero = (valor) => {
                     <div className="mt-2 space-y-2 text-sm text-gray-900">
                       <p><span className="font-medium">Responsável:</span> {clienteSelecionado.nomeResponsavel}</p>
                       <p><span className="font-medium">Empresa:</span> {clienteSelecionado.nomeEmpresa}</p>
+                      {clienteSelecionado.nomeFantasia && (
+                        <p><span className="font-medium">Nome Fantasia:</span> {clienteSelecionado.nomeFantasia}</p>
+                      )}
                       <p><span className="font-medium">Email:</span> {clienteSelecionado.email}</p>
                       <p><span className="font-medium">Telefone:</span> {clienteSelecionado.telefone}</p>
                       <p><span className="font-medium">Código do Contrato:</span> {clienteSelecionado.codigoContrato}</p>
+                      {clienteSelecionado.contratoDataUrl ? (
+                        <p>
+                          <span className="font-medium">Contrato:</span>{' '}
+                          <a
+                            href={clienteSelecionado.contratoDataUrl}
+                            download={clienteSelecionado.contratoNome || 'contrato'}
+                            className="text-blue-600 hover:text-blue-800 underline"
+                          >
+                            {clienteSelecionado.contratoNome || 'Baixar contrato'}
+                          </a>
+                        </p>
+                      ) : (
+                        <p>
+                          <span className="font-medium">Contrato:</span>{' '}
+                          <span className="text-gray-500">Nenhum contrato anexado</span>
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
-              {/* Configurações de Email do Cliente */}
-                <div className="mt-6">
-               <ClientEmailSettings cliente={clienteSelecionado} />
-                </div>  
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-700">Informações Financeiras</h3>
@@ -1565,11 +2037,26 @@ const parseMoedaParaNumero = (valor) => {
         <ModalDespesa
           isOpen={modalDespesa}
           onClose={() => setModalDespesa(false)}
-          onSave={(novaDespesa) => {
-            const novasDespesas = [...despesas, novaDespesa];
-            setDespesas(novasDespesas);
-            localStorage.setItem('contas-a-pagar', JSON.stringify(novasDespesas));
-            setModalDespesa(false);
+          onSave={async (novaDespesa) => {
+            try {
+              const payload = mapDespesaToDb({ ...novaDespesa, id: undefined });
+              const { data, error } = await supabase
+                .from('despesas')
+                .insert([payload])
+                .select('*')
+                .single();
+
+              if (error) throw error;
+
+              setDespesas([...despesas, mapDespesaFromDb(data)]);
+              setModalDespesa(false);
+            } catch (error) {
+              showMessage({
+                title: 'Erro ao salvar despesa',
+                message: error.message || 'Não foi possível salvar no Supabase.',
+                type: 'error'
+              });
+            }
           }}
         />
         {modalConfirmacao && (

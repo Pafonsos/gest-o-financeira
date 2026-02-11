@@ -27,6 +27,21 @@ const ModalCliente = ({
     handleChange('cnpj', cnpjFormatado, isEditing);
   };
 
+  const handleContratoChange = (file, isEditing) => {
+    if (!file) {
+      handleChange('contratoNome', '', isEditing);
+      handleChange('contratoDataUrl', '', isEditing);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      handleChange('contratoNome', file.name, isEditing);
+      handleChange('contratoDataUrl', reader.result, isEditing);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const isEditing = !!clienteEditando;
   const data = isEditing ? clienteEditando : novoCliente;
 
@@ -60,6 +75,16 @@ const ModalCliente = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
               value={data.nomeEmpresa}
               onChange={(e) => handleChange('nomeEmpresa', e.target.value, isEditing)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nome Fantasia</label>
+            <input
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+              value={data.nomeFantasia || ''}
+              onChange={(e) => handleChange('nomeFantasia', e.target.value, isEditing)}
             />
           </div>
 
@@ -104,6 +129,28 @@ const ModalCliente = ({
               value={data.codigoContrato}
               onChange={(e) => handleChange('codigoContrato', e.target.value, isEditing)}
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Anexar Contrato</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+              onChange={(e) => handleContratoChange(e.target.files && e.target.files[0] ? e.target.files[0] : null, isEditing)}
+            />
+            {data.contratoNome && (
+              <div className="mt-2 flex items-center justify-between gap-2 text-xs text-gray-600">
+                <span className="truncate">{data.contratoNome}</span>
+                <button
+                  type="button"
+                  onClick={() => handleContratoChange(null, isEditing)}
+                  className="px-2 py-1 border border-gray-300 rounded hover:bg-gray-50"
+                >
+                  Remover
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
