@@ -22,7 +22,7 @@ const resolveCardTitle = (client) => {
     .filter(Boolean)
     .filter((value) => value !== codigoContrato);
 
-  return candidates[0] || nomeFantasia || nomeEmpresa || nomeResponsavel || email || 'Cliente';
+  return candidates[0] || 'Cliente';
 };
 
 const testConnection = async (req, res) => {
@@ -204,3 +204,4 @@ module.exports = {
   pullCards,
   moveCard
 };
+

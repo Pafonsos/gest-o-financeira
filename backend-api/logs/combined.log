@@ -3801,3 +3801,9 @@
   "message": "✅ Token verificado para: afonsoaq38@gmail.com",
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-12 19:52:57",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
