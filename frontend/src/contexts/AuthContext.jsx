@@ -1,7 +1,13 @@
-﻿import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 const AuthContext = createContext({});
+
+const authDebug = (...args) => {
+  if (import.meta.env.DEV && import.meta.env.VITE_AUTH_DEBUG === 'true') {
+    console.log(...args);
+  }
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -19,19 +25,19 @@ export const AuthProvider = ({ children }) => {
   const [isMounted, setIsMounted] = useState(true);
   const isMountedRef = React.useRef(true);
 
-  // Função para buscar role do usuário
+  // Fun��o para buscar role do usu�rio
   const fetchUserRole = useCallback(async (userId) => {
     if (!isMounted) {
-      console.log('fetchUserRole: componente não montado');
+      authDebug('fetchUserRole: componente n�o montado');
       return;
     }
     
     try {
       if (isMounted) setRoleLoading(true);
-      console.log('"" fetchUserRole: iniciando para user:', userId);
+      authDebug('"" fetchUserRole: iniciando para user:', userId);
       
       if (!userId) {
-        console.log('"" fetchUserRole: userId vazio, setRole(user)');
+        authDebug('"" fetchUserRole: userId vazio, setRole(user)');
         if (isMounted) {
           setRole('user');
           setRoleLoading(false);
@@ -39,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      console.log('"" fetchUserRole: fazendo query ao Supabase...');
+      authDebug('"" fetchUserRole: fazendo query ao Supabase...');
       
       const { data, error } = await supabase
         .from('user_roles')
@@ -47,10 +53,10 @@ export const AuthProvider = ({ children }) => {
         .eq('user_id', userId)
         .single();
 
-      console.log('"" fetchUserRole: resposta recebida', { data, error });
+      authDebug('"" fetchUserRole: resposta recebida', { data, error });
 
       if (!isMounted) {
-        console.log('fetchUserRole: componente desmontou durante query');
+        authDebug('fetchUserRole: componente desmontou durante query');
         return;
       }
 
@@ -66,7 +72,7 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      console.log('fetchUserRole: role encontrado:', data?.role || 'user');
+      authDebug('fetchUserRole: role encontrado:', data?.role || 'user');
       if (isMounted) setRole(data?.role || 'user');
     } catch (error) {
       if (isMounted) {
@@ -78,21 +84,21 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isMounted]);
 
-  // Verificar sessão inicial
+  // Verificar sess�o inicial
   const checkUser = useCallback(async () => {
     try {
-      console.log(' Verificando sessão inicial...');
+      authDebug(' Verificando sess�o inicial...');
       
       const { data: { session }, error } = await supabase.auth.getSession();
-      console.log('Resposta de getSession:', { hasSession: !!session, email: session?.user?.email, error });
+      authDebug('Resposta de getSession:', { hasSession: !!session, email: session?.user?.email, error });
       
       if (!isMounted) {
-        console.log('Componente desmontado após getSession, ignorando setUser');
+        authDebug('Componente desmontado ap�s getSession, ignorando setUser');
         return;
       }
 
       if (error) {
-        console.error(' Erro ao obter sessão:', error);
+        console.error(' Erro ao obter sess�o:', error);
         setUser(null);
         setRole('user');
         setLoading(false);
@@ -100,49 +106,49 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (session?.user) {
-        console.log('Usuário encontrado:', session.user.id);
+        authDebug('Usu�rio encontrado:', session.user.id);
         setUser(session.user);
         setRole(null); // Default
         setRoleLoading(true);
-        // Busca role em background (não bloqueia a renderização)
+        // Busca role em background (n�o bloqueia a renderiza��o)
         if (isMountedRef.current) {
           fetchUserRole(session.user.id);
         }
       } else {
-        console.log('Nenhuma sessão ativa na inicialização');
+        authDebug('Nenhuma sess�o ativa na inicializa��o');
         setUser(null);
         setRole('user');
         setRoleLoading(false);
       }
     } catch (error) {
       if (isMounted) {
-        console.error(' Erro na verificação de usuário:', error);
+        console.error(' Erro na verifica��o de usu�rio:', error);
         setUser(null);
         setRole('user');
       }
     } finally {
       if (isMounted) {
-        console.log('" Finalizando checkUser, setLoading(false)');
+        authDebug('" Finalizando checkUser, setLoading(false)');
         setLoading(false);
       }
     }
   }, [fetchUserRole, isMounted]);
 
   useEffect(() => {
-    console.log(' AuthProvider iniciando...');
+    authDebug(' AuthProvider iniciando...');
     setIsMounted(true);
     isMountedRef.current = true;
     
-    // Verificar sessão atual
+    // Verificar sess�o atual
     checkUser();
 
-    // Escutar mudanças de autenticação
+    // Escutar mudan�as de autentica��o
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('"" Auth state changed:', event);
+        authDebug('"" Auth state changed:', event);
         
         if (!isMounted) {
-          console.log('Componente desmontado, ignorando mudança de auth');
+          authDebug('Componente desmontado, ignorando mudan�a de auth');
           return;
         }
         
@@ -150,7 +156,7 @@ export const AuthProvider = ({ children }) => {
           setUser(session.user);
           setRole(null); // Default - busca em background
           setRoleLoading(true);
-          // Busca role em background (não bloqueia a renderização)
+          // Busca role em background (n�o bloqueia a renderiza��o)
           if (isMountedRef.current) {
             fetchUserRole(session.user.id);
           }
@@ -165,7 +171,7 @@ export const AuthProvider = ({ children }) => {
     );
 
     return () => {
-      console.log('Limpando AuthProvider...');
+      authDebug('Limpando AuthProvider...');
       setIsMounted(false);
       isMountedRef.current = false;
       if (authListener?.subscription?.unsubscribe) {
@@ -176,7 +182,7 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, userData) => {
     try {
-      console.log(' Iniciando cadastro para:', email);
+      authDebug(' Iniciando cadastro para:', email);
 
       return { data: null, error: 'Cadastro desativado. Use o convite para acessar.' };
     } catch (error) {
@@ -187,7 +193,7 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (email, password) => {
     try {
-      console.log(' Iniciando login para:', email);
+      authDebug(' Iniciando login para:', email);
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -196,11 +202,11 @@ export const AuthProvider = ({ children }) => {
 
       if (error) {
         console.error(' Erro ao fazer login:', error.message);
-        console.error('Código do erro:', error.status);
+        console.error('C�digo do erro:', error.status);
         throw error;
       }
 
-      console.log('. Login realizado com sucesso');
+      authDebug('. Login realizado com sucesso');
       return { data, error: null };
     } catch (error) {
       console.error(' Erro completo no login:', error);
@@ -261,7 +267,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateUserProfile = async (profileData) => {
     try {
-      if (!user?.id) throw new Error('Usuário não autenticado');
+      if (!user?.id) throw new Error('Usu�rio n�o autenticado');
 
       // Primeiro tenta atualizar o auth email se mudou
       if (profileData.email && profileData.email !== user.email) {
@@ -330,6 +336,7 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
 
 
 

@@ -34,7 +34,7 @@ const EmailManager = ({ clientes }) => {
     return;
   }
 
-  // FUN•.ES AUXILIARES DENTRO DO sendEmails
+  // Funcoes auxiliares dentro do sendEmails
   const calcularStatus = (cliente) => {
     if (cliente.valorPago >= cliente.valorTotal) return 'pago';
     if (cliente.proximoVencimento && new Date(cliente.proximoVencimento) < new Date()) return 'em_atraso';
@@ -78,24 +78,11 @@ const EmailManager = ({ clientes }) => {
         valorPendente: `R$ ${(cliente.valorTotal - cliente.valorPago).toFixed(2).replace('.', ',')}`,
         parcelasAtraso: parcelasAtraso > 1 ? `${parcelasAtraso} parcelas` : '1 parcela',
         proximoVencimento: cliente.proximoVencimento || 'não informado',
-        linkPagamento: cliente.linkPagamento || '#' // • USA O LINK DO CLIENTE
+        linkPagamento: cliente.linkPagamento || '#'
       };
-
-      // DEBUG
-      console.log('===== FRONTEND =====');
-      console.log('Cliente:', cliente.nomeEmpresa);
-      console.log('CNPJ:', cliente.cnpj);
-      console.log('Parcelas atraso:', parcelasAtraso);
-      console.log('Recipient:', recipient);
-      console.log('====================');
 
       return recipient;
     });
-console.log(' PAYLOAD COMPLETO:', JSON.stringify({
-  recipients,
-  subject,
-  template: selectedTemplate
-}, null, 2));
     const response = await emailService.sendBulkEmails({
       recipients,
       subject,
@@ -104,7 +91,7 @@ console.log(' PAYLOAD COMPLETO:', JSON.stringify({
 
     if (response.success) {
       showMessage({
-        title: 'Emailsão enviados',
+        title: 'Emails enviados',
         message: `${response.statistics.successful} enviados, ${response.statistics.failed} falhas. Taxa: ${response.statistics.successRate}`,
         type: 'success'
       });
@@ -555,7 +542,7 @@ const formatarMoedaInput = (valor) => {
   contratoPath: '',
   contratoArquivo: null,
   contratoRemover: false,
-  linkPagamento: '', // • ADICIONAR
+  linkPagamento: '',
   observacoes: ''
 });
 
@@ -733,8 +720,8 @@ const formatarMoedaInput = (valor) => {
   const adicionarCliente = async () => {
   if (!novoCliente.nomeResponsavel || !novoCliente.nomeEmpresa || !novoCliente.valorTotal) {
     showMessage({
-      title: 'Camposão obrigatórios',
-      message: 'Por favor, preencha os camposão obrigatórios.',
+      title: 'Campos obrigatorios',
+      message: 'Por favor, preencha os campos obrigatorios.',
       type: 'warning'
     });
     return;
@@ -807,8 +794,8 @@ const formatarMoedaInput = (valor) => {
   const editarCliente = async () => {
   if (!clienteEditando.nomeResponsavel || !clienteEditando.nomeEmpresa || !clienteEditando.valorTotal) {
     showMessage({
-      title: 'Camposão obrigatórios',
-      message: 'Por favor, preencha os camposão obrigatórios.',
+      title: 'Campos obrigatorios',
+      message: 'Por favor, preencha os campos obrigatorios.',
       type: 'warning'
     });
     return;
@@ -1113,6 +1100,90 @@ const formatarMoedaInput = (valor) => {
     });
   };
 
+  const exportarClientesPDF = () => {
+    const dados = Array.isArray(clientesFiltrados) ? clientesFiltrados : [];
+    if (dados.length === 0) {
+      showMessage({
+        title: 'Sem dados',
+        message: 'Não há clientes para exportar em PDF.',
+        type: 'warning'
+      });
+      return;
+    }
+
+    const escapeHtml = (value) =>
+      String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    const linhas = dados
+      .map((cliente) => {
+        const status = calcularStatus(cliente) === 'pago'
+          ? 'Pago'
+          : calcularStatus(cliente) === 'em_atraso'
+          ? 'Em Atraso'
+          : 'Pendente';
+        const restante = (cliente.valorTotal || 0) - (cliente.valorPago || 0);
+
+        return `
+          <tr>
+            <td>${escapeHtml(cliente.nomeResponsavel)}</td>
+            <td>${escapeHtml(cliente.nomeEmpresa)}</td>
+            <td>${escapeHtml(cliente.email || '-')}</td>
+            <td>${escapeHtml(cliente.telefone || '-')}</td>
+            <td>${escapeHtml(formatarMoeda(cliente.valorTotal || 0))}</td>
+            <td>${escapeHtml(formatarMoeda(restante))}</td>
+            <td>${escapeHtml(status)}</td>
+          </tr>
+        `;
+      })
+      .join('');
+
+    const data = new Date().toLocaleString('pt-BR');
+    const janela = window.open('', '_blank', 'width=1200,height=800');
+    if (!janela) return;
+
+    janela.document.write(`
+      <html>
+        <head>
+          <title>Relatório de Clientes</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 24px; color: #111827; }
+            h1 { margin: 0 0 8px; font-size: 24px; }
+            .meta { margin-bottom: 16px; color: #4b5563; font-size: 12px; }
+            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; }
+            th { background: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>Relatório de Clientes</h1>
+          <div class="meta">Gerado em: ${escapeHtml(data)} | Total: ${dados.length}</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Responsável</th>
+                <th>Empresa</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Valor Total</th>
+                <th>Valor Restante</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>${linhas}</tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    janela.document.close();
+    janela.focus();
+    janela.print();
+  };
+
   // NOVA função para exportar direto para Google Sheets
   const exportarGoogleSheets = () => {
     const relatorio = clientes.map(cliente => ({
@@ -1184,7 +1255,7 @@ const formatarMoedaInput = (valor) => {
     contratoPath: '',
     contratoArquivo: null,
     contratoRemover: false,
-    linkPagamento: '', // • ADICIONAR
+    linkPagamento: '',
     observacoes: ''
   });
 };
@@ -1326,6 +1397,13 @@ const formatarMoedaInput = (valor) => {
                   Exportar CSV
                 </button>
                 <button
+                  onClick={exportarClientesPDF}
+                  className="flex items-center gap-2 bg-slate-700 text-white px-6 py-3 rounded-lg hover:bg-slate-800 transition-colors"
+                >
+                  <Download className="w-5 h-5" />
+                  Exportar PDF
+                </button>
+                <button
                   onClick={() => setShowEmailSettings(true)}
                   className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
                 >
@@ -1438,7 +1516,9 @@ const formatarMoedaInput = (valor) => {
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Cliente</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Cliente ({totais.totalClientes})
+                  </th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Contato</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Código Contrato</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Valores</th>

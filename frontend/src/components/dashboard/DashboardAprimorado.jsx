@@ -2,6 +2,8 @@
 import { TrendingUp, DollarSign, AlertCircle, Calendar, Clock, CheckCircle, BarChart3, Briefcase, CreditCard, ArrowUpRight, ArrowDownRight, Wallet, Edit2, Plus, Trash2, X, Save, Download, Activity } from 'lucide-react';
 import GraficoEvolucaoMensal from './GraficoEvolucaoMensal';
 import { useUI } from '../../contexts/UiContext';
+import { supabase } from '../../lib/supabaseClient';
+import { getClienteTitulo, getClienteSubtitulo } from '../../utils/clientDisplay';
 
 const DashboardFinanceiro = ({ clientes = [] }) => {
   const [periodo, setPeriodo] = useState('mes');
@@ -9,18 +11,28 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
   const [modalMeta, setModalMeta] = useState(false);
   const { showMessage } = useUI();
   
-  // Despesas editáveis (salvos no localStorage)
-  const [despesas, setDespesas] = useState(() => {
-    const salvas = localStorage.getItem('dashboard-despesas');
-    return salvas ? JSON.parse(salvas) : [
-      { categoria: 'Folha de Pagamento', valor: 45000, tipo: 'fixa' },
-      { categoria: 'Aluguel/Infraestrutura', valor: 8000, tipo: 'fixa' },
-      { categoria: 'Equipamentos', valor: 5000, tipo: 'variavel' },
-      { categoria: 'Marketing', valor: 3000, tipo: 'variavel' },
-      { categoria: 'Impostos', valor: 12000, tipo: 'fixa' },
-      { categoria: 'Outros', valor: 4000, tipo: 'variavel' }
-    ];
+  const mapDashboardDespesaFromDb = (row) => ({
+    id: row.id,
+    categoria: row.categoria || '',
+    valor: Number(row.valor || 0),
+    tipo: row.tipo === 'fixa' ? 'fixa' : 'variavel'
   });
+
+  const mapDashboardDespesaToDb = (despesa) => {
+    const payload = {
+      categoria: (despesa.categoria || '').trim(),
+      valor: Number.isFinite(Number(despesa.valor)) ? Number(despesa.valor) : 0,
+      tipo: despesa.tipo === 'fixa' ? 'fixa' : 'variavel'
+    };
+
+    if (despesa.id) {
+      payload.id = despesa.id;
+    }
+
+    return payload;
+  };
+
+  const [despesas, setDespesas] = useState([]);
 
   // Meta mensal editável
   const [metaMensal, setMetaMensal] = useState(() => {
@@ -37,9 +49,10 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
   // Estado para edição de despesa
   const [editandoDespesa, setEditandoDespesa] = useState(null);
   const [despesaError, setDespesaError] = useState('');
+  const [salvandoDespesa, setSalvandoDespesa] = useState(false);
 
   // Funções para gerenciar despesas
-  const adicionarDespesa = () => {
+  const adicionarDespesa = async () => {
     setDespesaError('');
     if (!novaDespesa.categoria || !novaDespesa.valor) {
       setDespesaError('Informe categoria e valor');
@@ -49,30 +62,48 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       setDespesaError('O valor deve ser maior que zero');
       return;
     }
-    if (novaDespesa.categoria && novaDespesa.valor) {
-      // Converte string de centavos para número
+    try {
+      setSalvandoDespesa(true);
       const valorNumerico = parseFloat(novaDespesa.valor) / 100;
-      setDespesas([...despesas, { ...novaDespesa, valor: valorNumerico }]);
+      const payload = mapDashboardDespesaToDb({
+        categoria: novaDespesa.categoria,
+        tipo: novaDespesa.tipo,
+        valor: valorNumerico
+      });
+
+      const { data, error } = await supabase
+        .from('dashboard_despesas')
+        .insert([payload])
+        .select('*')
+        .single();
+
+      if (error) throw error;
+
+      setDespesas((prev) => [...prev, mapDashboardDespesaFromDb(data)]);
       setNovaDespesa({ categoria: '', valor: '', tipo: 'fixa' });
       setDespesaError('');
+    } catch (error) {
+      setDespesaError(error.message || 'Não foi possível salvar a despesa');
+    } finally {
+      setSalvandoDespesa(false);
     }
   };
 
-  const editarDespesa = (index) => {
-    setEditandoDespesa(index);
+  const editarDespesa = (despesa) => {
+    setEditandoDespesa(despesa.id);
     
     // Se o valor for 0, armazena como string "0"
-    const valorEmCentavos = despesas[index].valor === 0 
+    const valorEmCentavos = despesa.valor === 0 
       ? '0' 
-      : Math.round(despesas[index].valor * 100).toString();
+      : Math.round(despesa.valor * 100).toString();
       
     setNovaDespesa({ 
-      ...despesas[index], 
+      ...despesa, 
       valor: valorEmCentavos 
     });
   };
 
-  const salvarEdicaoDespesa = () => {
+  const salvarEdicaoDespesa = async () => {
     setDespesaError('');
     if (!novaDespesa.categoria || !novaDespesa.valor) {
       setDespesaError('Informe categoria e valor');
@@ -82,22 +113,82 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
       setDespesaError('O valor deve ser maior que zero');
       return;
     }
-    if (novaDespesa.categoria && novaDespesa.valor) {
+    if (editandoDespesa && `${editandoDespesa}`.startsWith('local-')) {
       const valorNumerico = parseFloat(novaDespesa.valor) / 100;
-      const novasDespesas = [...despesas];
-      novasDespesas[editandoDespesa] = { 
-        ...novaDespesa, 
-        valor: valorNumerico 
-      };
-      setDespesas(novasDespesas);
+      setDespesas((prev) =>
+        prev.map((item) =>
+          item.id === editandoDespesa
+            ? {
+                ...item,
+                categoria: novaDespesa.categoria,
+                tipo: novaDespesa.tipo === 'fixa' ? 'fixa' : 'variavel',
+                valor: valorNumerico
+              }
+            : item
+        )
+      );
       setEditandoDespesa(null);
       setNovaDespesa({ categoria: '', valor: '', tipo: 'fixa' });
       setDespesaError('');
+      return;
+    }
+    try {
+      setSalvandoDespesa(true);
+      const valorNumerico = parseFloat(novaDespesa.valor) / 100;
+      const payload = mapDashboardDespesaToDb({
+        id: editandoDespesa,
+        categoria: novaDespesa.categoria,
+        tipo: novaDespesa.tipo,
+        valor: valorNumerico
+      });
+
+      const { data, error } = await supabase
+        .from('dashboard_despesas')
+        .update(payload)
+        .eq('id', editandoDespesa)
+        .select('*')
+        .single();
+
+      if (error) throw error;
+
+      const updated = mapDashboardDespesaFromDb(data);
+      setDespesas((prev) => prev.map((item) => (item.id === editandoDespesa ? updated : item)));
+      setEditandoDespesa(null);
+      setNovaDespesa({ categoria: '', valor: '', tipo: 'fixa' });
+      setDespesaError('');
+    } catch (error) {
+      setDespesaError(error.message || 'Não foi possível atualizar a despesa');
+    } finally {
+      setSalvandoDespesa(false);
     }
   };
 
-  const removerDespesa = (index) => {
-    setDespesas(despesas.filter((_, i) => i !== index));
+  const removerDespesa = async (id) => {
+    if (!id || `${id}`.startsWith('local-')) {
+      setDespesas((prev) => prev.filter((item) => item.id !== id));
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('dashboard_despesas')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setDespesas((prev) => prev.filter((item) => item.id !== id));
+      if (editandoDespesa === id) {
+        setEditandoDespesa(null);
+        setNovaDespesa({ categoria: '', valor: '', tipo: 'fixa' });
+      }
+    } catch (error) {
+      showMessage({
+        title: 'Erro ao remover despesa',
+        message: error.message || 'Não foi possível remover a despesa.',
+        type: 'error'
+      });
+    }
   };
 
   const cancelarEdicao = () => {
@@ -105,10 +196,89 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     setNovaDespesa({ categoria: '', valor: '', tipo: 'fixa' });
   };
 
-  // Salvar despesas no localStorage
+  // Carregar despesas do dashboard do Supabase e migrar localStorage legado
   useEffect(() => {
-    localStorage.setItem('dashboard-despesas', JSON.stringify(despesas));
-  }, [despesas]);
+    let cancelled = false;
+
+    const carregarDespesasDashboard = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('dashboard_despesas')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        if (!cancelled && (data || []).length > 0) {
+          setDespesas((data || []).map(mapDashboardDespesaFromDb));
+          return;
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dashboard_despesas:', error);
+      }
+
+      const localRaw = localStorage.getItem('dashboard-despesas');
+      const localList = localRaw ? JSON.parse(localRaw) : [];
+      const fallback = Array.isArray(localList) ? localList : [];
+
+      // Sem despesas no Supabase e sem legado local: mantém vazio.
+      if (fallback.length === 0) {
+        if (!cancelled) setDespesas([]);
+        return;
+      }
+
+      try {
+        const rowsToInsert = fallback
+          .map((item, index) => {
+            const categoria =
+              typeof item.categoria === 'string' && item.categoria.trim() !== ''
+                ? item.categoria.trim()
+                : `Categoria ${index + 1}`;
+            const valorNumerico = Number(item.valor);
+            return mapDashboardDespesaToDb({
+              categoria,
+              valor: Number.isFinite(valorNumerico) ? valorNumerico : 0,
+              tipo: item.tipo
+            });
+          })
+          .filter((item) => item.categoria && item.categoria.trim() !== '');
+
+        const { data: inserted, error: insertError } = await supabase
+          .from('dashboard_despesas')
+          .insert(rowsToInsert)
+          .select('*');
+
+        if (insertError) throw insertError;
+
+        if (!cancelled) {
+          setDespesas((inserted || []).map(mapDashboardDespesaFromDb));
+        }
+        localStorage.removeItem('dashboard-despesas');
+      } catch (error) {
+        console.error('Erro ao migrar dashboard-despesas para Supabase:', error);
+        showMessage({
+          title: 'Falha ao salvar no Supabase',
+          message: 'Verifique se a tabela dashboard_despesas foi criada com o SQL correto.',
+          type: 'warning'
+        });
+        if (!cancelled) {
+          setDespesas(
+            fallback.map((item, index) => ({
+              id: `local-${index}`,
+              categoria: item.categoria || '',
+              valor: Number(item.valor || 0),
+              tipo: item.tipo === 'fixa' ? 'fixa' : 'variavel'
+            }))
+          );
+        }
+      }
+    };
+
+    carregarDespesasDashboard();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Salvar meta no localStorage
   useEffect(() => {
@@ -128,6 +298,10 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     clientesAtivos: 0,
     clientesInadimplentes: 0
   });
+
+  const clientesComPendente = (Array.isArray(clientes) ? clientes : []).filter(
+    (c) => (Number(c.valorPago) || 0) < (Number(c.valorTotal) || 0)
+  );
 
 
   const getPeriodoRange = useCallback(() => {
@@ -180,7 +354,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     const isInRange = (data) => data && data >= inicio && data <= fim;
 
     // Receitas
-    const receitaRealizada = clientesArray.reduce((sum, c) => {
+    let receitaRealizada = clientesArray.reduce((sum, c) => {
       const pagamentos = Array.isArray(c.historicosPagamentos) ? c.historicosPagamentos : [];
       if (pagamentos.length > 0) {
         return sum + pagamentos.reduce((acc, p) => {
@@ -190,27 +364,53 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
           return acc + (Number(p.valor) || 0);
         }, 0);
       }
-      if (c.dataVenda) {
-        const dataVenda = new Date(c.dataVenda);
-        if (isInRange(dataVenda)) {
-          return sum + (c.valorPago || 0);
+      // Fallback para dados legados sem histórico de pagamento.
+      // Evita considerar valor pago fora do período selecionado.
+      const dataReferencia = c.dataVenda || c.proximoVencimento || null;
+      if (dataReferencia) {
+        const dataRef = new Date(dataReferencia);
+        if (!Number.isNaN(dataRef.getTime()) && isInRange(dataRef)) {
+          return sum + (Number(c.valorPago) || 0);
         }
         return sum;
       }
-      return sum + (c.valorPago || 0);
+      return sum + (Number(c.valorPago) || 0);
     }, 0);
 
-    const receitaPrevista = clientesArray.reduce((sum, c) => {
-      if (c.dataVenda) {
-        const dataVenda = new Date(c.dataVenda);
-        if (!Number.isNaN(dataVenda.getTime()) && isInRange(dataVenda)) {
-          return sum + (c.valorTotal || 0);
-        }
-        return sum;
-      }
-      return sum + (c.valorTotal || 0);
+    // Prevista no período: receitas já realizadas + parcelas em aberto
+    // com vencimento dentro do período selecionado.
+    const pendenciasDoPeriodo = clientesArray.reduce((sum, c) => {
+      const valorTotal = Number(c.valorTotal) || 0;
+      const valorPago = Number(c.valorPago) || 0;
+      if (valorPago >= valorTotal) return sum;
+      if (!c.proximoVencimento) return sum;
+      const venc = new Date(c.proximoVencimento);
+      if (Number.isNaN(venc.getTime()) || !isInRange(venc)) return sum;
+      const saldoAberto = Math.max(valorTotal - valorPago, 0);
+      const parcela = Number(c.valorParcela) || 0;
+      const valorPrevistoCliente = parcela > 0 ? Math.min(parcela, saldoAberto) : saldoAberto;
+      return sum + valorPrevistoCliente;
     }, 0);
-    const receitaPendente = receitaPrevista - receitaRealizada;
+
+    let receitaPrevista = receitaRealizada + pendenciasDoPeriodo;
+    let receitaPendente = Math.max(receitaPrevista - receitaRealizada, 0);
+
+    // Fallback para bases sem histórico temporal completo:
+    // evita KPIs zerados quando há dados financeiros cadastrados.
+    const receitaRealizadaAllTime = clientesArray.reduce(
+      (sum, c) => sum + (Number(c.valorPago) || 0),
+      0
+    );
+    const receitaPrevistaAllTime = clientesArray.reduce(
+      (sum, c) => sum + (Number(c.valorTotal) || 0),
+      0
+    );
+
+    if (receitaRealizada === 0 && receitaRealizadaAllTime > 0) {
+      receitaRealizada = receitaRealizadaAllTime;
+      receitaPrevista = Math.max(receitaPrevista, receitaPrevistaAllTime);
+      receitaPendente = Math.max(receitaPrevista - receitaRealizada, 0);
+    }
 
     // Inadimplência
     const totalAtrasado = clientesArray
@@ -218,16 +418,22 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
         if (!c.proximoVencimento) return false;
         const venc = new Date(c.proximoVencimento);
         if (Number.isNaN(venc.getTime())) return false;
-        return venc < hoje && isInRange(venc) && c.valorPago < c.valorTotal;
+        return venc < hoje && isInRange(venc) && (Number(c.valorPago) || 0) < (Number(c.valorTotal) || 0);
       })
-      .reduce((sum, c) => sum + (c.valorTotal - c.valorPago), 0);
+      .reduce((sum, c) => {
+        const valorTotal = Number(c.valorTotal) || 0;
+        const valorPago = Number(c.valorPago) || 0;
+        const saldoAberto = Math.max(valorTotal - valorPago, 0);
+        const parcela = Number(c.valorParcela) || 0;
+        return sum + (parcela > 0 ? Math.min(parcela, saldoAberto) : saldoAberto);
+      }, 0);
 
     const inadimplencia = receitaPrevista > 0 ? (totalAtrasado / receitaPrevista) * 100 : 0;
     const clientesInadimplentes = clientesArray.filter(c => {
       if (!c.proximoVencimento) return false;
       const venc = new Date(c.proximoVencimento);
       if (Number.isNaN(venc.getTime())) return false;
-      return venc < hoje && isInRange(venc) && c.valorPago < c.valorTotal;
+      return venc < hoje && isInRange(venc) && (Number(c.valorPago) || 0) < (Number(c.valorTotal) || 0);
     }).length;
 
     // Previs próximo mês
@@ -236,11 +442,11 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     
     const previsaoProximoMes = clientesArray
       .filter(c => {
-        if (!c.proximoVencimento || c.valorPago >= c.valorTotal) return false;
+        if (!c.proximoVencimento || (Number(c.valorPago) || 0) >= (Number(c.valorTotal) || 0)) return false;
         const venc = new Date(c.proximoVencimento);
         return venc >= proximoMes && venc <= fimProximoMes;
       })
-      .reduce((sum, c) => sum + (c.valorParcela || 0), 0);
+      .reduce((sum, c) => sum + (Number(c.valorParcela) || 0), 0);
 
     // Despesas
     const despesasTotais = despesas.reduce((sum, d) => {
@@ -263,7 +469,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
 
     // Clientes Ativos
     const clientesAtivos = clientesArray.filter(c => {
-      if (c.valorPago > 0) return true;
+      if ((Number(c.valorPago) || 0) > 0) return true;
       if (!c.proximoVencimento) return false;
       const venc = new Date(c.proximoVencimento);
       if (Number.isNaN(venc.getTime())) return false;
@@ -441,6 +647,75 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
     }
   };
 
+  const exportarDashboardPDF = () => {
+    const escapeHtml = (value) =>
+      String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    const despesasLinhas = despesas.map((despesa) => `
+      <tr>
+        <td>${escapeHtml(despesa.categoria)}</td>
+        <td>${escapeHtml(formatMoney(despesa.valor))}</td>
+        <td>${escapeHtml(despesa.tipo === 'fixa' ? 'Fixa' : 'Variável')}</td>
+      </tr>
+    `).join('');
+
+    const dataAtual = new Date().toLocaleString('pt-BR');
+    const periodoTexto = periodo === 'mes' ? 'Mensal' : periodo === 'trimestre' ? 'Trimestral' : 'Anual';
+    const janela = window.open('', '_blank', 'width=1200,height=800');
+    if (!janela) return;
+
+    janela.document.write(`
+      <html>
+        <head>
+          <title>Relatório do Dashboard</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 24px; color: #111827; }
+            h1 { margin: 0 0 8px; font-size: 24px; }
+            .meta { margin-bottom: 16px; color: #4b5563; font-size: 12px; }
+            .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+            .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; }
+            .card h3 { margin: 0; font-size: 12px; color: #6b7280; }
+            .card p { margin: 4px 0 0; font-size: 14px; font-weight: 700; }
+            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; }
+            th { background: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>Relatório do Dashboard</h1>
+          <div class="meta">Período: ${escapeHtml(periodoTexto)} | Gerado em: ${escapeHtml(dataAtual)}</div>
+          <div class="grid">
+            <div class="card"><h3>Receita Realizada</h3><p>${escapeHtml(formatMoney(metricas.receitaRealizada))}</p></div>
+            <div class="card"><h3>Lucro Operacional</h3><p>${escapeHtml(formatMoney(metricas.lucroOperacional))}</p></div>
+            <div class="card"><h3>Receita Pendente</h3><p>${escapeHtml(formatMoney(metricas.receitaPendente))}</p></div>
+            <div class="card"><h3>Despesas Totais</h3><p>${escapeHtml(formatMoney(metricas.despesasTotais))}</p></div>
+            <div class="card"><h3>Margem de Lucro</h3><p>${escapeHtml(metricas.margemLucro.toFixed(2))}%</p></div>
+            <div class="card"><h3>Inadimplência</h3><p>${escapeHtml(metricas.inadimplencia.toFixed(2))}%</p></div>
+          </div>
+          <h2>Distribuição de Despesas</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria</th>
+                <th>Valor</th>
+                <th>Tipo</th>
+              </tr>
+            </thead>
+            <tbody>${despesasLinhas || '<tr><td colspan="3">Nenhuma despesa cadastrada</td></tr>'}</tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    janela.document.close();
+    janela.focus();
+    janela.print();
+  };
+
   const MetricCard = ({ title, value, subtitle, icon: Icon, color, trend, highlight }) => (
     <div className={`bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 ${highlight ? 'ring-2 ring-blue-500/20 bg-gradient-to-br from-blue-50/50 to-white' : ''}`}>
       <div className="flex items-center justify-between mb-4">
@@ -532,6 +807,14 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                   <path d="M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0H5.272C3.512 0 2.08.7 2.08 2.182v19.636C2.08 23.3 3.512 24 5.272 24h14.456C21.488 24 22.92 23.3 22.92 21.818V7.636L14.728 0zm6.816 21.818c0 .4-.336.727-.752.727H5.272c-.416 0-.752-.327-.752-.727V2.182c0-.4.336-.727.752-.727h8.08v2.91c0 .4.336.727.752.727h2.912v16.727z"/>
                 </svg>
                 Sheets
+              </button>
+              <button
+                onClick={exportarDashboardPDF}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-all duration-200 shadow-md hover:shadow-lg"
+                title="Exportar dashboard em PDF"
+              >
+                <Download className="w-4 h-4" />
+                PDF
               </button>
             </div>
           </div>
@@ -717,15 +1000,15 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-semibold text-orange-800">Próximos Vencimentos</p>
                 <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full font-medium">
-                  {metricas.clientesInadimplentes} itens
+                  {clientesComPendente.length} itens
                 </span>
               </div>
               <div className="space-y-2">
-                {clientes.filter(c => c.valorPago < c.valorTotal).slice(0, 3).map((cliente, index) => (
+                {clientesComPendente.slice(0, 3).map((cliente, index) => (
                   <div key={index} className="flex items-center justify-between py-2 px-3 bg-orange-50/50 rounded-lg border border-orange-100">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-orange-900">{cliente.nome}</p>
-                      <p className="text-xs text-orange-700">{cliente.servico || 'Servi'}</p>
+                      <p className="text-sm font-medium text-orange-900">{getClienteTitulo(cliente)}</p>
+                      <p className="text-xs text-orange-700">{getClienteSubtitulo(cliente)}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-bold text-orange-900">{formatMoney(cliente.valorTotal - cliente.valorPago)}</p>
@@ -735,7 +1018,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                     </div>
                   </div>
                 ))}
-                {clientes.filter(c => c.valorPago < c.valorTotal).length === 0 && (
+                {clientesComPendente.length === 0 && (
                   <p className="text-sm text-orange-600 text-center py-4">Nenhum pagamento pendente</p>
                 )}
               </div>
@@ -765,7 +1048,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
           </div>
           <div className="space-y-4">
             {despesas.length > 0 ? despesas.map((despesa, index) => (
-              <div key={index} className="bg-white/70 rounded-xl p-4 shadow-sm border border-slate-100">
+              <div key={despesa.id || index} className="bg-white/70 rounded-xl p-4 shadow-sm border border-slate-100">
                 <div className="flex justify-between items-center mb-3">
                   <div>
                     <span className="text-sm font-semibold text-slate-800">{despesa.categoria}</span>
@@ -1033,6 +1316,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                   <>
                     <button
                       onClick={salvarEdicaoDespesa}
+                      disabled={salvandoDespesa}
                       className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
                       <Save className="w-4 h-4 inline mr-1" />
@@ -1048,6 +1332,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                 ) : (
                   <button
                     onClick={adicionarDespesa}
+                    disabled={salvandoDespesa}
                     className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
                   >
                     <Plus className="w-4 h-4 inline mr-1" />
@@ -1061,7 +1346,7 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
             <div className="space-y-2">
               <h4 className="font-medium text-gray-900 mb-2">Despesas Cadastradas</h4>
               {despesas.map((despesa, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={despesa.id || index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-900">{despesa.categoria}</p>
                     <p className="text-sm text-gray-600">
@@ -1070,14 +1355,14 @@ const DashboardFinanceiro = ({ clientes = [] }) => {
                   </div>
                   <div className="flex gap-1">
                     <button
-                      onClick={() => editarDespesa(index)}
+                      onClick={() => editarDespesa(despesa)}
                       className="p-1 text-blue-600 hover:bg-blue-100 rounded"
                       title="Editar"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => removerDespesa(index)}
+                      onClick={() => removerDespesa(despesa.id)}
                       className="p-1 text-red-600 hover:bg-red-100 rounded"
                       title="Remover"
                     >

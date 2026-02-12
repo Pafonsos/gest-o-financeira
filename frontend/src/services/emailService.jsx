@@ -41,71 +41,24 @@ const emailService = {
         template: emailData.template
       };
 
-      // DEBUG DETALHADO
       const payloadString = JSON.stringify(payload);
       const payloadSize = payloadString.length;
-      
-      console.log('\n =============== DEBUG COMPLETO ===============');
-      console.log(' Tamanho do payload:', payloadSize, 'bytes');
-      console.log(' Tamanho em KB:', (payloadSize / 1024).toFixed(2), 'KB');
-      console.log(' Número de recipients:', cleanRecipients.length);
-      console.log(' Template:', payload.template);
-      console.log(' Subject:', payload.subject);
-      
-      // Mostrar cada recipient
-      cleanRecipients.forEach((r, i) => {
-        const rSize = JSON.stringify(r).length;
-        console.log(`\n'Recipient ${i + 1}:`);
-        console.log('   Email:', r.email);
-        console.log('   Nome:', r.nomeResponsavel);
-        console.log('   Empresa:', r.nomeEmpresa);
-        console.log('   CNPJ:', r.cnpj);
-        console.log('   Valor:', r.valorPendente);
-        console.log('   Parcelas:', r.parcelasAtraso);
-        console.log('   Tamanho deste recipient:', rSize, 'bytes');
-      });
-      
-      console.log('\n"" Payload completo (primeiros 500 chars):');
-      console.log(payloadString.substring(0, 500) + '...');
-      console.log(' ============================================\n');
 
       // ANÁLISE DE TAMANHO
       if (payloadSize > 50000) {
-        console.error('⚠️ PAYLOAD MUITO GRANDE!', payloadSize, 'bytes');
-        console.error('✅ Recomendado: < 50KB');
-        throw new Error(`Payload muito grande: ${(payloadSize/1024).toFixed(2)} KB. Reduza os dadosão enviados.`);
+        throw new Error(`Payload muito grande: ${(payloadSize / 1024).toFixed(2)} KB. Reduza os dados enviados.`);
       }
 
       // Enviar request
-      console.log(' Enviando para:', API_BASE_URL + '/email/send-bulk');
       const response = await axiosInstance.post('/email/send-bulk', payload);
-      
-      console.log('. Resposta do servidor:', response.status);
-      console.log('. Dados:', response.data);
-      
+
       return response.data;
 
     } catch (error) {
-      console.error('\n =============== ERRO DETALHADO ===============');
-      console.error('Mensagem:', error.message);
-      console.error('Status:', error.response?.status);
-      console.error('Dados do erro:', error.response?.data);
-      console.error('Headers:', error.response?.headers);
-      console.error('Config:', {
-        url: error.config?.url,
-        method: error.config?.method,
-        baseURL: error.config?.baseURL,
-        timeout: error.config?.timeout
-      });
-      console.error(' ==============================================\n');
-      
       if (error.response) {
         const status = error.response.status;
         const serverMessage = error.response.data?.message || error.response.data?.error || '';
-        
-        // Mostrar mensagem real do servidor
-        console.error(' Servidor disse:', serverMessage);
-        
+
         if (status === 431) {
           throw new Error(`Erro 431 do servidor: ${serverMessage || 'Headers muito grandes'}`);
         }

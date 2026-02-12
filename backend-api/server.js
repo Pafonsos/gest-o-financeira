@@ -46,22 +46,19 @@ app.use(cors({
 
 // Helmet simplificado
 app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false,
-  crossOriginOpenerPolicy: false,
-  crossOriginResourcePolicy: false
+  contentSecurityPolicy: false
 }));
 
 // Body parser com limites MUITO MAIORES
 app.use(express.json({ 
-  limit: '100mb',
-  parameterLimit: 1000000
+  limit: '2mb',
+  parameterLimit: 1000
 }));
 
 app.use(express.urlencoded({ 
   extended: true, 
-  limit: '100mb',
-  parameterLimit: 1000000
+  limit: '2mb',
+  parameterLimit: 1000
 }));
 
 // ============================================
@@ -109,10 +106,10 @@ app.use((error, req, res, next) => {
 const server = http.createServer(app);
 
 // CONFIGURAÇÕES CRÍTICAS PARA RESOLVER 431
-server.maxHeadersCount = 0;
-server.headersTimeout = 0;
-server.requestTimeout = 0;
-server.timeout = 0;
+server.maxHeadersCount = 2000;
+server.headersTimeout = 60000;
+server.requestTimeout = 120000;
+server.timeout = 120000;
 
 // Iniciar servidor
 server.listen(PORT, () => {
@@ -126,9 +123,9 @@ server.listen(PORT, () => {
   console.log('='.repeat(60));
   console.log('\n💡 Configurações aplicadas:');
   console.log('   ✓ CORS: http://localhost:5173');
-  console.log('   ✓ Headers: SEM LIMITE');
-  console.log('   ✓ Payload: 100MB');
-  console.log('   ✓ Timeout: DESATIVADO\n');
+  console.log('   ✓ Headers: limitados');
+  console.log('   ✓ Payload: 2MB');
+  console.log('   ✓ Timeout: 120s\n');
 });
 
 server.on('error', (error) => {
@@ -170,3 +167,4 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
+
