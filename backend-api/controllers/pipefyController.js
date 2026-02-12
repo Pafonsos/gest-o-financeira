@@ -53,7 +53,7 @@ const pushClients = async (req, res) => {
     const pipeId = getPipeIdFromRequest(req);
     const clients = req.body?.clients || [];
     const fieldMap = req.body?.fieldMap || {};
-    const titleField = req.body?.titleField || 'nomeEmpresa';
+    const titleField = req.body?.titleField || 'nomeFantasia';
     const apiToken = getTokenFromRequest(req);
 
     if (!pipeId) {
@@ -79,6 +79,7 @@ const pushClients = async (req, res) => {
     for (const client of clients) {
       const title =
         client?.[titleField] ||
+        client?.nomeFantasia ||
         client?.nomeEmpresa ||
         client?.nomeResponsavel ||
         client?.email ||
