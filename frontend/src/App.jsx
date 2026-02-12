@@ -1111,6 +1111,31 @@ const formatarMoedaInput = (valor) => {
       return;
     }
 
+    const janela = window.open('', '_blank', 'width=1200,height=800');
+    if (!janela) {
+      showMessage({
+        title: 'Pop-up bloqueado',
+        message: 'Permita pop-ups para exportar o PDF.',
+        type: 'warning'
+      });
+      return;
+    }
+
+    janela.document.write(`
+      <html>
+        <head>
+          <title>Preparando PDF...</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 24px; color: #111827; }
+          </style>
+        </head>
+        <body>
+          <p>Gerando relatório, aguarde...</p>
+        </body>
+      </html>
+    `);
+    janela.document.close();
+
     const escapeHtml = (value) =>
       String(value ?? '')
         .replace(/&/g, '&amp;')
@@ -1119,69 +1144,78 @@ const formatarMoedaInput = (valor) => {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 
-    const linhas = dados
-      .map((cliente) => {
-        const status = calcularStatus(cliente) === 'pago'
-          ? 'Pago'
-          : calcularStatus(cliente) === 'em_atraso'
-          ? 'Em Atraso'
-          : 'Pendente';
-        const restante = (cliente.valorTotal || 0) - (cliente.valorPago || 0);
+    const montarRelatorio = () => {
+      const linhas = dados
+        .map((cliente) => {
+          const statusCalculado = calcularStatus(cliente);
+          const status = statusCalculado === 'pago'
+            ? 'Pago'
+            : statusCalculado === 'em_atraso'
+            ? 'Em Atraso'
+            : 'Pendente';
+          const restante = (cliente.valorTotal || 0) - (cliente.valorPago || 0);
 
-        return `
-          <tr>
-            <td>${escapeHtml(cliente.nomeResponsavel)}</td>
-            <td>${escapeHtml(cliente.nomeEmpresa)}</td>
-            <td>${escapeHtml(cliente.email || '-')}</td>
-            <td>${escapeHtml(cliente.telefone || '-')}</td>
-            <td>${escapeHtml(formatarMoeda(cliente.valorTotal || 0))}</td>
-            <td>${escapeHtml(formatarMoeda(restante))}</td>
-            <td>${escapeHtml(status)}</td>
-          </tr>
-        `;
-      })
-      .join('');
+          return `
+            <tr>
+              <td>${escapeHtml(cliente.nomeResponsavel)}</td>
+              <td>${escapeHtml(cliente.nomeEmpresa)}</td>
+              <td>${escapeHtml(cliente.email || '-')}</td>
+              <td>${escapeHtml(cliente.telefone || '-')}</td>
+              <td>${escapeHtml(formatarMoeda(cliente.valorTotal || 0))}</td>
+              <td>${escapeHtml(formatarMoeda(restante))}</td>
+              <td>${escapeHtml(status)}</td>
+            </tr>
+          `;
+        })
+        .join('');
 
-    const data = new Date().toLocaleString('pt-BR');
-    const janela = window.open('', '_blank', 'width=1200,height=800');
-    if (!janela) return;
+      const data = new Date().toLocaleString('pt-BR');
+      janela.document.open();
+      janela.document.write(`
+        <html>
+          <head>
+            <title>Relatório de Clientes</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 24px; color: #111827; }
+              h1 { margin: 0 0 8px; font-size: 24px; }
+              .meta { margin-bottom: 16px; color: #4b5563; font-size: 12px; }
+              table { width: 100%; border-collapse: collapse; font-size: 12px; }
+              th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; }
+              th { background: #f3f4f6; }
+            </style>
+          </head>
+          <body>
+            <h1>Relatório de Clientes</h1>
+            <div class="meta">Gerado em: ${escapeHtml(data)} | Total: ${dados.length}</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Responsável</th>
+                  <th>Empresa</th>
+                  <th>Email</th>
+                  <th>Telefone</th>
+                  <th>Valor Total</th>
+                  <th>Valor Restante</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>${linhas}</tbody>
+            </table>
+          </body>
+        </html>
+      `);
+      janela.document.close();
+      setTimeout(() => {
+        janela.focus();
+        janela.print();
+      }, 80);
+    };
 
-    janela.document.write(`
-      <html>
-        <head>
-          <title>Relatório de Clientes</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 24px; color: #111827; }
-            h1 { margin: 0 0 8px; font-size: 24px; }
-            .meta { margin-bottom: 16px; color: #4b5563; font-size: 12px; }
-            table { width: 100%; border-collapse: collapse; font-size: 12px; }
-            th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; }
-            th { background: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>Relatório de Clientes</h1>
-          <div class="meta">Gerado em: ${escapeHtml(data)} | Total: ${dados.length}</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Responsável</th>
-                <th>Empresa</th>
-                <th>Email</th>
-                <th>Telefone</th>
-                <th>Valor Total</th>
-                <th>Valor Restante</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>${linhas}</tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    janela.document.close();
-    janela.focus();
-    janela.print();
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(() => setTimeout(montarRelatorio, 0));
+      return;
+    }
+    setTimeout(montarRelatorio, 0);
   };
 
   // NOVA função para exportar direto para Google Sheets
