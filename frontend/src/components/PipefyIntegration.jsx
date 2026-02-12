@@ -427,6 +427,31 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
       .filter(Boolean);
   };
 
+  const normalizeFieldKey = (value) =>
+    (value || '')
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9\s]/g, ' ')
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const getCardFieldValueByLabels = (card, labels = []) => {
+    const wanted = labels.map((label) => normalizeFieldKey(label));
+    const fields = Array.isArray(card?.fields) ? card.fields : [];
+    const found = fields.find((item) => {
+      const label = normalizeFieldKey(item?.field?.label || item?.name || '');
+      return wanted.some((w) => label === w || label.includes(w) || w.includes(label));
+    });
+    return formatCardFieldValue(found?.value);
+  };
+
+  const getCardDisplayTitle = (card) => {
+    const nomeFantasia = getCardFieldValueByLabels(card, ['nome fantasia', 'fantasia']);
+    return nomeFantasia || card?.title || 'Card';
+  };
+
   const moveCardInState = (cards, cardId, phaseId) => {
     const targetPhase = pipePhases.find((phase) => phase.id === phaseId);
     if (!targetPhase) return cards;
@@ -801,7 +826,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
                             dragCardId === card.id ? 'opacity-50 border-indigo-400' : 'border-slate-200'
                           }`}
                         >
-                          <div className="font-semibold">{card.title}</div>
+                          <div className="font-semibold">{getCardDisplayTitle(card)}</div>
                           <div className="text-slate-400">{card.id}</div>
                           {movingCardId === card.id && (
                             <div className="text-[11px] text-indigo-600 mt-1">Movendo...</div>
@@ -821,7 +846,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
           <div className="w-full max-w-xl rounded-xl bg-white shadow-xl border border-slate-200">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
               <div>
-                <h3 className="text-base font-bold text-slate-900">{detailsCard.title}</h3>
+                <h3 className="text-base font-bold text-slate-900">{getCardDisplayTitle(detailsCard)}</h3>
                 <p className="text-xs text-slate-500">{detailsCard.id}</p>
               </div>
               <button onClick={() => setDetailsCard(null)} className="text-slate-500 hover:text-slate-700">
