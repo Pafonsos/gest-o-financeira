@@ -9,6 +9,22 @@ const getTokenFromRequest = (req) => {
   return req.body?.apiToken;
 };
 
+const normalizeText = (value) => (value || '').toString().trim();
+
+const resolveCardTitle = (client) => {
+  const nomeFantasia = normalizeText(client?.nomeFantasia);
+  const nomeEmpresa = normalizeText(client?.nomeEmpresa);
+  const nomeResponsavel = normalizeText(client?.nomeResponsavel);
+  const email = normalizeText(client?.email);
+  const codigoContrato = normalizeText(client?.codigoContrato);
+
+  const candidates = [nomeFantasia, nomeEmpresa, nomeResponsavel, email]
+    .filter(Boolean)
+    .filter((value) => value !== codigoContrato);
+
+  return candidates[0] || nomeFantasia || nomeEmpresa || nomeResponsavel || email || 'Cliente';
+};
+
 const testConnection = async (req, res) => {
   try {
     const apiToken = getTokenFromRequest(req);
@@ -53,7 +69,6 @@ const pushClients = async (req, res) => {
     const pipeId = getPipeIdFromRequest(req);
     const clients = req.body?.clients || [];
     const fieldMap = req.body?.fieldMap || {};
-    const titleField = req.body?.titleField || 'nomeFantasia';
     const apiToken = getTokenFromRequest(req);
 
     if (!pipeId) {
@@ -77,13 +92,7 @@ const pushClients = async (req, res) => {
     let failureCount = 0;
 
     for (const client of clients) {
-      const title =
-        client?.[titleField] ||
-        client?.nomeFantasia ||
-        client?.nomeEmpresa ||
-        client?.nomeResponsavel ||
-        client?.email ||
-        'Cliente';
+      const title = resolveCardTitle(client);
 
       const fieldsAttributes = Object.entries(fieldMap)
         .map(([localKey, fieldId]) => {
