@@ -12,6 +12,7 @@ create table if not exists clientes (
   email text,
   telefone text,
   cnpj text,
+  cpf text,
   codigo_contrato text,
   contrato_nome text,
   contrato_data_url text,
@@ -37,6 +38,7 @@ alter table clientes add column if not exists nome_fantasia text;
 alter table clientes add column if not exists email text;
 alter table clientes add column if not exists telefone text;
 alter table clientes add column if not exists cnpj text;
+alter table clientes add column if not exists cpf text;
 alter table clientes add column if not exists codigo_contrato text;
 alter table clientes add column if not exists contrato_nome text;
 alter table clientes add column if not exists contrato_data_url text;

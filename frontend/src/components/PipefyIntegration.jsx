@@ -35,8 +35,10 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
   const [pipeFields, setPipeFields] = useState([]);
   const [pipePhases, setPipePhases] = useState([]);
   const [pipeCards, setPipeCards] = useState([]);
-  const [selectedCardId, setSelectedCardId] = useState('');
-  const [selectedPhaseId, setSelectedPhaseId] = useState('');
+  const [dragCardId, setDragCardId] = useState('');
+  const [dragOverPhaseId, setDragOverPhaseId] = useState('');
+  const [movingCardId, setMovingCardId] = useState('');
+  const [detailsCard, setDetailsCard] = useState(null);
   const [simpleMap, setSimpleMap] = useState({});
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [selectedClients, setSelectedClients] = useState([]);
@@ -200,24 +202,62 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
         throw new Error('Pipe não encontrado. Verifique o Pipe ID.');
       }
 
-      const fields = pipe.start_form_fields || [];
+      const startFields = pipe.start_form_fields || [];
+      const phaseFields = (pipe.phases || []).flatMap((phase) => phase.fields || []);
+      let cardFields = [];
+      try {
+        const cardsResult = await pipefyService.pullCards({
+          pipeId: config.pipeId,
+          limit: 50,
+          apiToken: config.apiToken
+        });
+        const cards = cardsResult?.cards || [];
+        cardFields = cards.flatMap((card) =>
+          (card?.fields || [])
+            .map((f) => f?.field)
+            .filter((f) => f?.id)
+        );
+      } catch {
+        // Se falhar, segue com start + phases.
+      }
+      const uniqueFieldsMap = new Map();
+      [...startFields, ...phaseFields, ...cardFields].forEach((field) => {
+        if (!field?.id) return;
+        if (!uniqueFieldsMap.has(field.id)) uniqueFieldsMap.set(field.id, field);
+      });
+      const fields = Array.from(uniqueFieldsMap.values());
       const phases = pipe.phases || [];
       setPipeFields(fields);
       setPipePhases(phases);
 
       if (fields.length > 0) {
         const guess = {};
-        const byLabel = (label) =>
-          fields.find((f) => f.label?.toLowerCase() === label)?.id;
+        const normalizeLabel = (value) =>
+          (value || '')
+            .toString()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-zA-Z0-9\s]/g, ' ')
+            .toLowerCase()
+            .replace(/\s+/g, ' ')
+            .trim();
+        const byLabel = (...labels) => {
+          const wanted = labels.map((label) => normalizeLabel(label));
+          return fields.find((f) => {
+            const got = normalizeLabel(f.label);
+            return wanted.some((w) => got === w || got.includes(w) || w.includes(got));
+          })?.id;
+        };
 
         guess.nomeEmpresa = byLabel('nome da empresa');
         guess.nomeFantasia = byLabel('nome fantasia');
         guess.nomeResponsavel = byLabel('nome do cliente');
-        guess.email = byLabel('e-mail');
+        guess.email = byLabel('e-mail', 'email');
         guess.telefone = byLabel('telefone');
-        guess.cnpj = byLabel('cnpj') || byLabel('cpf/cnpj');
-        guess.valorTotal = byLabel('valor total do contrato') || byLabel('valor total');
-        guess.observacoes = byLabel('observações');
+        guess.cnpj = byLabel('cnpj', 'cpf/cnpj');
+        guess.valorTotal = byLabel('valor total do contrato', 'valor total');
+        guess.codigoContrato = byLabel('codigo do contrato', 'código do contrato');
+        guess.observacoes = byLabel('observações', 'observacoes');
 
         setSimpleMap(Object.fromEntries(
           Object.entries(guess).filter(([, value]) => value)
@@ -329,24 +369,123 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
     return acc;
   }, {});
 
-  const handleMoveCard = async () => {
-    setLoading(true);
-    setStatus({ type: '', text: '' });
-    try {
-      if (!selectedCardId || !selectedPhaseId) {
-        throw new Error('Selecione o card e a fase.');
+  const formatPipeFieldLabel = (label) => {
+    const raw = (label || '').toString().trim();
+    if (!raw) return '';
+    const lettersOnly = raw.replace(/[^A-Za-zÀ-ÿ]/g, '');
+    const isAllUpper = lettersOnly && lettersOnly === lettersOnly.toUpperCase();
+    if (!isAllUpper) return raw;
+    return raw
+      .toLowerCase()
+      .split(/\s+/)
+      .map((word) => {
+        if (word.length <= 4) return word.toUpperCase();
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+  };
+
+  const formatCardFieldValue = (value) => {
+    if (value === null || value === undefined) return '';
+    if (Array.isArray(value)) {
+      return value.map((item) => formatCardFieldValue(item)).filter(Boolean).join(', ');
+    }
+    if (typeof value === 'object') {
+      if (value.name) return String(value.name);
+      if (value.title) return String(value.title);
+      if (value.url) return String(value.url);
+      if (value.value !== undefined) return formatCardFieldValue(value.value);
+      return JSON.stringify(value);
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (!trimmed) return '';
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try {
+          return formatCardFieldValue(JSON.parse(trimmed));
+        } catch {
+          return trimmed;
+        }
       }
+      return trimmed;
+    }
+    return String(value);
+  };
+
+  const getCardInfoRows = (card) => {
+    const fields = Array.isArray(card?.fields) ? card.fields : [];
+    return fields
+      .map((item) => {
+        const label = item?.field?.label || item?.name || '';
+        const value = formatCardFieldValue(item?.value);
+        if (!label || !value) return null;
+        return {
+          label: formatPipeFieldLabel(label),
+          value
+        };
+      })
+      .filter(Boolean);
+  };
+
+  const moveCardInState = (cards, cardId, phaseId) => {
+    const targetPhase = pipePhases.find((phase) => phase.id === phaseId);
+    if (!targetPhase) return cards;
+    return cards.map((card) => {
+      if (card.id !== cardId) return card;
+      return {
+        ...card,
+        current_phase: {
+          id: targetPhase.id,
+          name: targetPhase.name
+        }
+      };
+    });
+  };
+
+  const moveCardToPhase = async (cardId, phaseId) => {
+    if (!cardId || !phaseId) return;
+    const card = pipeCards.find((item) => item.id === cardId);
+    if (!card) return;
+    if (card.current_phase?.id === phaseId) return;
+
+    const previousCards = pipeCards;
+    setMovingCardId(cardId);
+    setPipeCards((current) => moveCardInState(current, cardId, phaseId));
+    setStatus({ type: '', text: '' });
+
+    try {
       await pipefyService.moveCard({
-        cardId: selectedCardId,
-        phaseId: selectedPhaseId,
+        cardId,
+        phaseId,
         apiToken: config.apiToken
       });
       setStatus({ type: 'success', text: 'Card movido com sucesso.' });
     } catch (error) {
+      setPipeCards(previousCards);
       setStatus({ type: 'error', text: error.message || 'Falha ao mover card' });
     } finally {
-      setLoading(false);
+      setMovingCardId('');
     }
+  };
+
+  const handleCardDragStart = (event, cardId) => {
+    setDragCardId(cardId);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', cardId);
+  };
+
+  const handleCardDragEnd = () => {
+    setDragCardId('');
+    setDragOverPhaseId('');
+  };
+
+  const handlePhaseDrop = async (event, phaseId) => {
+    event.preventDefault();
+    const droppedCardId = event.dataTransfer.getData('text/plain') || dragCardId;
+    setDragOverPhaseId('');
+    if (!droppedCardId || !phaseId) return;
+    await moveCardToPhase(droppedCardId, phaseId);
+    setDragCardId('');
   };
 
   return (
@@ -524,7 +663,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
               >
                 <option value="">(não usar)</option>
                 {pipeFields.map((f) => (
-                  <option key={f.id} value={f.id}>{f.label} ({f.id})</option>
+                  <option key={f.id} value={f.id}>{formatPipeFieldLabel(f.label)} ({f.id})</option>
                 ))}
               </select>
             </div>
@@ -607,51 +746,9 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h4 className="font-semibold text-slate-800 mb-3">Mover cards de fase (manual)</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Card</label>
-              <select
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                value={selectedCardId}
-                onChange={(e) => setSelectedCardId(e.target.value)}
-              >
-                <option value="">Selecione um card</option>
-                {pipeCards.map((card, index) => (
-                  <option key={`${card.id}-${index}`} value={card.id}>{card.title} ({card.id})</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fase</label>
-              <select
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                value={selectedPhaseId}
-                onChange={(e) => setSelectedPhaseId(e.target.value)}
-              >
-                <option value="">Selecione uma fase</option>
-                {pipePhases.map((phase) => (
-                  <option key={phase.id} value={phase.id}>{phase.name} ({phase.id})</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex items-end">
-              <button
-                onClick={handleMoveCard}
-                disabled={loading || !selectedCardId || !selectedPhaseId}
-                className="w-full px-4 py-3 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors shadow-md disabled:opacity-60"
-              >
-                Mover Card
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-6 mt-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="font-semibold text-slate-800">Visão do Pipe (colunas)</h4>
+            <h4 className="font-semibold text-slate-800">Visão do Pipe (Kanban)</h4>
             <button
               onClick={handlePullCards}
               disabled={loading}
@@ -660,7 +757,7 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
               Atualizar visão
             </button>
           </div>
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="flex gap-4 overflow-x-auto pb-2">
             {pipePhases.length === 0 && (
               <div className="text-sm text-slate-500">
                 Nenhuma fase carregada.
@@ -669,19 +766,46 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
             {pipePhases.map((phase, idx) => {
               const cards = cardsByPhase[phase.id] || [];
               return (
-                <div key={`${phase.id}-${idx}`} className="border border-slate-200 rounded-lg p-3 bg-slate-50">
+                <div
+                  key={`${phase.id}-${idx}`}
+                  className={`min-w-[290px] max-w-[320px] flex-shrink-0 border rounded-lg p-3 transition-colors ${
+                    dragOverPhaseId === phase.id ? 'border-indigo-400 bg-indigo-50' : 'border-slate-200 bg-slate-50'
+                  }`}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    if (dragOverPhaseId !== phase.id) setDragOverPhaseId(phase.id);
+                  }}
+                  onDragLeave={() => {
+                    if (dragOverPhaseId === phase.id) setDragOverPhaseId('');
+                  }}
+                  onDrop={(event) => handlePhaseDrop(event, phase.id)}
+                >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-slate-800">{phase.name}</span>
                     <span className="text-xs text-slate-500">{cards.length}</span>
                   </div>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                  <div className="space-y-2 max-h-72 overflow-y-auto">
                     {cards.length === 0 ? (
-                      <div className="text-xs text-slate-400">Sem cards</div>
+                      <div className="text-xs text-slate-400 border border-dashed border-slate-300 rounded-md p-3 text-center">
+                        Arraste um card para esta fase
+                      </div>
                     ) : (
                       cards.map((card, cidx) => (
-                        <div key={`${card.id}-${cidx}`} className="bg-white border border-slate-200 rounded-md px-2 py-2 text-xs text-slate-700">
+                        <div
+                          key={`${card.id}-${cidx}`}
+                          draggable
+                          onDragStart={(event) => handleCardDragStart(event, card.id)}
+                          onDragEnd={handleCardDragEnd}
+                          onClick={() => setDetailsCard(card)}
+                          className={`bg-white border rounded-md px-2 py-2 text-xs text-slate-700 cursor-grab active:cursor-grabbing transition-opacity ${
+                            dragCardId === card.id ? 'opacity-50 border-indigo-400' : 'border-slate-200'
+                          }`}
+                        >
                           <div className="font-semibold">{card.title}</div>
                           <div className="text-slate-400">{card.id}</div>
+                          {movingCardId === card.id && (
+                            <div className="text-[11px] text-indigo-600 mt-1">Movendo...</div>
+                          )}
                         </div>
                       ))
                     )}
@@ -690,8 +814,35 @@ const PipefyIntegration = ({ clientes = [], onImportCards }) => {
               );
             })}
           </div>
-        </div>
       </div>
+
+      {detailsCard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-xl rounded-xl bg-white shadow-xl border border-slate-200">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">{detailsCard.title}</h3>
+                <p className="text-xs text-slate-500">{detailsCard.id}</p>
+              </div>
+              <button onClick={() => setDetailsCard(null)} className="text-slate-500 hover:text-slate-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="px-5 py-4 max-h-[65vh] overflow-y-auto space-y-2">
+              {getCardInfoRows(detailsCard).length === 0 ? (
+                <p className="text-sm text-slate-500">Sem informações adicionais neste card.</p>
+              ) : (
+                getCardInfoRows(detailsCard).map((row, idx) => (
+                  <div key={`${detailsCard.id}-detail-${idx}`} className="text-sm border-b border-slate-100 pb-2">
+                    <span className="font-semibold text-slate-700">{row.label}:</span>{' '}
+                    <span className="text-slate-600">{row.value}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

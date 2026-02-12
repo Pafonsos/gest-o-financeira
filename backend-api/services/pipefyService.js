@@ -75,6 +75,10 @@ const pipefyService = {
           phases {
             id
             name
+            fields {
+              id
+              label
+            }
           }
         }
       }

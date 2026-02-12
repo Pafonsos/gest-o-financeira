@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, Settings } from 'lucide-react';
+﻿import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Search, DollarSign, Users, AlertCircle, CheckCircle, Clock, Filter, Edit, Trash2, Eye, Download, Mail, Send, Info, BarChart3, Settings, X } from 'lucide-react';
 import emailService from './services/emailService';
 import { EmailSettingsModal } from './components/EmailSettingsModal';
 import DashboardAprimorado from './components/dashboard/DashboardAprimorado';
@@ -338,6 +338,8 @@ const FinancialManager = () => {
 
   // Estado para Contas a Pagar - INDEPENDENTE DO DASHBOARD
   const [despesas, setDespesas] = useState([]);
+  const clientesTableRef = useRef(null);
+  const clientesDragStateRef = useRef({ dragging: false, startX: 0, startScrollLeft: 0 });
 
   // Funções de formatação
 const formatarCNPJ = (valor) => {
@@ -465,6 +467,29 @@ const formatarMoedaInput = (valor) => {
     if (!path) return;
     await supabase.storage.from('contratos').remove([path]);
   };
+
+  const handleClientesTableMouseDown = (event) => {
+    const container = clientesTableRef.current;
+    if (!container) return;
+    clientesDragStateRef.current = {
+      dragging: true,
+      startX: event.clientX,
+      startScrollLeft: container.scrollLeft
+    };
+  };
+
+  const handleClientesTableMouseMove = (event) => {
+    const container = clientesTableRef.current;
+    const dragState = clientesDragStateRef.current;
+    if (!container || !dragState.dragging) return;
+    const delta = event.clientX - dragState.startX;
+    container.scrollLeft = dragState.startScrollLeft - delta;
+  };
+
+  const handleClientesTableMouseUp = () => {
+    clientesDragStateRef.current.dragging = false;
+  };
+
 
   const mapDespesaFromDb = (row) => ({
     id: row.id,
@@ -1011,6 +1036,71 @@ const formatarMoedaInput = (valor) => {
   setToast('Pagamento registrado com sucesso!');
 };
 
+  const removerUltimoPagamento = async () => {
+    if (!clienteSelecionado) return;
+    const historico = Array.isArray(clienteSelecionado.historicosPagamentos)
+      ? clienteSelecionado.historicosPagamentos
+      : [];
+
+    if (historico.length === 0) return;
+
+    const ultimoPagamento = historico[historico.length - 1];
+    const valorUltimo = Number(ultimoPagamento?.valor || 0);
+    const novoHistorico = historico.slice(0, -1);
+    const novoValorPago = Math.max(0, Number(clienteSelecionado.valorPago || 0) - valorUltimo);
+
+    let novasParcelasPagas = 0;
+    if (Number(clienteSelecionado.valorParcela || 0) > 0) {
+      novasParcelasPagas = Math.max(
+        0,
+        Math.floor(novoValorPago / Number(clienteSelecionado.valorParcela))
+      );
+    } else {
+      novasParcelasPagas = Math.max(0, Number(clienteSelecionado.parcelasPagas || 0) - 1);
+    }
+
+    let novoProximoVencimento = clienteSelecionado.proximoVencimento || null;
+    const diffParcelas = Number(clienteSelecionado.parcelasPagas || 0) - novasParcelasPagas;
+    if (diffParcelas > 0 && clienteSelecionado.proximoVencimento) {
+      const dataAtual = new Date(clienteSelecionado.proximoVencimento);
+      dataAtual.setDate(dataAtual.getDate() - (30 * diffParcelas));
+      novoProximoVencimento = dataAtual.toISOString().split('T')[0];
+    }
+
+    const atualizado = {
+      ...clienteSelecionado,
+      valorPago: novoValorPago,
+      parcelasPagas: novasParcelasPagas,
+      proximoVencimento: novoProximoVencimento,
+      historicosPagamentos: novoHistorico
+    };
+
+    try {
+      const payload = mapClientToDb(atualizado);
+      const { data, error } = await supabase
+        .from('clientes')
+        .update(payload)
+        .eq('id', atualizado.id)
+        .select('*')
+        .single();
+
+      if (error) throw error;
+
+      const salvo = mapClientFromDb(data);
+      setClientes((prev) => prev.map((cliente) => (
+        cliente.id === salvo.id ? salvo : cliente
+      )));
+      setClienteSelecionado(salvo);
+      setToast('Último pagamento removido.');
+    } catch (error) {
+      showMessage({
+        title: 'Erro ao remover pagamento',
+        message: error.message || 'Não foi possível reverter o pagamento.',
+        type: 'error'
+      });
+    }
+  };
+
   const exportarRelatorio = () => {
     if (!clientes || clientes.length === 0) {
       console.error('Exportação cancelada: lista de clientes vazia');
@@ -1546,7 +1636,14 @@ const formatarMoedaInput = (valor) => {
 
         {/* Lista de Clientes */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
+          <div
+            ref={clientesTableRef}
+            className="overflow-x-auto select-none"
+            onMouseDown={handleClientesTableMouseDown}
+            onMouseMove={handleClientesTableMouseMove}
+            onMouseUp={handleClientesTableMouseUp}
+            onMouseLeave={handleClientesTableMouseUp}
+          >
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
@@ -2109,6 +2206,7 @@ const formatarMoedaInput = (valor) => {
                           <th className="px-3 py-2 text-left">Data</th>
                           <th className="px-3 py-2 text-left">Valor</th>
                           <th className="px-3 py-2 text-left">Descrição</th>
+                          <th className="px-3 py-2 text-center">Ação</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
@@ -2117,6 +2215,17 @@ const formatarMoedaInput = (valor) => {
                             <td className="px-3 py-2">{formatarData(pagamento.data)}</td>
                             <td className="px-3 py-2 text-green-600 font-medium">{formatarMoeda(pagamento.valor)}</td>
                             <td className="px-3 py-2">{pagamento.descricao}</td>
+                            <td className="px-3 py-2 text-center">
+                              {index === clienteSelecionado.historicosPagamentos.length - 1 && (
+                                <button
+                                  onClick={removerUltimoPagamento}
+                                  className="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-600 hover:bg-red-50"
+                                  title="Remover último pagamento"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              )}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -2355,6 +2464,11 @@ const formatarMoedaInput = (valor) => {
 };
 
 export default FinancialManager;
+
+
+
+
+
 
 
 

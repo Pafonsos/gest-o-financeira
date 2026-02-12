@@ -11,6 +11,15 @@ const parseMoedaParaNumero = (valor) => {
   return parseFloat(valor.toString().replace(/\./g, '').replace(',', '.')) || 0;
 };
 
+const normalizeKey = (value) =>
+  (value || '')
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+
 const PipefyPage = () => {
   const [clientes, setClientes] = useState([]);
 
@@ -27,6 +36,7 @@ const PipefyPage = () => {
       email: row.email || '',
       telefone: row.telefone || '',
       cnpj: row.cnpj || '',
+      cpf: row.cpf || '',
       codigoContrato: row.codigo_contrato || '',
       contratoNome: row.contrato_nome || '',
       contratoPath: isDataUrl ? '' : rawContrato,
@@ -54,6 +64,7 @@ const PipefyPage = () => {
       email: client.email || null,
       telefone: client.telefone || null,
       cnpj: client.cnpj || null,
+      cpf: client.cpf || null,
       codigo_contrato: client.codigoContrato || null,
       contrato_nome: client.contratoNome || null,
       contrato_data_url: client.contratoPath || null,
@@ -135,23 +146,24 @@ const PipefyPage = () => {
         fromPipe?.id
       ]
         .filter(Boolean)
-        .map((v) => String(v).toLowerCase());
+        .map((v) => normalizeKey(v));
     };
 
     const getFieldValue = (fields, fieldIdOrName) => {
       if (!fieldIdOrName) return '';
       const candidates = resolveFieldCandidates(fieldIdOrName);
       const found = fields.find((f) => {
-        const name = String(f.name || '').toLowerCase();
-        const fieldId = String(f.field?.id || '').toLowerCase();
-        const fieldLabel = String(f.field?.label || '').toLowerCase();
+        const name = normalizeKey(f.name || '');
+        const fieldId = normalizeKey(f.field?.id || '');
+        const fieldLabel = normalizeKey(f.field?.label || '');
         return candidates.includes(name) || candidates.includes(fieldId) || candidates.includes(fieldLabel);
       });
       return normalizeValue(found?.value || '');
     };
 
     const fallbackByLabel = (label) => {
-      const found = fieldLookup.find((f) => f.label?.toLowerCase() === label);
+      const wanted = normalizeKey(label);
+      const found = fieldLookup.find((f) => normalizeKey(f.label) === wanted);
       return found?.id || '';
     };
 
@@ -164,10 +176,11 @@ const PipefyPage = () => {
     const nomeEmpresa = normalize(getFieldValue(fields, mapId('nomeEmpresa', 'nome da empresa'))) || card.title || '';
     const nomeFantasia = normalize(getFieldValue(fields, mapId('nomeFantasia', 'nome fantasia')));
     const nomeResponsavel = normalize(getFieldValue(fields, mapId('nomeResponsavel', 'nome do cliente')));
-    const email = normalize(getFieldValue(fields, mapId('email', 'e-mail')));
+    const email = normalize(getFieldValue(fields, mapIdAny('email', ['e-mail', 'email'])));
     const telefone = normalize(getFieldValue(fields, mapId('telefone', 'telefone')));
     const cnpj = normalize(getFieldValue(fields, mapIdAny('cnpj', ['cnpj', 'cpf/cnpj'])));
-    const codigoContrato = normalize(getFieldValue(fields, mapId('codigoContrato', 'codigo do contrato')));
+    const cpf = normalize(getFieldValue(fields, mapIdAny('cpf', ['cpf', 'cpf/cnpj'])));
+    const codigoContrato = normalize(getFieldValue(fields, mapIdAny('codigoContrato', ['codigo do contrato', 'código do contrato'])));
     const valorTotal = parseMoedaParaNumero(getFieldValue(fields, mapIdAny('valorTotal', ['valor total do contrato', 'valor total'])));
     const parcelas = parseInt(getFieldValue(fields, mapId('parcelas', 'parcelas')), 10) || 1;
     const dataVenda = normalize(getFieldValue(fields, mapId('dataVenda', 'data da venda')));
@@ -188,6 +201,7 @@ const PipefyPage = () => {
         dataVenda,
         proximoVencimento,
         cnpj,
+        cpf,
         codigoContrato,
         linkPagamento,
         observacoes,
@@ -205,6 +219,7 @@ const PipefyPage = () => {
         if (String(c.id) === String(cliente.id)) return true;
         if (cliente.email && c.email === cliente.email) return true;
         if (cliente.cnpj && c.cnpj === cliente.cnpj) return true;
+        if (cliente.cpf && c.cpf === cliente.cpf) return true;
         if (cliente.codigoContrato && c.codigoContrato === cliente.codigoContrato) return true;
         return false;
       });
@@ -229,6 +244,8 @@ const PipefyPage = () => {
           ? `email:${cliente.email}`
           : cliente.cnpj
           ? `cnpj:${cliente.cnpj}`
+          : cliente.cpf
+          ? `cpf:${cliente.cpf}`
           : cliente.codigoContrato
           ? `contrato:${cliente.codigoContrato}`
           : `id:${cliente.id}`;
