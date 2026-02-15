@@ -3807,3 +3807,45 @@
   "message": "✅ Service de Admin inicializado",
   "service": "email-system"
 }
+{
+  "timestamp": "2026-02-14 21:00:34",
+  "level": "info",
+  "message": "✅ Service de Admin inicializado",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-14 21:14:00",
+  "level": "info",
+  "message": "✅ Token verificado para: afonsoaq38@gmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-14 21:14:01",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-14 21:14:03",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-14 22:32:44",
+  "level": "info",
+  "message": "✅ Token verificado para: afonsoaq38@gmail.com",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-14 22:32:45",
+  "level": "info",
+  "message": "📋 Listando todos os usuários",
+  "service": "email-system"
+}
+{
+  "timestamp": "2026-02-14 22:32:46",
+  "level": "info",
+  "message": "✅ 2 usuários encontrados",
+  "service": "email-system"
+}

@@ -2,7 +2,7 @@
   "name": "financial-manager-frontend",
   "version": "2.0.0",
   "private": true,
-  "description": "Sistema de Gestão Financeira com Email Marketing - Frontend",
+  "description": "Sistema de GestÃƒÂ£o Financeira com Email Marketing - Frontend",
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "@testing-library/dom": "^10.4.1",
@@ -21,7 +21,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "lint:boundaries": "node scripts/check-boundaries.mjs"
   },
   "browserslist": {
     "production": [
@@ -48,3 +49,4 @@
     "vitest": "^3.2.4"
   }
 }
+

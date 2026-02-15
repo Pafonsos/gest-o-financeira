@@ -5,7 +5,7 @@ import { UiProvider } from './contexts/UiContext';
 import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import LoadingState from './components/ui/LoadingState';
 
-const App = React.lazy(() => import('./App'));
+const App = React.lazy(() => import('./App.jsx'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 const PipefyPage = React.lazy(() => import('./pages/PipefyPage'));
 const ChatPage = React.lazy(() => import('./pages/ChatPage'));
